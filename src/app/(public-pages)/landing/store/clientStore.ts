@@ -59,7 +59,7 @@ export const useClassParticipantStore = create<ClassParticipantStore>()(
             set((state) => ({
                 participant: Math.min(
                     state.participant + 1,
-                    state.maxParticipants
+                    state.maxParticipants,
                 ),
             })),
 
@@ -79,5 +79,5 @@ export const useClassParticipantStore = create<ClassParticipantStore>()(
         availableSpot: 1,
         setAvailableSpot: (available: number) =>
             set({ availableSpot: available }),
-    })
+    }),
 )
