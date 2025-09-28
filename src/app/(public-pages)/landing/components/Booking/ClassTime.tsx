@@ -1,16 +1,17 @@
 import { DatePicker, Input, Select } from '@/components/ui'
 import { useClassTypeStore } from '../../store/clientStore'
+import { headerLists } from '../../store/headerStore'
 
 export default function ClassTime({}) {
-    const today = new Date()
+    const header = headerLists[1]
 
-    console.log(123, today)
+    const today = new Date()
 
     return (
         <>
             <div className="px-6 pb-6">
                 <h4 className="mb-2">Book a class</h4>
-                <h6>Select time and number of participants</h6>
+                <h6>{header.name}</h6>
                 <hr className="my-4" />
                 <div className="flex flex-col gap-2">
                     <>

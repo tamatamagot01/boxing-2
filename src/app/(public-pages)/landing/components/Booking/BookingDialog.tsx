@@ -1,6 +1,8 @@
 import { Button, Dialog } from '@/components/ui'
 import ClassType from './ClassType'
 import ClassTime from './ClassTime'
+import ClassUserDetail from './ClassUserDetail'
+import { useHeaderStore } from '../../store/headerStore'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -11,6 +13,8 @@ export default function BookingDialog({
     isOpen,
     setIsOpenBookingDialog,
 }: BookingDialogProps) {
+    const { headerID, incHeaderID, decHeaderID } = useHeaderStore()
+
     return (
         <Dialog
             isOpen={isOpen}
@@ -23,20 +27,34 @@ export default function BookingDialog({
             contentClassName="pb-0 px-0"
             onClose={() => setIsOpenBookingDialog(false)}
         >
-            {/* <ClassType /> */}
-            <ClassTime />
+            {headerID === 1 && <ClassType />}
+            {headerID === 2 && <ClassTime />}
+            {headerID === 3 && <ClassUserDetail />}
+
             <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                 <Button
                     className="ltr:mr-2 rtl:ml-2"
-                    onClick={() => setIsOpenBookingDialog(false)}
+                    onClick={() => {
+                        if (headerID === 1) {
+                            setIsOpenBookingDialog(false)
+                        } else {
+                            decHeaderID()
+                        }
+                    }}
                 >
-                    Cancel
+                    {headerID === 1 ? 'Cancel' : 'Previous'}
                 </Button>
                 <Button
                     variant="solid"
-                    onClick={() => setIsOpenBookingDialog(false)}
+                    onClick={() => {
+                        if (headerID === 3) {
+                            console.log('Submit')
+                        } else {
+                            incHeaderID()
+                        }
+                    }}
                 >
-                    Okay
+                    {headerID === 3 ? 'Submit' : 'Next'}
                 </Button>
             </div>
         </Dialog>

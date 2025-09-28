@@ -2,8 +2,11 @@ import { Button, Select } from '@/components/ui'
 import { FaUser } from 'react-icons/fa'
 import { FaUserGroup } from 'react-icons/fa6'
 import { useClassTypeStore } from '../../store/clientStore'
+import { headerLists } from '../../store/headerStore'
 
 export default function ClassType() {
+    const header = headerLists[0]
+
     const { classType, setClassType, setTrainer } = useClassTypeStore()
 
     const handleSelectClassType = (classType: 'private' | 'group') => {
@@ -18,7 +21,7 @@ export default function ClassType() {
         <>
             <div className="px-6 pb-6">
                 <h4 className="mb-2">Book a class</h4>
-                <h6>Choose the class type</h6>
+                <h6>{header.name}</h6>
                 <hr className="my-4" />
                 <div className="flex flex-col gap-2">
                     <Button
