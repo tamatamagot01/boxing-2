@@ -47,89 +47,93 @@ export default function ClassUserDetail() {
                 <h6>{header.name}</h6>
                 <hr className="my-4" />
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <>
-                        <label className="font-bold">First name</label>
-                        <FormItem
-                            invalid={Boolean(errors.firstName)}
-                            errorMessage={errors.firstName?.message}
-                        >
-                            <Controller
-                                name="firstName"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        className="mt-2"
-                                        type="text"
-                                        autoComplete="off"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </FormItem>
-                    </>
+                    <div className="flex gap-2 w-full">
+                        <div className="flex flex-col w-full">
+                            <label className="font-bold">First name</label>
+                            <FormItem
+                                invalid={Boolean(errors.firstName)}
+                                errorMessage={errors.firstName?.message}
+                            >
+                                <Controller
+                                    name="firstName"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input
+                                            className="mt-2"
+                                            type="text"
+                                            autoComplete="off"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                        </div>
 
-                    <>
-                        <label className="font-bold">Last name</label>
-                        <FormItem
-                            invalid={Boolean(errors.lastName)}
-                            errorMessage={errors.lastName?.message}
-                        >
-                            <Controller
-                                name="lastName"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        className="mt-2"
-                                        type="text"
-                                        autoComplete="off"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </FormItem>
-                    </>
+                        <div className="flex flex-col w-full">
+                            <label className="font-bold">Last name</label>
+                            <FormItem
+                                invalid={Boolean(errors.lastName)}
+                                errorMessage={errors.lastName?.message}
+                            >
+                                <Controller
+                                    name="lastName"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input
+                                            className="mt-2"
+                                            type="text"
+                                            autoComplete="off"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                        </div>
+                    </div>
 
-                    <>
-                        <label className="font-bold">Email</label>
-                        <FormItem
-                            invalid={Boolean(errors.email)}
-                            errorMessage={errors.email?.message}
-                        >
-                            <Controller
-                                name="email"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        className="mt-2"
-                                        type="email"
-                                        autoComplete="off"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </FormItem>
-                    </>
+                    <div className="flex gap-2 w-full">
+                        <div className="flex flex-col w-full">
+                            <label className="font-bold">Email</label>
+                            <FormItem
+                                invalid={Boolean(errors.email)}
+                                errorMessage={errors.email?.message}
+                            >
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input
+                                            className="mt-2"
+                                            type="email"
+                                            autoComplete="off"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                        </div>
 
-                    <>
-                        <label className="font-bold">Phone</label>
-                        <FormItem
-                            invalid={Boolean(errors.phone)}
-                            errorMessage={errors.phone?.message}
-                        >
-                            <Controller
-                                name="phone"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        className="mt-2"
-                                        type="text"
-                                        autoComplete="off"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </FormItem>
-                    </>
+                        <div className="flex flex-col w-full">
+                            <label className="font-bold">Phone</label>
+                            <FormItem
+                                invalid={Boolean(errors.phone)}
+                                errorMessage={errors.phone?.message}
+                            >
+                                <Controller
+                                    name="phone"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input
+                                            className="mt-2"
+                                            type="text"
+                                            autoComplete="off"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                        </div>
+                    </div>
                 </Form>
             </div>
         </>

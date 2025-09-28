@@ -18,12 +18,12 @@ export default function BookingDialog({
     return (
         <Dialog
             isOpen={isOpen}
-            width={375}
-            style={{
-                content: {
-                    marginTop: 250,
-                },
-            }}
+            width={headerID === 3 ? 500 : 375}
+            // style={{
+            //     content: {
+            //         marginTop: 250,
+            //     },
+            // }}
             contentClassName="pb-0 px-0"
             onClose={() => setIsOpenBookingDialog(false)}
         >
