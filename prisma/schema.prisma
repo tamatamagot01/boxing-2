@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ClassType {
+  private
+  group
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String
+  phone         String
+  first_name    String
+  last_name     String
+  password      String?
+  is_backOffice Boolean  @default(false)
+  is_trainer    Boolean  @default(false)
+  resetPassword Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  createdBy     Int?
+  updatedAt     DateTime @default(now())
+  updatedBy     Int?
+
+  bookingsAsUser    Booking[]  @relation("UserBookings")
+  bookingsAsTrainer Booking[]  @relation("TrainerBookings")
+  userRole          userRole[]
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  role_name String
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @default(now())
+  updatedBy Int?
+
+  userRole userRole[]
+}
+
+model userRole {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  createdAt DateTime? @default(now())
+  createdBy Int?
+  user      User      @relation(fields: [userId], references: [id])
+  role      Role      @relation(fields: [roleId], references: [id])
+}
+
+model TimeList {
+  id        Int       @id @default(autoincrement())
+  time      String
+  classType ClassType
+  createdAt DateTime  @default(now())
+  createdBy Int?
+  updatedAt DateTime  @default(now())
+  updatedBy Int?
+
+  booking Booking[]
+}
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  bookingID     String   @unique
+  bookingDate   String
+  classType     String
+  participant   Int
+  userID        Int
+  trainerID     Int?
+  bookingTimeID Int
+  createdAt     DateTime @default(now())
+  createdBy     Int?
+  updatedAt     DateTime @default(now())
+  updatedBy     Int?
+
+  user    User  @relation("UserBookings", fields: [userID], references: [id])
+  trainer User? @relation("TrainerBookings", fields: [trainerID], references: [id])
+
+  time TimeList @relation(fields: [bookingTimeID], references: [id])
+}

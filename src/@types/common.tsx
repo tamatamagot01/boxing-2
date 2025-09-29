@@ -20,3 +20,15 @@ export type PageProps = {
     params: Promise<{ slug: string }>
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
+
+export type UserType = {
+    id: number
+    email: string
+    phone: string
+    first_name: string
+    last_name: string
+    password?: string
+    is_backOffice: boolean
+    is_trainer: boolean
+    resetPassword: boolean
+}

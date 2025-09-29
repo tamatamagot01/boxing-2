@@ -3,6 +3,11 @@ import ClassType from './ClassType'
 import ClassTime from './ClassTime'
 import ClassUserDetail from './ClassUserDetail'
 import { useHeaderStore } from '../../store/headerStore'
+import {
+    useClassDateStore,
+    useClassParticipantStore,
+    useClassTypeStore,
+} from '../../store/clientStore'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -13,17 +18,38 @@ export default function BookingDialog({
     isOpen,
     setIsOpenBookingDialog,
 }: BookingDialogProps) {
+    // headerStore
     const { headerID, incHeaderID, decHeaderID } = useHeaderStore()
+
+    // bookingStore
+    const { classType, trainerID } = useClassTypeStore()
+    const { date, timeID } = useClassDateStore()
+    const { participant } = useClassParticipantStore()
+
+    // logic
+    const handleDisableNextButton = () => {
+        if (headerID === 1) {
+            if (!classType || (classType === 'private' && !trainerID)) {
+                return true
+            }
+        }
+
+        if (headerID === 2) {
+            if (!date || !timeID || !participant) {
+                return true
+            }
+        }
+    }
 
     return (
         <Dialog
             isOpen={isOpen}
             width={headerID === 3 ? 500 : 375}
-            // style={{
-            //     content: {
-            //         marginTop: 250,
-            //     },
-            // }}
+            style={{
+                content: {
+                    marginTop: headerID === 1 ? 200 : 0,
+                },
+            }}
             contentClassName="pb-0 px-0"
             onClose={() => setIsOpenBookingDialog(false)}
         >
@@ -46,6 +72,7 @@ export default function BookingDialog({
                 </Button>
                 <Button
                     variant="solid"
+                    disabled={handleDisableNextButton()}
                     onClick={() => {
                         if (headerID === 3) {
                             console.log('Submit')

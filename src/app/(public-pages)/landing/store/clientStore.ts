@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { Dayjs } from 'dayjs'
 
 type ClassTypeStore = {
     classType: 'private' | 'group' | null
@@ -20,8 +19,8 @@ export const useClassTypeStore = create<ClassTypeStore>()((set) => ({
 }))
 
 type ClassDateStore = {
-    date: Dayjs | null
-    setDate: (selectedDate: Dayjs | null) => void
+    date: string | null
+    setDate: (selectedDate: string | null) => void
 
     timeID: number | null
     setTime: (selectedTime: number | null) => void
@@ -29,7 +28,7 @@ type ClassDateStore = {
 
 export const useClassDateStore = create<ClassDateStore>()((set) => ({
     date: null,
-    setDate: (selectedDate: Dayjs | null) => set({ date: selectedDate }),
+    setDate: (selectedDate: string | null) => set({ date: selectedDate }),
 
     timeID: null,
     setTime: (selectedTime: number | null) => set({ timeID: selectedTime }),

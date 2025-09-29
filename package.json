@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-  "dev": "next dev --turbopack --port 4000",
+    "dev": "next dev --turbopack --port 4000",
     "build": "next build",
     "gcp-build": "NODE_OPTIONS='--max-old-space-size=8192' npm run build",
     "start": "next start",
@@ -21,7 +21,9 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "^6.16.2",
     "@tanstack/match-sorter-utils": "^8.19.4",
+    "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-table": "^8.20.5",
     "@tanstack/react-virtual": "^3.11.2",
     "@tiptap/pm": "^2.10.4",
@@ -92,7 +94,9 @@
     "postcss": "^8.4.45",
     "postcss-nesting": "^13.0.0",
     "prettier": "^3.4.2",
+    "prisma": "^6.16.2",
     "tailwindcss": "^4.0.4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   },
   "overrides": {
