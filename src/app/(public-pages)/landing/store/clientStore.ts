@@ -43,51 +43,22 @@ export const useClassDateStore = create<ClassDateStore>()((set) => ({
 }))
 
 type ClassParticipantStore = {
+    maxGroupParticipant: number
+    maxPrivateParticipant: number
     participant: number
     setParticipant: (selectedParticipant: number) => void
-    incParticipant: () => void
-    decParticipant: () => void
-
-    maxParticipants: number
-    setMaxParticipants: (classType: 'private' | 'group') => void
-
-    availableSpot: number
-    setAvailableSpot: (available: number) => void
 
     clearParticipant: () => void
 }
 
 export const useClassParticipantStore = create<ClassParticipantStore>()(
     (set) => ({
+        maxGroupParticipant: 28,
+        maxPrivateParticipant: 2,
         participant: 1,
 
         setParticipant: (selectedParticipant: number) =>
             set({ participant: selectedParticipant }),
-
-        incParticipant: () =>
-            set((state) => ({
-                participant: Math.min(
-                    state.participant + 1,
-                    state.maxParticipants,
-                ),
-            })),
-
-        decParticipant: () =>
-            set((state) => ({
-                participant: Math.max(state.participant - 1, 1),
-            })),
-
-        maxParticipants: 2,
-
-        setMaxParticipants: (classType) =>
-            set({
-                maxParticipants: classType === 'private' ? 2 : 28,
-                participant: 1, // reset ค่า participant ตอนเปลี่ยน classType
-            }),
-
-        availableSpot: 1,
-        setAvailableSpot: (available: number) =>
-            set({ availableSpot: available }),
 
         clearParticipant: () => set({ participant: 0 }),
     }),

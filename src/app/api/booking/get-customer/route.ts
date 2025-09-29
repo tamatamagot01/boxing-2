@@ -13,11 +13,14 @@ export async function GET(req: Request) {
     console.log('🚀 ~ GET ~ classType:', classType, bookingDate, bookingTimeID)
 
     try {
-        const bookings = await prisma.booking.findMany({
+        const bookings = await prisma.booking.aggregate({
             where: {
                 classType,
                 bookingDate,
                 bookingTimeID: Number(bookingTimeID),
+            },
+            _sum: {
+                participant: true,
             },
         })
 
