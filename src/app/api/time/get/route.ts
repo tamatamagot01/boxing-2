@@ -6,17 +6,21 @@ const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
-    const bookingDate = searchParams.get('bookingDate') ?? ''
-    console.log('🚀 ~ GET ~ bookingDate:', bookingDate)
-    const bookingTimeID = searchParams.get('bookingTimeID') ?? 0
-    console.log('🚀 ~ GET ~ bookingTimeID:', bookingTimeID)
+    const classType = searchParams.get('classType') ?? ''
+
+    if (classType !== 'private' && classType !== 'group') {
+        return NextResponse.json(
+            { error: 'Please select the class type first' },
+            { status: 500 },
+        )
+    }
 
     try {
-        const bookings = await prisma.booking.findMany({
-            where: { bookingDate, bookingTimeID: Number(bookingTimeID) },
+        const times = await prisma.timeList.findMany({
+            where: { classType },
         })
 
-        return NextResponse.json({ bookings })
+        return NextResponse.json({ times })
     } catch (error: any) {
         console.error('Error fetching data:', error)
         return NextResponse.json(

@@ -11,10 +11,11 @@ export default function ClassParticipant({}) {
     }
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['trainers'],
+        queryKey: ['bookings', date, timeID],
         queryFn: () => getThisDayBooking(date, timeID),
         enabled: !!date && !!timeID,
     })
+    console.log('🚀 ~ ClassParticipant ~ data:', data)
 
     if (isPending) return 'Loading...'
 
@@ -24,8 +25,6 @@ export default function ClassParticipant({}) {
             ((error as any).response?.data?.error || (error as Error).message)
         )
     }
-
-    console.log(1112, data)
 
     return (
         <>

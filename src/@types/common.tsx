@@ -32,3 +32,9 @@ export type UserType = {
     is_trainer: boolean
     resetPassword: boolean
 }
+
+export type TimeListType = {
+    id: number
+    time: string
+    classType: 'private' | 'group'
+}

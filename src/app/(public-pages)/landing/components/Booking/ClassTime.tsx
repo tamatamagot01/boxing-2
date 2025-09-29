@@ -2,15 +2,45 @@ import { DatePicker, Input, Select } from '@/components/ui'
 import { useClassDateStore, useClassTypeStore } from '../../store/clientStore'
 import { headerLists } from '../../store/headerStore'
 import { useQuery } from '@tanstack/react-query'
-import { getBookings } from '@/utils/query/booking/queryFns'
 import ClassParticipant from './ClassParticipant'
+import { getClassTime } from '@/utils/query/time/queryFns'
+import { TimeListType } from '@/@types/common'
+import dayjs from 'dayjs'
+
+type TimeOption = {
+    label: string
+    value: number
+}
 
 export default function ClassTime({}) {
     const header = headerLists[1]
 
     const today = new Date()
 
+    const { classType } = useClassTypeStore()
+
     const { date, setDate, timeID, setTime } = useClassDateStore()
+
+    const { isPending, error, data } = useQuery({
+        queryKey: ['times', classType],
+        queryFn: () => getClassTime(classType),
+        enabled: !!classType,
+    })
+
+    if (isPending) return 'Loading...'
+
+    if (error) {
+        return (
+            'An error has occurred: ' +
+            ((error as any).response?.data?.error || (error as Error).message)
+        )
+    }
+
+    const options: TimeOption[] =
+        data?.times.map((time: TimeListType) => ({
+            label: time.time,
+            value: time.id,
+        })) ?? []
 
     return (
         <>
@@ -23,9 +53,13 @@ export default function ClassTime({}) {
                         <label className="font-bold">Date</label>
                         <DatePicker
                             placeholder="Select date"
-                            onChange={(e) =>
-                                setDate(e?.toLocaleDateString() || null)
-                            }
+                            onChange={(e) => {
+                                const formattedDate = dayjs(
+                                    e?.toLocaleDateString(),
+                                ).format('YYYY-MM-DD')
+
+                                setDate(formattedDate || null)
+                            }}
                             minDate={today}
                         />
                     </>
@@ -34,12 +68,14 @@ export default function ClassTime({}) {
                         <label className="font-bold">Time</label>
                         <Select
                             placeholder="Select time"
-                            options={[
-                                { label: '10:00', value: 1 },
-                                { label: '11:00', value: 2 },
-                                { label: '12:00', value: 3 },
-                            ]}
-                            onChange={(e) => setTime(e?.value || 0)}
+                            value={
+                                options.find((opt) => opt.value === timeID) ??
+                                null
+                            }
+                            options={options}
+                            onChange={(
+                                option: { label: string; value: number } | null,
+                            ) => setTime(option?.value ?? 0)}
                         />
                     </>
                 </div>

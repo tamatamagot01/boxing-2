@@ -7,10 +7,16 @@ import { useQuery } from '@tanstack/react-query'
 import { UserType } from '@/@types/common'
 import { getTrainers } from '@/utils/query/trainer/queryFns'
 
+type TrainerOption = {
+    label: string
+    value: number
+}
+
 export default function ClassType() {
     const header = headerLists[0]
 
-    const { classType, setClassType, setTrainer } = useClassTypeStore()
+    const { classType, setClassType, trainerID, setTrainer } =
+        useClassTypeStore()
 
     const { isPending, error, data } = useQuery({
         queryKey: ['trainers'],
@@ -25,6 +31,12 @@ export default function ClassType() {
             ((error as any).response?.data?.error || (error as Error).message)
         )
     }
+
+    const options: TrainerOption[] =
+        data?.trainers.map((trainer: UserType) => ({
+            label: trainer.first_name,
+            value: trainer.id,
+        })) ?? []
 
     const handleSelectClassType = (classType: 'private' | 'group') => {
         setClassType(classType)
@@ -65,12 +77,12 @@ export default function ClassType() {
                         <Select
                             className="mt-2"
                             placeholder="Select trainer"
-                            options={data?.trainers.map(
-                                (trainer: UserType) => ({
-                                    label: trainer.first_name,
-                                    value: trainer.id,
-                                }),
-                            )}
+                            value={
+                                options.find(
+                                    (opt) => opt.value === trainerID,
+                                ) ?? null
+                            }
+                            options={options}
                             onChange={(
                                 option: { label: string; value: number } | null,
                             ) => setTrainer(option?.value ?? 0)}

@@ -22,11 +22,31 @@ export default function BookingDialog({
     const { headerID, incHeaderID, decHeaderID } = useHeaderStore()
 
     // bookingStore
-    const { classType, trainerID } = useClassTypeStore()
-    const { date, timeID } = useClassDateStore()
-    const { participant } = useClassParticipantStore()
+    const { classType, trainerID, clearClassType, clearTrainer } =
+        useClassTypeStore()
+    const { date, timeID, clearDate, clearTime } = useClassDateStore()
+    const { participant, clearParticipant } = useClassParticipantStore()
 
     // logic
+    const handlePreviousButton = () => {
+        if (headerID === 1) {
+            setIsOpenBookingDialog(false)
+            clearClassType()
+            clearTrainer()
+        }
+
+        if (headerID === 2) {
+            decHeaderID()
+            clearDate()
+            clearTime()
+            clearParticipant()
+        }
+
+        if (headerID === 3) {
+            decHeaderID()
+        }
+    }
+
     const handleDisableNextButton = () => {
         if (headerID === 1) {
             if (!classType || (classType === 'private' && !trainerID)) {
@@ -60,13 +80,7 @@ export default function BookingDialog({
             <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                 <Button
                     className="ltr:mr-2 rtl:ml-2"
-                    onClick={() => {
-                        if (headerID === 1) {
-                            setIsOpenBookingDialog(false)
-                        } else {
-                            decHeaderID()
-                        }
-                    }}
+                    onClick={() => handlePreviousButton()}
                 >
                     {headerID === 1 ? 'Cancel' : 'Previous'}
                 </Button>
