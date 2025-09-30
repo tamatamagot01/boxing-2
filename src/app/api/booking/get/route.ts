@@ -10,8 +10,6 @@ export async function GET(req: Request) {
     const bookingDate = searchParams.get('bookingDate') ?? ''
     const bookingTimeID = searchParams.get('bookingTimeID') ?? 0
 
-    console.log('🚀 ~ GET ~ classType:', classType, bookingDate, bookingTimeID)
-
     try {
         const bookings = await prisma.booking.findMany({
             where: {

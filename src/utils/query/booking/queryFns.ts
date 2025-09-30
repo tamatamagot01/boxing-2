@@ -1,3 +1,4 @@
+import { BookingType } from '@/@types/common'
 import axiosClient from '../axiosClient'
 
 export const getThisDayBooking = async (
@@ -24,6 +25,13 @@ export const getThisDayCustomer = async (
 ) => {
     const res = await axiosClient.get('/booking/get-customer', {
         params: { classType, trainerID, bookingDate, bookingTimeID },
+    })
+    return res.data
+}
+
+export const createBooking = async (payload: BookingType) => {
+    const res = await axiosClient.post('/booking/create', {
+        payload,
     })
     return res.data
 }

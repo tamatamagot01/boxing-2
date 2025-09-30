@@ -11,6 +11,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { useMutation } from '@tanstack/react-query'
+import { createBooking } from '@/utils/query/booking/queryFns'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -49,11 +51,18 @@ export default function BookingDialog({
         register,
         formState: { errors },
         handleSubmit,
+        watch,
+        reset,
     } = useForm<UserDetailInputType>({
         resolver: zodResolver(userDetailSchema),
         mode: 'onSubmit',
         defaultValues: { first_name: '', last_name: '', email: '', phone: '' },
     })
+
+    const firstName = watch('first_name')
+    const lastName = watch('last_name')
+    const email = watch('email')
+    const phone = watch('phone')
 
     // logic
     const handleCloseDialog = () => {
@@ -81,6 +90,7 @@ export default function BookingDialog({
 
         if (headerID === 3) {
             decHeaderID()
+            reset()
         }
     }
 
@@ -100,11 +110,47 @@ export default function BookingDialog({
                 return true
             }
         }
+
+        if (headerID === 3) {
+            if (
+                firstName === '' ||
+                lastName === '' ||
+                email === '' ||
+                phone === ''
+            ) {
+                return true
+            }
+        }
     }
 
+    const { mutate, isPending, error, data } = useMutation({
+        mutationFn: (userData: UserDetailInputType) => {
+            const payload = {
+                ...userData,
+                classType: classType!,
+                trainerID,
+                date: date!,
+                timeID: timeID!,
+                participant,
+            }
+            return createBooking(payload)
+        },
+        onSuccess: () => {
+            setIsOpenBookingDialog(false)
+            clearClassType()
+            clearTrainer()
+            clearDate()
+            clearTime()
+            clearParticipant()
+            reset()
+        },
+        onError: (error) => {
+            console.error(error)
+        },
+    })
+
     const onSubmit = (userData: UserDetailInputType) => {
-        console.log(9999, userData)
-        console.log(8888, classType, trainerID, date, timeID, participant)
+        mutate(userData)
     }
 
     return (

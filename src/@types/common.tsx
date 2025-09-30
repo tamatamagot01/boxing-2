@@ -38,3 +38,14 @@ export type TimeListType = {
     time: string
     classType: 'private' | 'group'
 }
+
+export type BookingType = {
+    classType: 'private' | 'group'
+    trainerID: number
+    date: string
+    timeID: number
+    first_name: string
+    last_name: string
+    email: string
+    phone: string
+}
