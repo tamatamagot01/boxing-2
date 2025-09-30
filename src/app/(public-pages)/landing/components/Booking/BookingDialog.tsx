@@ -8,11 +8,28 @@ import {
     useClassParticipantStore,
     useClassTypeStore,
 } from '../../store/clientStore'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 type BookingDialogProps = {
     isOpen: boolean
     setIsOpenBookingDialog: (isOpen: boolean) => void
 }
+
+export type UserDetailInputType = {
+    first_name: string
+    last_name: string
+    email: string
+    phone: string
+}
+
+const userDetailSchema = z.object({
+    first_name: z.string().min(1, { message: 'Required' }),
+    last_name: z.string().min(1, { message: 'Required' }),
+    email: z.string().email({ message: 'Invalid email address' }),
+    phone: z.string().regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
+})
 
 export default function BookingDialog({
     isOpen,
@@ -27,6 +44,16 @@ export default function BookingDialog({
     const { date, timeID, clearDate, clearTime } = useClassDateStore()
     const { participant, clearParticipant, currentAvailable } =
         useClassParticipantStore()
+
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+    } = useForm<UserDetailInputType>({
+        resolver: zodResolver(userDetailSchema),
+        mode: 'onSubmit',
+        defaultValues: { first_name: '', last_name: '', email: '', phone: '' },
+    })
 
     // logic
     const handleCloseDialog = () => {
@@ -75,6 +102,11 @@ export default function BookingDialog({
         }
     }
 
+    const onSubmit = (userData: UserDetailInputType) => {
+        console.log(9999, userData)
+        console.log(8888, classType, trainerID, date, timeID, participant)
+    }
+
     return (
         <Dialog
             isOpen={isOpen}
@@ -89,7 +121,9 @@ export default function BookingDialog({
         >
             {headerID === 1 && <ClassType />}
             {headerID === 2 && <ClassTime />}
-            {headerID === 3 && <ClassUserDetail />}
+            {headerID === 3 && (
+                <ClassUserDetail register={register} errors={errors} />
+            )}
 
             <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                 <Button
@@ -101,13 +135,10 @@ export default function BookingDialog({
                 <Button
                     variant="solid"
                     disabled={handleDisableNextButton()}
-                    onClick={() => {
-                        if (headerID === 3) {
-                            console.log('Submit')
-                        } else {
-                            incHeaderID()
-                        }
-                    }}
+                    type={headerID === 3 ? 'submit' : 'button'}
+                    onClick={
+                        headerID === 3 ? handleSubmit(onSubmit) : incHeaderID
+                    }
                 >
                     {headerID === 3 ? 'Submit' : 'Next'}
                 </Button>
