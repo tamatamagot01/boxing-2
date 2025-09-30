@@ -18,11 +18,12 @@ export const getBookings = async () => {
 
 export const getThisDayCustomer = async (
     classType: string,
+    trainerID: number,
     bookingDate: string,
     bookingTimeID: number,
 ) => {
     const res = await axiosClient.get('/booking/get-customer', {
-        params: { classType, bookingDate, bookingTimeID },
+        params: { classType, trainerID, bookingDate, bookingTimeID },
     })
     return res.data
 }

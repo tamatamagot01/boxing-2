@@ -7,15 +7,15 @@ const prisma = new PrismaClient()
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const classType = searchParams.get('classType') ?? ''
+    const trainerID = searchParams.get('trainerID') ?? ''
     const bookingDate = searchParams.get('bookingDate') ?? ''
     const bookingTimeID = searchParams.get('bookingTimeID') ?? 0
-
-    console.log('🚀 ~ GET ~ classType:', classType, bookingDate, bookingTimeID)
 
     try {
         const bookings = await prisma.booking.aggregate({
             where: {
                 classType,
+                trainerID: classType === 'private' ? Number(trainerID) : null,
                 bookingDate,
                 bookingTimeID: Number(bookingTimeID),
             },

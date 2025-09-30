@@ -1,3 +1,5 @@
+'use client'
+
 import { Input } from '@/components/ui'
 import {
     useClassDateStore,
@@ -6,24 +8,44 @@ import {
 } from '../../store/clientStore'
 import { useQuery } from '@tanstack/react-query'
 import { getThisDayCustomer } from '@/utils/query/booking/queryFns'
+import Loading from '@/components/ui/Loading/Loading'
+import { useEffect } from 'react'
 
 export default function ClassParticipant({}) {
-    const { classType } = useClassTypeStore()
+    const { classType, trainerID } = useClassTypeStore()
     const { date, timeID } = useClassDateStore()
-    const { maxGroupParticipant, maxPrivateParticipant } =
-        useClassParticipantStore()
+    const {
+        maxGroupParticipant,
+        maxPrivateParticipant,
+        participant,
+        setParticipant,
+        currentAvailable,
+        setCurrentAvailable,
+    } = useClassParticipantStore()
 
     if (!classType || !date || !timeID) {
         return <p>Please select date and time first</p>
     }
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['bookings', classType, date, timeID],
-        queryFn: () => getThisDayCustomer(classType, date, timeID),
+        queryKey: ['bookings', classType, trainerID, date, timeID],
+        queryFn: () => getThisDayCustomer(classType!, trainerID, date, timeID),
         enabled: !!date && !!timeID,
     })
 
-    if (isPending) return 'Loading...'
+    const thisDayCustomer = data?.bookings._sum.participant ?? 0
+
+    useEffect(() => {
+        if (classType === 'private') {
+            setCurrentAvailable(maxPrivateParticipant - thisDayCustomer)
+        }
+
+        if (classType === 'group') {
+            setCurrentAvailable(maxGroupParticipant - thisDayCustomer)
+        }
+    }, [thisDayCustomer, classType, date, timeID])
+
+    if (isPending) return <Loading />
 
     if (error) {
         return (
@@ -32,20 +54,32 @@ export default function ClassParticipant({}) {
         )
     }
 
-    const thisDayCustomer = data?.bookings._sum.participant ?? 0
-    const currentAvailable =
-        classType === 'group'
-            ? maxGroupParticipant - thisDayCustomer
-            : maxPrivateParticipant - thisDayCustomer
-
     return (
         <>
             <label className="font-bold">Participants</label>
-            <Input className="mt-2" type="number" min={1} />
-            <p className="text-error mt-1">No available spots for this time</p>
-            <p className="text-success mt-1">
-                Available spots : <span>{currentAvailable}</span>
-            </p>
+            <Input
+                className={`mt-2 ${!currentAvailable && 'opacity-40'}`}
+                placeholder="Number of participants"
+                type="number"
+                value={
+                    participant > currentAvailable
+                        ? currentAvailable
+                        : participant
+                }
+                disabled={!currentAvailable}
+                onChange={(e) => setParticipant(Number(e.target.value))}
+                min={1}
+                max={currentAvailable}
+            />
+            {currentAvailable ? (
+                <p className="text-success mt-1.5">
+                    Available spots : <span>{currentAvailable}</span>
+                </p>
+            ) : (
+                <p className="text-error mt-1.5">
+                    No available spots for this time
+                </p>
+            )}
         </>
     )
 }

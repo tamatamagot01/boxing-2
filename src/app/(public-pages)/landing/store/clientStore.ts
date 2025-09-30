@@ -45,8 +45,12 @@ export const useClassDateStore = create<ClassDateStore>()((set) => ({
 type ClassParticipantStore = {
     maxGroupParticipant: number
     maxPrivateParticipant: number
+
     participant: number
     setParticipant: (selectedParticipant: number) => void
+
+    currentAvailable: number
+    setCurrentAvailable: (available: number) => void
 
     clearParticipant: () => void
 }
@@ -55,11 +59,15 @@ export const useClassParticipantStore = create<ClassParticipantStore>()(
     (set) => ({
         maxGroupParticipant: 28,
         maxPrivateParticipant: 2,
-        participant: 1,
 
+        participant: 1,
         setParticipant: (selectedParticipant: number) =>
             set({ participant: selectedParticipant }),
 
-        clearParticipant: () => set({ participant: 0 }),
+        currentAvailable: 0,
+        setCurrentAvailable: (available: number) =>
+            set({ currentAvailable: available }),
+
+        clearParticipant: () => set({ participant: 1 }),
     }),
 )

@@ -25,9 +25,19 @@ export default function BookingDialog({
     const { classType, trainerID, clearClassType, clearTrainer } =
         useClassTypeStore()
     const { date, timeID, clearDate, clearTime } = useClassDateStore()
-    const { participant, clearParticipant } = useClassParticipantStore()
+    const { participant, clearParticipant, currentAvailable } =
+        useClassParticipantStore()
 
     // logic
+    const handleCloseDialog = () => {
+        setIsOpenBookingDialog(false)
+        clearClassType()
+        clearTrainer()
+        clearDate()
+        clearTime()
+        clearParticipant()
+    }
+
     const handlePreviousButton = () => {
         if (headerID === 1) {
             setIsOpenBookingDialog(false)
@@ -58,6 +68,10 @@ export default function BookingDialog({
             if (!date || !timeID || !participant) {
                 return true
             }
+
+            if (currentAvailable - participant < 0) {
+                return true
+            }
         }
     }
 
@@ -71,7 +85,7 @@ export default function BookingDialog({
                 },
             }}
             contentClassName="pb-0 px-0"
-            onClose={() => setIsOpenBookingDialog(false)}
+            onClose={handleCloseDialog}
         >
             {headerID === 1 && <ClassType />}
             {headerID === 2 && <ClassTime />}

@@ -6,6 +6,7 @@ import ClassParticipant from './ClassParticipant'
 import { getClassTime } from '@/utils/query/time/queryFns'
 import { TimeListType } from '@/@types/common'
 import dayjs from 'dayjs'
+import Loading from '@/components/ui/Loading/Loading'
 
 type TimeOption = {
     label: string
@@ -27,7 +28,7 @@ export default function ClassTime({}) {
         enabled: !!classType,
     })
 
-    if (isPending) return 'Loading...'
+    if (isPending) return <Loading />
 
     if (error) {
         return (
@@ -53,6 +54,7 @@ export default function ClassTime({}) {
                         <label className="font-bold">Date</label>
                         <DatePicker
                             placeholder="Select date"
+                            value={date ? new Date(date) : null}
                             onChange={(e) => {
                                 const formattedDate = dayjs(
                                     e?.toLocaleDateString(),
@@ -60,6 +62,7 @@ export default function ClassTime({}) {
 
                                 setDate(formattedDate || null)
                             }}
+                            inputFormat="DD/MM/YYYY"
                             minDate={today}
                         />
                     </>
