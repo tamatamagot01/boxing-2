@@ -48,49 +48,46 @@ export default function ClassType() {
     }
 
     return (
-        <>
-            <div className="px-6 pb-6">
-                <h4 className="mb-2">Book a class</h4>
-                <h6>{header.name}</h6>
-                <hr className="my-4" />
-                <div className="flex flex-col gap-2">
-                    <Button
-                        icon={<FaUser />}
-                        onClick={() => handleSelectClassType('private')}
-                        block
-                    >
-                        Private
-                    </Button>
-                    <Button
-                        variant="solid"
-                        icon={<FaUserGroup />}
-                        onClick={() => handleSelectClassType('group')}
-                        block
-                    >
-                        Group
-                    </Button>
-                </div>
-
-                {classType === 'private' && (
-                    <div>
-                        <hr className="my-4" />
-                        <label className="font-bold">Trainer</label>
-                        <Select
-                            className="mt-2"
-                            placeholder="Select trainer"
-                            value={
-                                options.find(
-                                    (opt) => opt.value === trainerID,
-                                ) ?? null
-                            }
-                            options={options}
-                            onChange={(
-                                option: { label: string; value: number } | null,
-                            ) => setTrainer(option?.value ?? 0)}
-                        />
-                    </div>
-                )}
+        <div className="px-6 pb-6">
+            <h4 className="mb-2">Book a class</h4>
+            <h6>{header.name}</h6>
+            <hr className="my-4" />
+            <div className="flex flex-col gap-2">
+                <Button
+                    icon={<FaUser />}
+                    onClick={() => handleSelectClassType('private')}
+                    block
+                >
+                    Private
+                </Button>
+                <Button
+                    variant="solid"
+                    icon={<FaUserGroup />}
+                    onClick={() => handleSelectClassType('group')}
+                    block
+                >
+                    Group
+                </Button>
             </div>
-        </>
+
+            {classType === 'private' && (
+                <div>
+                    <hr className="my-4" />
+                    <label className="font-bold">Trainer</label>
+                    <Select
+                        className="mt-2"
+                        placeholder="Select trainer"
+                        value={
+                            options.find((opt) => opt.value === trainerID) ??
+                            null
+                        }
+                        options={options}
+                        onChange={(
+                            option: { label: string; value: number } | null,
+                        ) => setTrainer(option?.value ?? 0)}
+                    />
+                </div>
+            )}
+        </div>
     )
 }

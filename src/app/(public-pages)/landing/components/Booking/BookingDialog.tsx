@@ -13,8 +13,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { createBooking } from '@/utils/query/booking/queryFns'
-import Loading from '@/components/ui/Loading/Loading'
 import BookingConfirmation from './BookingConfirmation'
+import BookingSuccess from './BookingSuccess'
+import { useRouter } from 'next/navigation'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -39,6 +40,8 @@ export default function BookingDialog({
     isOpen,
     setIsOpenBookingDialog,
 }: BookingDialogProps) {
+    const router = useRouter()
+
     // headerStore
     const { headerID, incHeaderID, decHeaderID } = useHeaderStore()
 
@@ -126,7 +129,7 @@ export default function BookingDialog({
         }
     }
 
-    const { mutate, isPending, error, data } = useMutation({
+    const { mutate, isPending, error, isSuccess } = useMutation({
         mutationFn: (userData: UserDetailInputType) => {
             const payload = {
                 ...userData,
@@ -139,7 +142,6 @@ export default function BookingDialog({
             return createBooking(payload)
         },
         onSuccess: () => {
-            setIsOpenBookingDialog(false)
             clearClassType()
             clearTrainer()
             clearDate()
@@ -180,27 +182,43 @@ export default function BookingDialog({
             {headerID === 3 && (
                 <ClassUserDetail register={register} errors={errors} />
             )}
-            {headerID === 4 && <BookingConfirmation getUserData={getValues} />}
+            {headerID === 4 && !isSuccess && (
+                <BookingConfirmation getUserData={getValues} />
+            )}
+            {isSuccess && <BookingSuccess />}
 
-            <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
-                <Button
-                    className="ltr:mr-2 rtl:ml-2"
-                    onClick={() => handlePreviousButton()}
-                >
-                    {headerID === 1 ? 'Cancel' : 'Previous'}
-                </Button>
-                <Button
-                    variant="solid"
-                    disabled={handleDisableNextButton()}
-                    loading={isPending}
-                    type={headerID === 4 ? 'submit' : 'button'}
-                    onClick={
-                        headerID === 4 ? handleSubmit(onSubmit) : incHeaderID
-                    }
-                >
-                    {headerID === 4 ? 'Submit' : 'Next'}
-                </Button>
-            </div>
+            {isSuccess ? (
+                <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        onClick={() => window.location.reload()}
+                    >
+                        Back to home
+                    </Button>
+                </div>
+            ) : (
+                <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        onClick={() => handlePreviousButton()}
+                    >
+                        {headerID === 1 ? 'Cancel' : 'Previous'}
+                    </Button>
+                    <Button
+                        variant="solid"
+                        disabled={handleDisableNextButton()}
+                        loading={isPending}
+                        type={headerID === 4 ? 'submit' : 'button'}
+                        onClick={
+                            headerID === 4
+                                ? handleSubmit(onSubmit)
+                                : incHeaderID
+                        }
+                    >
+                        {headerID === 4 ? 'Submit' : 'Next'}
+                    </Button>
+                </div>
+            )}
         </Dialog>
     )
 }
