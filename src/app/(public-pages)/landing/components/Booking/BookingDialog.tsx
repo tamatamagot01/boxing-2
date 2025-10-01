@@ -147,21 +147,21 @@ export default function BookingDialog({
         },
         onSuccess: (data) => {
             const bookingDetails = {
-                bookingID: data.bookingID,
+                bookingID: data.booking.bookingID,
                 customer: {
-                    first_name: data.user.first_name,
-                    last_name: data.user.last_name,
+                    first_name: data.booking.user.first_name,
+                    last_name: data.booking.user.last_name,
                 },
-                trainer: data.trainer
+                trainer: data.booking.trainer
                     ? {
-                          first_name: data.trainer.first_name,
-                          last_name: data.trainer.last_name,
+                          first_name: data.booking.trainer.first_name,
+                          last_name: data.booking.trainer.last_name,
                       }
                     : null,
-                classType: data.classType,
-                date: data.bookingDate,
-                time: data.time.time,
-                participant: data.participant,
+                classType: data.booking.classType,
+                date: data.booking.bookingDate,
+                time: data.booking.time.time,
+                participant: data.booking.participant,
             }
 
             sendMail(bookingDetails)
