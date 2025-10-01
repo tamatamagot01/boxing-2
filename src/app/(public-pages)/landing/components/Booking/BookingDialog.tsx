@@ -190,7 +190,7 @@ export default function BookingDialog({
             {isSuccess ? (
                 <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                     <Button
-                        className="ltr:mr-2 rtl:ml-2"
+                        className="w-full"
                         onClick={() => window.location.reload()}
                     >
                         Back to home

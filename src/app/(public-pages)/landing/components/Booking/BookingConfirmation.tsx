@@ -51,7 +51,7 @@ export default function BookingConfirmation({
             <hr className="my-4" />
 
             <div className="mb-4">
-                <h5 className="text-lg font-bold text-gray-700 mb-3 border-b pb-1">
+                <h5 className="text-lg font-bold mb-3 border-b pb-1 text-success">
                     Your Information
                 </h5>
 
@@ -64,7 +64,7 @@ export default function BookingConfirmation({
                     <DetailRow title="Phone" value={userData.phone} />
                 </div>
 
-                <h5 className="text-lg font-bold text-gray-700 my-3 border-b pb-1">
+                <h5 className="text-lg font-bold my-3 border-b pb-1 text-success">
                     Class Details
                 </h5>
 
