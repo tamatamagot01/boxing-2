@@ -44,6 +44,12 @@ export default function BookingConfirmation({
         )
     }
 
+    function capitalizeString(str: string): string {
+        if (!str) return ''
+
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    }
+
     return (
         <div className="px-6 max-w-lg mx-auto">
             <h4 className="mb-2">Book a class</h4>
@@ -58,7 +64,7 @@ export default function BookingConfirmation({
                 <div className="space-y-1">
                     <DetailRow
                         title="Full Name"
-                        value={`${userData.first_name} ${userData.last_name}`}
+                        value={`${capitalizeString(userData.first_name)} ${capitalizeString(userData.last_name)}`}
                     />
                     <DetailRow title="Email" value={userData.email} />
                     <DetailRow title="Phone" value={userData.phone} />
@@ -69,7 +75,10 @@ export default function BookingConfirmation({
                 </h5>
 
                 <div className="space-y-1">
-                    <DetailRow title="Class Type" value={classType ?? 'N/A'} />
+                    <DetailRow
+                        title="Class Type"
+                        value={capitalizeString(classType!) ?? 'N/A'}
+                    />
                     <DetailRow
                         title="Time & Date"
                         value={`${date} @ ${data.time.time}`}
@@ -77,7 +86,7 @@ export default function BookingConfirmation({
                     <DetailRow title="Participants" value={participant} />
                     <DetailRow
                         title="Instructor"
-                        value={`${data.trainer?.first_name ?? 'Unassigned'} ${data.trainer?.last_name ?? ''}`}
+                        value={`${capitalizeString(data.trainer?.first_name) ?? 'Unassigned'} ${capitalizeString(data.trainer?.last_name) ?? ''}`}
                     />
                 </div>
             </div>

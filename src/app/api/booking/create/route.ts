@@ -72,6 +72,17 @@ export async function POST(req: Request) {
                     bookingID,
                     createdBy: customer!.id,
                 },
+                include: {
+                    time: {
+                        select: { time: true },
+                    },
+                    trainer: {
+                        select: { first_name: true, last_name: true },
+                    },
+                    user: {
+                        select: { first_name: true, last_name: true },
+                    },
+                },
             })
 
             return newBooking

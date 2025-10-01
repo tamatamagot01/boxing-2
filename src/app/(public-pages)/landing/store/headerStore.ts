@@ -9,12 +9,14 @@ export const headerLists = [
 
 type HeaderStore = {
     headerID: number
+    resetHeaderID: () => void
     incHeaderID: () => void
     decHeaderID: () => void
 }
 
 export const useHeaderStore = create<HeaderStore>()((set) => ({
     headerID: 1,
+    resetHeaderID: () => set({ headerID: 1 }),
     incHeaderID: () => set((state) => ({ headerID: state.headerID + 1 })),
     decHeaderID: () => set((state) => ({ headerID: state.headerID - 1 })),
 }))

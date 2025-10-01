@@ -16,6 +16,7 @@ import { createBooking } from '@/utils/query/booking/queryFns'
 import BookingConfirmation from './BookingConfirmation'
 import BookingSuccess from './BookingSuccess'
 import { useRouter } from 'next/navigation'
+import { sendMail } from '../../utils/sendMail'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -43,7 +44,8 @@ export default function BookingDialog({
     const router = useRouter()
 
     // headerStore
-    const { headerID, incHeaderID, decHeaderID } = useHeaderStore()
+    const { headerID, resetHeaderID, incHeaderID, decHeaderID } =
+        useHeaderStore()
 
     // bookingStore
     const { classType, trainerID, clearClassType, clearTrainer } =
@@ -73,6 +75,7 @@ export default function BookingDialog({
     // logic
     const handleCloseDialog = () => {
         setIsOpenBookingDialog(false)
+        resetHeaderID()
         clearClassType()
         clearTrainer()
         clearDate()
@@ -84,6 +87,7 @@ export default function BookingDialog({
     const handlePreviousButton = () => {
         if (headerID === 1) {
             setIsOpenBookingDialog(false)
+            resetHeaderID()
             clearClassType()
             clearTrainer()
         }
@@ -141,7 +145,26 @@ export default function BookingDialog({
             }
             return createBooking(payload)
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            const bookingDetails = {
+                bookingID: data.bookingID,
+                customer: {
+                    first_name: data.user.first_name,
+                    last_name: data.user.last_name,
+                },
+                trainer: data.trainer
+                    ? {
+                          first_name: data.trainer.first_name,
+                          last_name: data.trainer.last_name,
+                      }
+                    : null,
+                classType: data.classType,
+                date: data.bookingDate,
+                time: data.time.time,
+                participant: data.participant,
+            }
+
+            sendMail(bookingDetails)
             clearClassType()
             clearTrainer()
             clearDate()
