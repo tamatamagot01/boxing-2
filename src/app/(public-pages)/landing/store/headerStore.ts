@@ -4,6 +4,7 @@ export const headerLists = [
     { id: 1, name: 'Choose the class type' },
     { id: 2, name: 'Select time and number of participants' },
     { id: 3, name: 'Fill your details' },
+    { id: 4, name: 'Confirm your booking details' },
 ]
 
 type HeaderStore = {

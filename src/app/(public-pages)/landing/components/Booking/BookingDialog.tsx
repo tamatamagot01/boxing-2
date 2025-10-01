@@ -13,6 +13,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { createBooking } from '@/utils/query/booking/queryFns'
+import Loading from '@/components/ui/Loading/Loading'
+import BookingConfirmation from './BookingConfirmation'
 
 type BookingDialogProps = {
     isOpen: boolean
@@ -53,6 +55,7 @@ export default function BookingDialog({
         handleSubmit,
         watch,
         reset,
+        getValues,
     } = useForm<UserDetailInputType>({
         resolver: zodResolver(userDetailSchema),
         mode: 'onSubmit',
@@ -72,6 +75,7 @@ export default function BookingDialog({
         clearDate()
         clearTime()
         clearParticipant()
+        reset()
     }
 
     const handlePreviousButton = () => {
@@ -88,9 +92,8 @@ export default function BookingDialog({
             clearParticipant()
         }
 
-        if (headerID === 3) {
+        if (headerID === 3 || headerID === 4) {
             decHeaderID()
-            reset()
         }
     }
 
@@ -149,6 +152,13 @@ export default function BookingDialog({
         },
     })
 
+    if (error) {
+        return (
+            'An error has occurred: ' +
+            ((error as any).response?.data?.error || (error as Error).message)
+        )
+    }
+
     const onSubmit = (userData: UserDetailInputType) => {
         mutate(userData)
     }
@@ -156,7 +166,7 @@ export default function BookingDialog({
     return (
         <Dialog
             isOpen={isOpen}
-            width={headerID === 3 ? 500 : 375}
+            width={headerID === 3 || headerID === 4 ? 500 : 375}
             style={{
                 content: {
                     marginTop: headerID === 1 ? 200 : 0,
@@ -170,6 +180,7 @@ export default function BookingDialog({
             {headerID === 3 && (
                 <ClassUserDetail register={register} errors={errors} />
             )}
+            {headerID === 4 && <BookingConfirmation getUserData={getValues} />}
 
             <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                 <Button
@@ -181,12 +192,13 @@ export default function BookingDialog({
                 <Button
                     variant="solid"
                     disabled={handleDisableNextButton()}
-                    type={headerID === 3 ? 'submit' : 'button'}
+                    loading={isPending}
+                    type={headerID === 4 ? 'submit' : 'button'}
                     onClick={
-                        headerID === 3 ? handleSubmit(onSubmit) : incHeaderID
+                        headerID === 4 ? handleSubmit(onSubmit) : incHeaderID
                     }
                 >
-                    {headerID === 3 ? 'Submit' : 'Next'}
+                    {headerID === 4 ? 'Submit' : 'Next'}
                 </Button>
             </div>
         </Dialog>

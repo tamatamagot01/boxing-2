@@ -19,7 +19,6 @@ export async function POST(req: Request) {
         participant,
     } = payload
 
-    console.log(1234, date)
     const generateBookingID = customAlphabet(
         'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
         6,
