@@ -5,8 +5,11 @@ import NavigationBar from './NavigationBar'
 import LandingFooter from './LandingFooter'
 import useTheme from '@/utils/hooks/useTheme'
 import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
+import { useState } from 'react'
 
 const Landing = () => {
+    const [isOpenBookingDialog, setIsOpenBookingDialog] = useState(false)
+
     const mode = useTheme((state) => state.mode)
     const setMode = useTheme((state) => state.setMode)
 
@@ -14,9 +17,15 @@ const Landing = () => {
         setMode(mode === MODE_LIGHT ? MODE_DARK : MODE_LIGHT)
     }
 
+    const handleOpenBookingDialog = () => {
+        setIsOpenBookingDialog(!isOpenBookingDialog)
+    }
+
     return (
         <main className="px-4 lg:px-0 text-base bg-white dark:bg-gray-900">
-            <NavigationBar toggleMode={toggleMode} mode={mode} />
+            {!isOpenBookingDialog && (
+                <NavigationBar toggleMode={toggleMode} mode={mode} />
+            )}
             <div className="relative">
                 <div
                     style={{
@@ -24,7 +33,12 @@ const Landing = () => {
                     }}
                     className="absolute inset-0 [mask-image:linear-gradient(to_bottom,white_5%,transparent_70%)] pointer-events-none select-none"
                 ></div>
-                <HeroContent mode={mode} />
+                <HeroContent
+                    mode={mode}
+                    isOpenBookingDialog={isOpenBookingDialog}
+                    setIsOpenBookingDialog={setIsOpenBookingDialog}
+                    handleOpenBookingDialog={handleOpenBookingDialog}
+                />
             </div>
 
             <LandingFooter mode={mode} />

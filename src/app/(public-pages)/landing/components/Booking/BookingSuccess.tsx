@@ -1,14 +1,22 @@
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import React from 'react'
 
-export default function BookingSuccess() {
+type BookingSuccessType = {
+    bookingID: string
+    customerEmail: string
+}
+
+export default function BookingSuccess({
+    bookingID,
+    customerEmail,
+}: BookingSuccessType) {
     return (
         <div className="px-6 pb-6">
             <h4 className="mb-2 text-center">Booking Successful</h4>
             <hr className="my-4" />
 
             <h5 className="font-bold text-gray-700 text-center">
-                Booking ID : <span className="text-success">#A12B4</span>
+                Booking ID : <span className="text-success">#{bookingID}</span>
             </h5>
 
             <div className="flex justify-center items-center my-5">
@@ -27,7 +35,11 @@ export default function BookingSuccess() {
             <div className="flex justify-center items-center text-center my-3">
                 <p className="text-wrap w-3/4">
                     Thanks for scheduling! We can't wait to see you smash your
-                    workout. Your confirmation email is on its way!
+                    workout. Your confirmation email is on its way to:
+                    <br />
+                    <span className="font-semibold text-blue-600">
+                        {customerEmail}
+                    </span>
                 </p>
             </div>
         </div>

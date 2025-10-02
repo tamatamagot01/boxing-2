@@ -1,9 +1,10 @@
 'use server'
+import { capitalizeString } from '@/utils/capitalizeString'
 import nodemailer from 'nodemailer'
 
 type BookignDetailType = {
     bookingID: string
-    customer: { first_name: string; last_name: string }
+    customer: { first_name: string; last_name: string; email: string }
     trainer: { first_name: string; last_name: string } | null
     classType: string
     date: string
@@ -25,8 +26,8 @@ export async function sendMail(bookingDetails: BookignDetailType) {
 
         const info = await transporter.sendMail({
             from: '"Boxing Club Team" <boxingclub@gmail.com>',
-            to: 'itsaree.n9@gmail.com', // ควรเป็นอีเมลลูกค้า
-            subject: `🥊 Booking Confirmed: ${bookingDetails.classType} Class (ID: ${bookingDetails.bookingID})`,
+            to: `${bookingDetails.customer.email}`, // ควรเป็นอีเมลลูกค้า
+            subject: `🥊 Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
             html: htmlContent,
         })
 
@@ -39,9 +40,8 @@ export async function sendMail(bookingDetails: BookignDetailType) {
 }
 
 function generateBookingConfirmationHtml(details: BookignDetailType): string {
-    const customerName = `${details.customer.first_name} ${details.customer.last_name}`
     const trainerName = details.trainer
-        ? `${details.trainer.first_name} ${details.trainer.last_name}`
+        ? `${capitalizeString(details.trainer.first_name)} ${capitalizeString(details.trainer.last_name)}`
         : 'N/A' // หรือข้อความอื่นที่เหมาะสมถ้าไม่มีเทรนเนอร์
 
     // กำหนดสีและรูปแบบหลัก
@@ -97,13 +97,13 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 30px 20px 20px; background-color: #ffffff;">
                 <h2 style="color: ${secondaryColor}; font-family: ${font}; font-size: 24px; margin-bottom: 20px;">
-                    การจองของคุณได้รับการยืนยันแล้ว!
+                    Your booking has been confirmed!
                 </h2>
                 <p style="color: ${secondaryColor}; font-family: ${font}; font-size: 16px; line-height: 1.5;">
-                    สวัสดีคุณ ${details.customer.first_name},
+                    Hello ${capitalizeString(details.customer.first_name)},
                 </p>
                 <p style="color: ${secondaryColor}; font-family: ${font}; font-size: 16px; line-height: 1.5; margin-top: 15px;">
-                    ขอบคุณที่จองคลาสกับเรา รายละเอียดการจองของคุณมีดังนี้:
+                    Thank you for booking a class with us. The details of your booking are as follows:
                 </p>
             </td>
         </tr>
@@ -115,32 +115,32 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
                     <tr>
                         <td colspan="2" style="background-color: ${primaryColor}; padding: 10px 15px;">
                             <p style="color: #ffffff; font-family: ${font}; font-size: 16px; font-weight: bold;">
-                                ID การจอง: ${details.bookingID}
+                                Booking ID: ${details.bookingID}
                             </p>
                         </td>
                     </tr>
 
                     <tr>
                         <td width="30%" style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
-                            ประเภทคลาส:
+                            Class Type:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${primaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
-                            ${details.classType}
+                            ${capitalizeString(details.classType)}
                         </td>
                     </tr>
 
                     <tr>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee;">
-                            วัน/เวลา:
+                            Date/Time:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; border-bottom: 1px solid #eeeeee;">
-                            ${details.date} เวลา ${details.time}
+                            ${details.date} / ${details.time}
                         </td>
                     </tr>
 
-                    <tr>
+                    <tr style="${!details.trainer && 'display: none'}">
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee;">
-                            เทรนเนอร์:
+                            Trainer:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; border-bottom: 1px solid #eeeeee;">
                             ${trainerName}
@@ -149,10 +149,10 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
 
                     <tr>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold;">
-                            จำนวนผู้เข้าร่วม:
+                            Participants:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor};">
-                            ${details.participant} ท่าน
+                            ${details.participant} 
                         </td>
                     </tr>
                 </table>
@@ -162,10 +162,10 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px 20px 40px; background-color: #ffffff;">
                 <p style="color: ${secondaryColor}; font-family: ${font}; font-size: 15px; margin-bottom: 25px;">
-                    หากคุณต้องการยกเลิกหรือเปลี่ยนแปลงการจอง กรุณาติดต่อเราโดยเร็วที่สุด
+                    If you need to cancel or change your booking, please contact us as soon as possible.
                 </p>
                 <a href="[LINK_TO_YOUR_WEBSITE/BOOKING_PAGE]" class="button" style="display: inline-block; padding: 12px 25px; font-size: 16px; font-weight: bold; color: #ffffff !important; background-color: ${primaryColor}; border-radius: 5px; text-decoration: none;">
-                    จัดการการจอง
+                    Manage Booking
                 </a>
             </td>
         </tr>
@@ -173,7 +173,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px; background-color: ${secondaryColor};">
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px;">
-                    Boxing Club Team | [เบอร์โทรศัพท์ของคุณ] | [ที่อยู่ของคุณ]
+                    Boxing Club Team | 090-3210596 | 123 Victory Lane, Unit 4B, Bang Rak, Bangkok 10500
                 </p>
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px; margin-top: 5px;">
                     © ${new Date().getFullYear()} All rights reserved.

@@ -17,7 +17,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
     }
 
     return (
-        <div id="footer" className="relative z-20">
+        <div id="contact" className="relative z-20">
             <Container className="relative">
                 <div className="py-10 md:py-40">
                     <AuroraBackground

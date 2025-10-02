@@ -15,7 +15,6 @@ import { useMutation } from '@tanstack/react-query'
 import { createBooking } from '@/utils/query/booking/queryFns'
 import BookingConfirmation from './BookingConfirmation'
 import BookingSuccess from './BookingSuccess'
-import { useRouter } from 'next/navigation'
 import { sendMail } from '../../utils/sendMail'
 
 type BookingDialogProps = {
@@ -41,8 +40,6 @@ export default function BookingDialog({
     isOpen,
     setIsOpenBookingDialog,
 }: BookingDialogProps) {
-    const router = useRouter()
-
     // headerStore
     const { headerID, resetHeaderID, incHeaderID, decHeaderID } =
         useHeaderStore()
@@ -133,7 +130,7 @@ export default function BookingDialog({
         }
     }
 
-    const { mutate, isPending, error, isSuccess } = useMutation({
+    const { mutate, isPending, error, isSuccess, data } = useMutation({
         mutationFn: (userData: UserDetailInputType) => {
             const payload = {
                 ...userData,
@@ -151,6 +148,7 @@ export default function BookingDialog({
                 customer: {
                     first_name: data.booking.user.first_name,
                     last_name: data.booking.user.last_name,
+                    email: data.booking.user.email,
                 },
                 trainer: data.booking.trainer
                     ? {
@@ -194,7 +192,7 @@ export default function BookingDialog({
             width={headerID === 3 || headerID === 4 ? 500 : 375}
             style={{
                 content: {
-                    marginTop: headerID === 1 ? 200 : 0,
+                    marginTop: headerID === 1 ? 150 : 100,
                 },
             }}
             contentClassName="pb-0 px-0"
@@ -208,7 +206,12 @@ export default function BookingDialog({
             {headerID === 4 && !isSuccess && (
                 <BookingConfirmation getUserData={getValues} />
             )}
-            {isSuccess && <BookingSuccess />}
+            {isSuccess && (
+                <BookingSuccess
+                    bookingID={data.booking.bookingID}
+                    customerEmail={data.booking.user.email}
+                />
+            )}
 
             {isSuccess ? (
                 <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
@@ -231,7 +234,11 @@ export default function BookingDialog({
                         variant="solid"
                         disabled={handleDisableNextButton()}
                         loading={isPending}
-                        type={headerID === 4 ? 'submit' : 'button'}
+                        type={
+                            headerID === 3 || headerID === 4
+                                ? 'submit'
+                                : 'button'
+                        }
                         onClick={
                             headerID === 4
                                 ? handleSubmit(onSubmit)

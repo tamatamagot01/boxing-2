@@ -8,6 +8,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import Loading from '@/components/ui/Loading/Loading'
 import { getConfirmBookingDetail } from '@/utils/query/booking/queryFns'
+import { capitalizeString } from '@/utils/capitalizeString'
 
 type BookingConfirmationType = {
     getUserData: () => {
@@ -44,12 +45,6 @@ export default function BookingConfirmation({
         )
     }
 
-    function capitalizeString(str: string): string {
-        if (!str) return ''
-
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-    }
-
     return (
         <div className="px-6 max-w-lg mx-auto">
             <h4 className="mb-2">Book a class</h4>
@@ -84,10 +79,12 @@ export default function BookingConfirmation({
                         value={`${date} @ ${data.time.time}`}
                     />
                     <DetailRow title="Participants" value={participant} />
-                    <DetailRow
-                        title="Instructor"
-                        value={`${capitalizeString(data.trainer?.first_name) ?? 'Unassigned'} ${capitalizeString(data.trainer?.last_name) ?? ''}`}
-                    />
+                    {data.trainer && (
+                        <DetailRow
+                            title="Instructor"
+                            value={`${capitalizeString(data.trainer?.first_name) ?? 'Unassigned'} ${capitalizeString(data.trainer?.last_name) ?? ''}`}
+                        />
+                    )}
                 </div>
             </div>
         </div>

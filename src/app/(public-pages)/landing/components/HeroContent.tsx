@@ -7,15 +7,24 @@ import type { Mode } from '@/@types/theme'
 import BookingDialog from './Booking/BookingDialog'
 import { useState } from 'react'
 
-const HeroContent = ({ mode }: { mode: Mode }) => {
-    const [isOpenBookingDialog, setIsOpenBookingDialog] = useState(false)
+type HeroContentType = {
+    mode: Mode
+    isOpenBookingDialog: boolean
+    setIsOpenBookingDialog: (isOpen: boolean) => void
+    handleOpenBookingDialog: () => void
+}
 
-    const handleOpenBookingDialog = () => {
-        setIsOpenBookingDialog(!isOpenBookingDialog)
-    }
-
+const HeroContent = ({
+    mode,
+    isOpenBookingDialog,
+    setIsOpenBookingDialog,
+    handleOpenBookingDialog,
+}: HeroContentType) => {
     return (
-        <div className="max-w-7xl mx-auto px-4 flex min-h-screen flex-col items-center justify-between">
+        <div
+            className="max-w-7xl mx-auto px-4 flex min-h-screen flex-col items-center justify-between"
+            id="booking"
+        >
             <div className="flex flex-col min-h-screen pt-20 md:pt-40 relative overflow-hidden">
                 <div>
                     <TextGenerateEffect

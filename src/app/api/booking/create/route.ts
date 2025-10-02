@@ -80,7 +80,11 @@ export async function POST(req: Request) {
                         select: { first_name: true, last_name: true },
                     },
                     user: {
-                        select: { first_name: true, last_name: true },
+                        select: {
+                            first_name: true,
+                            last_name: true,
+                            email: true,
+                        },
                     },
                 },
             })
