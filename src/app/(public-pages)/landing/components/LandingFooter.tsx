@@ -53,7 +53,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                         <Link href="/">
                             {mode === MODE_LIGHT && (
                                 <img
-                                    src="/img/logo/logo-light-full.png"
+                                    src="/img/logo/logo-2.png"
                                     width={120}
                                     height={40}
                                     alt="logo"
@@ -61,7 +61,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                             )}
                             {mode === MODE_DARK && (
                                 <img
-                                    src="/img/logo/logo-dark-full.png"
+                                    src="/img/logo/logo-1.png"
                                     width={120}
                                     height={40}
                                     alt="logo"
