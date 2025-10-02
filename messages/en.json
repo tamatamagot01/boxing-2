@@ -16,6 +16,18 @@
             "chatDesc": "AI-powered chat systems",
             "imageDesc": "AI image processing"
         },
+        "conceptsTrainers": {
+            "trainers": "Trainer",
+            "trainerList": "List",
+            "trainerEdit": "Edit",
+            "trainerCreate": "Create",
+            "trainerDetails": "Details",
+            "trainersDesc": "Trainer management",
+            "trainerListDesc": "List of all trainers",
+            "trainerEditDesc": "Edit trainer info",
+            "trainerCreateDesc": "Add a new trainer",
+            "trainerDetailsDesc": "Detailed trainer info"
+        },
         "conceptsCustomers": {
             "customers": "Customer",
             "customerList": "List",

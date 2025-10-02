@@ -90,6 +90,7 @@ import {
     PiDotsThreeCircleDuotone,
     PiCircleHalfTiltDuotone,
     PiHouseLineDuotone,
+    PiUserSquare,
 } from 'react-icons/pi'
 
 import type { JSX } from 'react'
@@ -142,6 +143,7 @@ const navigationIcon: NavigationIcons = {
     uiGraphChart: <PiChartLineUpDuotone />,
     uiGraphMaps: <PiMapTrifoldDuotone />,
     concepts: <PiLightbulbDuotone />,
+    trainers: <PiUserSquare />,
     customers: <PiUsersDuotone />,
     customerList: <PiUserListDuotone />,
     customerEdit: <PiPencilSimpleLineDuotone />,

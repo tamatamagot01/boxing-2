@@ -24,12 +24,12 @@ const conceptsNavigationConfig: NavigationTree[] = [
         },
         subMenu: [
             {
-                key: 'concepts.customers',
-                path: '',
+                key: 'concepts.customers.customerList',
+                path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
                 title: 'Customers',
                 translateKey: 'nav.conceptsCustomers.customers',
                 icon: 'customers',
-                type: NAV_ITEM_TYPE_COLLAPSE,
+                type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
@@ -37,84 +37,31 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         label: 'Customer management',
                     },
                 },
-                subMenu: [
-                    {
-                        key: 'concepts.customers.customerList',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
-                        title: 'Customer List',
-                        translateKey: 'nav.conceptsCustomers.customerList',
-                        icon: 'customerList',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerListDesc',
-                                label: 'List of all customers',
-                            },
-                        },
-                        subMenu: [],
+                subMenu: [],
+            },
+            {
+                key: 'concepts.trainers',
+                path: `${CONCEPTS_PREFIX_PATH}/trainers/trainer-list`,
+                title: 'Trainers',
+                translateKey: 'nav.conceptsTrainers.trainers',
+                icon: 'trainers',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsTrainers.trainersDesc',
+                        label: 'Trainer management',
                     },
-                    {
-                        key: 'concepts.customers.customerEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/1`,
-                        title: 'Customer Edit',
-                        translateKey: 'nav.conceptsCustomers.customerEdit',
-                        icon: 'customerEdit',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerEditDesc',
-                                label: 'Edit customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
-                        title: 'Customer Create',
-                        translateKey: 'nav.conceptsCustomers.customerCreate',
-                        icon: 'customerCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerCreateDesc',
-                                label: 'Add a new customer',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
-                        title: 'Customer Details',
-                        translateKey: 'nav.conceptsCustomers.customerDetails',
-                        icon: 'customerDetails',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerDetailsDesc',
-                                label: 'Detailed customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                ],
+                },
+                subMenu: [],
             },
             {
                 key: 'concepts.orders',
-                path: '',
+                path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
                 title: 'Orders',
                 translateKey: 'nav.conceptsOrders.orders',
                 icon: 'orders',
-                type: NAV_ITEM_TYPE_COLLAPSE,
+                type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
@@ -122,76 +69,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         label: 'Customer orders management',
                     },
                 },
-                subMenu: [
-                    {
-                        key: 'concepts.orders.orderList',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
-                        title: 'Order List',
-                        translateKey: 'nav.conceptsOrders.orderList',
-                        icon: 'orderList',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsOrders.orderListDesc',
-                                label: 'View all customer orders',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.orders.orderEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-edit/95954`,
-                        title: 'Order Edit',
-                        translateKey: 'nav.conceptsOrders.orderEdit',
-                        icon: 'orderEdit',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsOrders.orderEditDesc',
-                                label: 'Edit order details',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.orders.orderCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-create`,
-                        title: 'Order Create',
-                        translateKey: 'nav.conceptsOrders.orderCreate',
-                        icon: 'orderCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsOrders.orderCreateDesc',
-                                label: 'Create new order',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.orders.orderDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-details/95954`,
-                        title: 'Order Details',
-                        translateKey: 'nav.conceptsOrders.orderDetails',
-                        icon: 'ordeDetails',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsOrders.orderDetailsDesc',
-                                label: 'Detailed order information',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                ],
+                subMenu: [],
             },
             {
                 key: 'concepts.account',
