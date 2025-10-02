@@ -5,6 +5,8 @@ import { onSignInWithCredentials } from '@/server/actions/auth/handleSignIn'
 import handleOauthSignIn from '@/server/actions/auth/handleOauthSignIn'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useSearchParams } from 'next/navigation'
+import Simple from '@/components/layouts/AuthLayout/Simple'
+
 import type {
     OnSignInPayload,
     OnOauthSignInPayload,

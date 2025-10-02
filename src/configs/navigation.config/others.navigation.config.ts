@@ -16,22 +16,6 @@ const othersNavigationConfig: NavigationTree[] = [
         authority: [ADMIN, USER],
         subMenu: [
             {
-                key: 'others.accessDenied',
-                path: `/access-denied`,
-                title: 'Access Denied',
-                translateKey: 'nav.others.accessDenied',
-                icon: 'accessDenied',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.others.accessDeniedDesc',
-                        label: 'Access denied page',
-                    },
-                },
-                subMenu: [],
-            },
-            {
                 key: 'others.landing',
                 path: `/landing`,
                 title: 'Landing',
