@@ -12,10 +12,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
-import { createBooking } from '@/utils/query/booking/queryFns'
 import BookingConfirmation from './BookingConfirmation'
 import BookingSuccess from './BookingSuccess'
 import { sendMail } from '../../utils/sendMail'
+import { createBooking } from '../../service/booking/queryFns'
 
 type BookingDialogProps = {
     isOpen: boolean

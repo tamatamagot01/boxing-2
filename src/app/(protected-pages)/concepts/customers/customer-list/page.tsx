@@ -7,10 +7,28 @@ import CustomersListTableTools from './_components/CustomersListTableTools'
 import CustomerListSelected from './_components/CustomerListSelected'
 import getCustomers from '@/server/actions/getCustomers'
 import type { PageProps } from '@/@types/common'
+import { useQuery } from '@tanstack/react-query'
+// import { getCustomers } from '../service/customer/queryFns'
+import Loading from '@/components/ui/Loading/Loading'
 
 export default async function Page({ searchParams }: PageProps) {
     const params = await searchParams
+
     const data = await getCustomers(params)
+
+    // const { isPending, error, data } = useQuery({
+    //     queryKey: ['trainers'],
+    //     queryFn: getCustomers,
+    // })
+
+    // if (isPending) return <Loading />
+
+    // if (error) {
+    //     return (
+    //         'An error has occurred: ' +
+    //         ((error as any).response?.data?.error || (error as Error).message)
+    //     )
+    // }
 
     return (
         <CustomerListProvider customerList={data.list}>

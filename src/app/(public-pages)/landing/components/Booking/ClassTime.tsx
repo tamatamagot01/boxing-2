@@ -3,10 +3,10 @@ import { useClassDateStore, useClassTypeStore } from '../../store/clientStore'
 import { headerLists } from '../../store/headerStore'
 import { useQuery } from '@tanstack/react-query'
 import ClassParticipant from './ClassParticipant'
-import { getClassTime } from '@/utils/query/time/queryFns'
 import { TimeListType } from '@/@types/common'
 import dayjs from 'dayjs'
 import Loading from '@/components/ui/Loading/Loading'
+import { getClassTime } from '../../service/time/queryFns'
 
 type TimeOption = {
     label: string

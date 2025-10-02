@@ -7,8 +7,8 @@ import {
 } from '../../store/clientStore'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '@/components/ui/Loading/Loading'
-import { getConfirmBookingDetail } from '@/utils/query/booking/queryFns'
 import { capitalizeString } from '@/utils/capitalizeString'
+import { getConfirmBookingDetail } from '../../service/booking/queryFns'
 
 type BookingConfirmationType = {
     getUserData: () => {

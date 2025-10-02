@@ -7,9 +7,9 @@ import {
     useClassTypeStore,
 } from '../../store/clientStore'
 import { useQuery } from '@tanstack/react-query'
-import { getThisDayCustomer } from '@/utils/query/booking/queryFns'
 import Loading from '@/components/ui/Loading/Loading'
 import { useEffect } from 'react'
+import { getThisDayCustomer } from '../../service/booking/queryFns'
 
 export default function ClassParticipant({}) {
     const { classType, trainerID } = useClassTypeStore()

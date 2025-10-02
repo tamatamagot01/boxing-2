@@ -5,8 +5,8 @@ import { useClassTypeStore } from '../../store/clientStore'
 import { headerLists } from '../../store/headerStore'
 import { useQuery } from '@tanstack/react-query'
 import { UserType } from '@/@types/common'
-import { getTrainers } from '@/utils/query/trainer/queryFns'
 import Loading from '@/components/ui/Loading/Loading'
+import { getTrainers } from '../../service/trainer/queryFns'
 
 type TrainerOption = {
     label: string
