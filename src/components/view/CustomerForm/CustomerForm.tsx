@@ -5,9 +5,6 @@ import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
-import AddressSection from './AddressSection'
-import TagsSection from './TagsSection'
-import ProfileImageSection from './ProfileImageSection'
 import AccountSection from './AccountSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,16 +27,7 @@ const validationSchema: ZodType<CustomerFormSchema> = z.object({
         .string()
         .min(1, { message: 'Email required' })
         .email({ message: 'Invalid email' }),
-    dialCode: z.string().min(1, { message: 'Please select your country code' }),
-    phoneNumber: z
-        .string()
-        .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
-    img: z.string(),
-    tags: z.array(z.object({ value: z.string(), label: z.string() })),
+    phone: z.string().regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
 })
 
 const CustomerForm = (props: CustomerFormProps) => {
@@ -87,14 +75,8 @@ const CustomerForm = (props: CustomerFormProps) => {
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="gap-4 flex flex-col flex-auto">
                         <OverviewSection control={control} errors={errors} />
-                        <AddressSection control={control} errors={errors} />
                     </div>
                     <div className="md:w-[370px] gap-4 flex flex-col">
-                        <ProfileImageSection
-                            control={control}
-                            errors={errors}
-                        />
-                        <TagsSection control={control} errors={errors} />
                         {!newCustomer && (
                             <AccountSection control={control} errors={errors} />
                         )}

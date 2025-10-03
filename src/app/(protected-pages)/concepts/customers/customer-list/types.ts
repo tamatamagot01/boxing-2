@@ -51,11 +51,11 @@ export type Filter = {
 
 export type Customer = {
     id: string
-    name: string
-    firstName: string
-    lastName: string
+    first_name: string
+    last_name: string
     email: string
-    img: string
+    phone: string
+    img?: string
     role: string
     lastOnline: number
     status: string

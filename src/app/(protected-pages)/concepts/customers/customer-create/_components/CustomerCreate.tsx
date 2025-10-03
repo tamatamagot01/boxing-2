@@ -11,7 +11,7 @@ import { TbTrash } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { CustomerFormSchema } from '@/components/view/CustomerForm'
 
-const CustomerEdit = () => {
+const CustomerCreate = () => {
     const router = useRouter()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
@@ -33,7 +33,7 @@ const CustomerEdit = () => {
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(true)
         toast.push(
-            <Notification type="success">Customer discardd!</Notification>,
+            <Notification type="success">Customer discard!</Notification>,
             { placement: 'top-center' },
         )
         router.push('/concepts/customers/customer-list')
@@ -110,4 +110,4 @@ const CustomerEdit = () => {
     )
 }
 
-export default CustomerEdit
+export default CustomerCreate

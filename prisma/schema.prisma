@@ -28,6 +28,7 @@ model User {
   password      String?
   is_backOffice Boolean  @default(false)
   is_trainer    Boolean  @default(false)
+  img           String?
   resetPassword Boolean  @default(true)
   createdAt     DateTime @default(now())
   createdBy     Int?

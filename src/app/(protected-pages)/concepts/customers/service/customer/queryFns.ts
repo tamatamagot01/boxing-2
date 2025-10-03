@@ -1,4 +1,4 @@
-import { BookingType } from '@/@types/common'
+import { BookingType, UserType } from '@/@types/common'
 import axiosClient from '@/services/axiosClient'
 
 export const getCustomers = async () => {
@@ -16,8 +16,8 @@ export const getConfirmBookingDetail = async (
     return res.data
 }
 
-export const createBooking = async (payload: BookingType) => {
-    const res = await axiosClient.post('/booking/create', {
+export const createCustomer = async (payload: UserType) => {
+    const res = await axiosClient.post('/customer/create', {
         payload,
     })
     return res.data

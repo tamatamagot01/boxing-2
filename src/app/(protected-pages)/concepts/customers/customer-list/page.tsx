@@ -1,3 +1,5 @@
+'use client'
+
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import CustomerListProvider from './_components/CustomerListProvider'
@@ -5,33 +7,36 @@ import CustomerListTable from './_components/CustomerListTable'
 import CustomerListActionTools from './_components/CustomerListActionTools'
 import CustomersListTableTools from './_components/CustomersListTableTools'
 import CustomerListSelected from './_components/CustomerListSelected'
-import getCustomers from '@/server/actions/getCustomers'
-import type { PageProps } from '@/@types/common'
 import { useQuery } from '@tanstack/react-query'
-// import { getCustomers } from '../service/customer/queryFns'
 import Loading from '@/components/ui/Loading/Loading'
+import { getCustomers } from '../service/customer/queryFns'
+import { useSearchParams } from 'next/navigation'
 
-export default async function Page({ searchParams }: PageProps) {
-    const params = await searchParams
+export default function Page() {
+    const searchParams = useSearchParams()
 
-    const data = await getCustomers(params)
+    const params = {
+        pageIndex: searchParams.get('pageIndex') || '1',
+        pageSize: searchParams.get('pageSize') || '10',
+    }
 
-    // const { isPending, error, data } = useQuery({
-    //     queryKey: ['trainers'],
-    //     queryFn: getCustomers,
-    // })
+    const { isPending, error, data } = useQuery({
+        queryKey: ['customers'],
+        queryFn: getCustomers,
+    })
+    console.log('🚀 ~ Page ~ data:', data)
 
-    // if (isPending) return <Loading />
+    if (isPending) return <Loading />
 
-    // if (error) {
-    //     return (
-    //         'An error has occurred: ' +
-    //         ((error as any).response?.data?.error || (error as Error).message)
-    //     )
-    // }
+    if (error) {
+        return (
+            'An error has occurred: ' +
+            ((error as any).response?.data?.error || (error as Error).message)
+        )
+    }
 
     return (
-        <CustomerListProvider customerList={data.list}>
+        <CustomerListProvider customerList={data.customers.customers}>
             <Container>
                 <AdaptiveCard>
                     <div className="flex flex-col gap-4">
@@ -41,7 +46,7 @@ export default async function Page({ searchParams }: PageProps) {
                         </div>
                         <CustomersListTableTools />
                         <CustomerListTable
-                            customerListTotal={data.total}
+                            customerListTotal={data.customers.count}
                             pageIndex={
                                 parseInt(params.pageIndex as string) || 1
                             }
