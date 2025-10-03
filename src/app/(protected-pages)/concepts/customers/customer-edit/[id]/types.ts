@@ -40,18 +40,13 @@ type Subscription = {
 }
 
 export type Customer = {
-    id: string
-    name: string
-    firstName: string
-    lastName: string
-    email: string
-    img: string
-    role: string
-    lastOnline: number
-    status: string
-    personalInfo: PersonalInfo
-    orderHistory: OrderHistory[]
-    paymentMethod: PaymentMethod[]
-    subscription: Subscription[]
-    totalSpending: number
+    customer: {
+        id: string
+        name: string
+        first_name: string
+        last_name: string
+        email: string
+        img: string
+        phone: string
+    }
 }

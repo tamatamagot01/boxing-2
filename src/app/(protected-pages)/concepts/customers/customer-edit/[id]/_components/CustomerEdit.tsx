@@ -18,6 +18,7 @@ type CustomerEditProps = {
 }
 
 const CustomerEdit = ({ data }: CustomerEditProps) => {
+    console.log('🚀 ~ CustomerEdit ~ data:', data)
     const router = useRouter()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
@@ -36,20 +37,14 @@ const CustomerEdit = ({ data }: CustomerEditProps) => {
 
     const getDefaultValues = () => {
         if (data) {
-            const { firstName, lastName, email, personalInfo, img } = data
+            const { first_name, last_name, email, phone, img } = data.customer
 
             return {
-                firstName,
-                lastName,
+                firstName: first_name,
+                lastName: last_name,
                 email,
                 img,
-                phoneNumber: personalInfo.phoneNumber,
-                dialCode: personalInfo.dialCode,
-                country: personalInfo.country,
-                address: personalInfo.address,
-                city: personalInfo.city,
-                postcode: personalInfo.postcode,
-                tags: [],
+                phone,
             }
         }
 
@@ -81,7 +76,6 @@ const CustomerEdit = ({ data }: CustomerEditProps) => {
         <>
             <CustomerForm
                 defaultValues={getDefaultValues() as CustomerFormSchema}
-                newCustomer={false}
                 onFormSubmit={handleFormSubmit}
             >
                 <Container>

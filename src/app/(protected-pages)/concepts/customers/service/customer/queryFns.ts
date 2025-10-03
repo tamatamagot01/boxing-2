@@ -6,13 +6,11 @@ export const getCustomers = async () => {
     return res.data
 }
 
-export const getConfirmBookingDetail = async (
-    trainerID: number,
-    bookingTimeID: number,
-) => {
-    const res = await axiosClient.get('/booking/get-confirm', {
-        params: { trainerID, bookingTimeID },
+export const getCustomer = async (customerID: number) => {
+    const res = await axiosClient.get('/customer/get-customer', {
+        params: { customerID },
     })
+
     return res.data
 }
 
@@ -20,7 +18,6 @@ export const createCustomer = async (payload: CustomerFormSchema) => {
     const res = await axiosClient.post('/customer/create', {
         payload,
     })
-    console.log('🚀 ~ createCustomer ~ res:', res)
 
     return res.data
 }
