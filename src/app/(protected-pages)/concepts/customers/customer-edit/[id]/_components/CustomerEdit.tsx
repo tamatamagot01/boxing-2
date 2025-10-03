@@ -12,27 +12,45 @@ import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { CustomerFormSchema } from '@/components/view/CustomerForm'
 import type { Customer } from '../types'
+import { useMutation } from '@tanstack/react-query'
+import { editCustomer } from '../../../service/customer/queryFns'
 
 type CustomerEditProps = {
     data: Customer
 }
 
 const CustomerEdit = ({ data }: CustomerEditProps) => {
-    console.log('🚀 ~ CustomerEdit ~ data:', data)
     const router = useRouter()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
-    const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: CustomerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(<Notification type="success">Changes Saved!</Notification>, {
-            placement: 'top-center',
-        })
-        router.push('/concepts/customers/customer-list')
+    const { mutate, isPending } = useMutation({
+        mutationFn: (userData: CustomerFormSchema) => {
+            const payload = { id: data.customer.id, ...userData }
+
+            return editCustomer(payload)
+        },
+        onSuccess: () => {
+            toast.push(
+                <Notification type="success">Changes Saved!</Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/customers/customer-list')
+        },
+        onError: (error: any) => {
+            console.error(error)
+            toast.push(
+                <Notification type="danger">
+                    {error.response.data.error}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/customers/customer-list')
+        },
+    })
+
+    const onSubmit = (userData: CustomerFormSchema) => {
+        mutate(userData)
     }
 
     const getDefaultValues = () => {
@@ -76,7 +94,7 @@ const CustomerEdit = ({ data }: CustomerEditProps) => {
         <>
             <CustomerForm
                 defaultValues={getDefaultValues() as CustomerFormSchema}
-                onFormSubmit={handleFormSubmit}
+                onFormSubmit={onSubmit}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
@@ -104,7 +122,7 @@ const CustomerEdit = ({ data }: CustomerEditProps) => {
                             <Button
                                 variant="solid"
                                 type="submit"
-                                loading={isSubmiting}
+                                loading={isPending}
                             >
                                 Save
                             </Button>

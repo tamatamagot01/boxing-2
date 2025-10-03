@@ -21,3 +21,11 @@ export const createCustomer = async (payload: CustomerFormSchema) => {
 
     return res.data
 }
+
+export const editCustomer = async (payload: CustomerFormSchema) => {
+    const res = await axiosClient.post('/customer/update', {
+        payload,
+    })
+
+    return res.data
+}

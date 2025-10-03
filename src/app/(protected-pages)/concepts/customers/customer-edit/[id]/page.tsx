@@ -10,7 +10,6 @@ import { getCustomer } from '../../service/customer/queryFns'
 
 export default function Page() {
     const param = useParams()
-    console.log('🚀 ~ Page ~ param:', param)
 
     const { isPending, error, data } = useQuery({
         queryKey: ['customer'],
