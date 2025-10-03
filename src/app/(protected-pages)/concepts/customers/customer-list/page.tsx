@@ -24,7 +24,6 @@ export default function Page() {
         queryKey: ['customers'],
         queryFn: getCustomers,
     })
-    console.log('🚀 ~ Page ~ data:', data)
 
     if (isPending) return <Loading />
 

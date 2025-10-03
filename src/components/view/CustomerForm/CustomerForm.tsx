@@ -5,7 +5,6 @@ import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
-import AccountSection from './AccountSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -17,7 +16,6 @@ import type { CustomerFormSchema } from './types'
 type CustomerFormProps = {
     onFormSubmit: (values: CustomerFormSchema) => void
     defaultValues?: CustomerFormSchema
-    newCustomer?: boolean
 } & CommonProps
 
 const validationSchema: ZodType<CustomerFormSchema> = z.object({
@@ -31,12 +29,7 @@ const validationSchema: ZodType<CustomerFormSchema> = z.object({
 })
 
 const CustomerForm = (props: CustomerFormProps) => {
-    const {
-        onFormSubmit,
-        defaultValues = {},
-        newCustomer = false,
-        children,
-    } = props
+    const { onFormSubmit, defaultValues = {}, children } = props
 
     const {
         handleSubmit,
@@ -45,10 +38,6 @@ const CustomerForm = (props: CustomerFormProps) => {
         control,
     } = useForm<CustomerFormSchema>({
         defaultValues: {
-            ...{
-                banAccount: false,
-                accountVerified: true,
-            },
             ...defaultValues,
         },
         resolver: zodResolver(validationSchema),
@@ -75,11 +64,6 @@ const CustomerForm = (props: CustomerFormProps) => {
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="gap-4 flex flex-col flex-auto">
                         <OverviewSection control={control} errors={errors} />
-                    </div>
-                    <div className="md:w-[370px] gap-4 flex flex-col">
-                        {!newCustomer && (
-                            <AccountSection control={control} errors={errors} />
-                        )}
                     </div>
                 </div>
             </Container>

@@ -6,28 +6,44 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import CustomerForm from '@/components/view/CustomerForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import sleep from '@/utils/sleep'
 import { TbTrash } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { CustomerFormSchema } from '@/components/view/CustomerForm'
+import { useMutation } from '@tanstack/react-query'
+import { createCustomer } from '../../service/customer/queryFns'
 
 const CustomerCreate = () => {
     const router = useRouter()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
-    const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: CustomerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(
-            <Notification type="success">Customer created!</Notification>,
-            { placement: 'top-center' },
-        )
-        router.push('/concepts/customers/customer-list')
+    const { mutate, isPending } = useMutation({
+        mutationFn: (userData: CustomerFormSchema) => {
+            const payload = userData
+            return createCustomer(payload)
+        },
+        onSuccess: () => {
+            toast.push(
+                <Notification type="success">Customer created!</Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/customers/customer-list')
+        },
+        onError: (error: any) => {
+            console.error(error)
+            toast.push(
+                <Notification type="danger">
+                    {error.response.data.error}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/customers/customer-list')
+        },
+    })
+
+    const onSubmit = (userData: CustomerFormSchema) => {
+        mutate(userData)
     }
 
     const handleConfirmDiscard = () => {
@@ -50,21 +66,13 @@ const CustomerCreate = () => {
     return (
         <>
             <CustomerForm
-                newCustomer
                 defaultValues={{
                     firstName: '',
                     lastName: '',
                     email: '',
-                    img: '',
-                    phoneNumber: '',
-                    dialCode: '',
-                    country: '',
-                    address: '',
-                    city: '',
-                    postcode: '',
-                    tags: [],
+                    phone: '',
                 }}
-                onFormSubmit={handleFormSubmit}
+                onFormSubmit={onSubmit}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
@@ -84,7 +92,7 @@ const CustomerCreate = () => {
                             <Button
                                 variant="solid"
                                 type="submit"
-                                loading={isSubmiting}
+                                loading={isPending}
                             >
                                 Create
                             </Button>

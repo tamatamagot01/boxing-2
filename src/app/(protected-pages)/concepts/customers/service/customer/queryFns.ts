@@ -1,4 +1,4 @@
-import { BookingType, UserType } from '@/@types/common'
+import { CustomerFormSchema } from '@/components/view/CustomerForm'
 import axiosClient from '@/services/axiosClient'
 
 export const getCustomers = async () => {
@@ -16,9 +16,11 @@ export const getConfirmBookingDetail = async (
     return res.data
 }
 
-export const createCustomer = async (payload: UserType) => {
+export const createCustomer = async (payload: CustomerFormSchema) => {
     const res = await axiosClient.post('/customer/create', {
         payload,
     })
+    console.log('🚀 ~ createCustomer ~ res:', res)
+
     return res.data
 }
