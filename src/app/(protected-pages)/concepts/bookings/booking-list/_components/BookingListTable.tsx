@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { TbPencil, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { Booking } from '../types'
-import { capitalizeString } from '@/utils/capitalizeString'
+import dayjs from 'dayjs'
 
 type BookingListTableProps = {
     bookingListTotal: number
@@ -18,15 +18,14 @@ type BookingListTableProps = {
     pageSize?: number
 }
 
-const NameColumn = ({ row }: { row: Booking }) => {
+const BookingIDColumn = ({ row }: { row: Booking }) => {
     return (
         <div className="flex items-center">
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                 href={`/concepts/bookings/booking-details/${row.id}`}
             >
-                {capitalizeString(row.first_name)}{' '}
-                {capitalizeString(row.last_name)}
+                #{row.bookingID}
             </Link>
         </div>
     )
@@ -89,20 +88,38 @@ const BookingListTable = ({
     const columns: ColumnDef<Booking>[] = useMemo(
         () => [
             {
-                header: 'Name',
-                accessorKey: 'name',
+                header: 'Booking ID',
+                accessorKey: 'bookingID',
                 cell: (props) => {
                     const row = props.row.original
-                    return <NameColumn row={row} />
+                    return <BookingIDColumn row={row} />
                 },
             },
             {
-                header: 'Email',
-                accessorKey: 'email',
+                header: 'Date',
+                accessorKey: 'bookingDate',
+                cell: (props) => {
+                    const row = props.row.original
+                    const formattedDate = dayjs(row.bookingDate).format(
+                        'DD/MM/YYYY',
+                    )
+
+                    return (
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold">
+                                {formattedDate}
+                            </span>
+                        </div>
+                    )
+                },
             },
             {
-                header: 'Phone',
-                accessorKey: 'phone',
+                header: 'Time',
+                accessorKey: 'time.time',
+            },
+            {
+                header: 'Participants',
+                accessorKey: 'participant',
             },
             {
                 header: '',

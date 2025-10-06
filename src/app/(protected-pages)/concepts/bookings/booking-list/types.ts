@@ -10,9 +10,8 @@ export type Filter = {
 
 export type Booking = {
     id: string
-    first_name: string
-    last_name: string
-    email: string
-    phone: string
-    img?: string
+    bookingID: string
+    bookingDate: string
+    time: { time: string }
+    participant: number
 }

@@ -24,13 +24,6 @@ const navigationList = [
         link: 'addressInformation',
         icon: <TbMapPin />,
     },
-    {
-        label: 'Payment',
-        description:
-            'Enter payment method and details to complete the transaction.',
-        link: 'payment',
-        icon: <TbCreditCard />,
-    },
 ]
 
 const Navigator = () => {

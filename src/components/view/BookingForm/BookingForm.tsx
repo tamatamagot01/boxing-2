@@ -2,73 +2,149 @@
 
 import { useEffect } from 'react'
 import { Form } from '@/components/ui/Form'
+import Affix from '@/components/shared/Affix'
+import Card from '@/components/ui/Card'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
-import OverviewSection from './OverviewSection'
+import { apiGetProductList } from '@/services/ProductService'
+import ProductSelectSection from './components/ProductSelectSection'
+import CustomerDetailSection from './components/CustomerDetailSection'
+import BookingDetailSection from './components/BookingDetailSection'
+import Navigator from './components/Navigator'
+import { useOrderFormStore } from './store/orderFormStore'
+import useLayoutGap from '@/utils/hooks/useLayoutGap'
+import useSWR from 'swr'
 import isEmpty from 'lodash/isEmpty'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import type { ZodType } from 'zod'
-import type { CommonProps } from '@/@types/common'
-import type { BookingFormSchema } from './types'
+import type { ReactNode } from 'react'
+import type {
+    GetProductListResponse,
+    BookingFormSchema,
+    SelectedProduct,
+    BaseOrderFormSchema,
+} from './types'
+import type { TableQueries, CommonProps } from '@/@types/common'
 
-type BookingFormProps = {
-    onFormSubmit: (values: BookingFormSchema) => void
+type OrderFormProps = {
+    children: ReactNode
+    onFormSubmit: (values: BaseOrderFormSchema) => void
     defaultValues?: BookingFormSchema
+    defaultProducts?: SelectedProduct[]
+    newOrder?: boolean
 } & CommonProps
 
-const validationSchema: ZodType<BookingFormSchema> = z.object({
+const validationSchema = z.object({
     firstName: z.string().min(1, { message: 'First name required' }),
     lastName: z.string().min(1, { message: 'Last name required' }),
     email: z
         .string()
         .min(1, { message: 'Email required' })
         .email({ message: 'Invalid email' }),
-    phone: z.string().regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
+    phone: z.string().min(1, { message: 'Please select your country code' }),
 })
 
-const BookingForm = (props: BookingFormProps) => {
-    const { onFormSubmit, defaultValues = {}, children } = props
+const BookingForm = (props: OrderFormProps) => {
+    const { onFormSubmit, children, defaultValues, defaultProducts } = props
+
+    const { setProductOption, setProductList, setSelectedProduct } =
+        useOrderFormStore()
+
+    const { getTopGapValue } = useLayoutGap()
+
+    useSWR(
+        [
+            '/api/products',
+            {
+                pageIndex: '1',
+                pageSize: '10',
+                query: '',
+            },
+        ],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, params]) =>
+            apiGetProductList<GetProductListResponse, TableQueries>(params),
+        {
+            revalidateOnFocus: false,
+            onSuccess: (resp) => {
+                const list = resp.list.map(
+                    ({ id: value, name: label, img, stock: quantity }) => ({
+                        label,
+                        value,
+                        img,
+                        quantity,
+                    }),
+                )
+                setProductList(resp.list)
+                setProductOption(list)
+            },
+        },
+    )
+
+    useEffect(() => {
+        if (defaultProducts) {
+            setSelectedProduct(defaultProducts)
+        }
+        if (!isEmpty(defaultValues)) {
+            reset(defaultValues)
+        }
+        return () => {
+            setSelectedProduct([])
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const onSubmit = (values: BaseOrderFormSchema) => {
+        onFormSubmit?.(values)
+    }
 
     const {
         handleSubmit,
         reset,
         formState: { errors },
         control,
-    } = useForm<BookingFormSchema>({
+    } = useForm<BaseOrderFormSchema>({
         defaultValues: {
-            ...defaultValues,
+            ...(defaultValues ? defaultValues : {}),
         },
         resolver: zodResolver(validationSchema),
     })
 
-    useEffect(() => {
-        if (!isEmpty(defaultValues)) {
-            reset(defaultValues)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(defaultValues)])
-
-    const onSubmit = (values: BookingFormSchema) => {
-        onFormSubmit?.(values)
-    }
-
     return (
-        <Form
-            className="flex w-full h-full"
-            containerClassName="flex flex-col w-full justify-between"
-            onSubmit={handleSubmit(onSubmit)}
-        >
-            <Container>
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="gap-4 flex flex-col flex-auto">
-                        <OverviewSection control={control} errors={errors} />
+        <div className="flex">
+            <Form
+                className="flex-1 flex flex-col overflow-hidden"
+                onSubmit={handleSubmit(onSubmit)}
+            >
+                <Container>
+                    <div className="flex gap-4">
+                        <div className="w-[360px] hidden lg:block">
+                            <Affix offset={getTopGapValue()}>
+                                <Card>
+                                    <Navigator />
+                                </Card>
+                            </Affix>
+                        </div>
+
+                        <div className="flex-1">
+                            <div className="flex flex-col gap-4">
+                                <ProductSelectSection />
+                                <CustomerDetailSection
+                                    control={control}
+                                    errors={errors}
+                                />
+                                <BookingDetailSection
+                                    control={control}
+                                    errors={errors}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </Container>
-            <BottomStickyBar>{children}</BottomStickyBar>
-        </Form>
+                </Container>
+                <BottomStickyBar>{children}</BottomStickyBar>
+            </Form>
+        </div>
     )
 }
 

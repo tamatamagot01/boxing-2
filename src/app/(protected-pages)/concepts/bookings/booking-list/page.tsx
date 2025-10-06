@@ -7,7 +7,7 @@ import BookingListTableTools from './_components/BookingListTableTools'
 import BookingListProvider from './_components/BookingListProvider'
 import BookingListTableFetcher from './_components/BookingListTableFetcher'
 
-export default async function Page() {
+export default function Page() {
     return (
         <BookingListProvider>
             <Container>
