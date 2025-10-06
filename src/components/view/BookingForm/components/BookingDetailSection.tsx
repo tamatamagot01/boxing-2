@@ -70,6 +70,27 @@ const BookingDetailSection = ({
                         )}
                     />
                 </FormItem>
+                <FormItem
+                    label="Participant"
+                    invalid={Boolean(errors.participant)}
+                    errorMessage={errors.participant?.message}
+                >
+                    <Controller
+                        name="participant"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="number"
+                                autoComplete="off"
+                                placeholder="Number of participants"
+                                {...field}
+                                onChange={(e) =>
+                                    field.onChange(Number(e.target.value))
+                                }
+                            />
+                        )}
+                    />
+                </FormItem>
             </div>
         </Card>
     )

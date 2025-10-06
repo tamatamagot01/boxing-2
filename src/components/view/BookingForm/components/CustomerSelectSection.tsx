@@ -18,7 +18,7 @@ import type { Product, ProductOption, SelectedProduct } from '../types'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-const ProductSelectSection = () => {
+const CustomerSelectSection = () => {
     const { productOption, productList, selectedProduct, setSelectedProduct } =
         useOrderFormStore()
 
@@ -95,7 +95,7 @@ const ProductSelectSection = () => {
     return (
         <>
             <Card id="selectProducts">
-                <h4 className="mb-6">Select products</h4>
+                <h4 className="mb-6">Select customers</h4>
                 <div className="flex items-center gap-2">
                     <AutoComplete<ProductOption>
                         data={productOption}
@@ -108,7 +108,7 @@ const ProductSelectSection = () => {
                             </div>
                         )}
                         suffix={<TbSearch className="text-lg" />}
-                        placeholder="Search product"
+                        placeholder="Search customer"
                         onInputChange={setInputValue}
                         onOptionSelected={handleOptionSelect}
                     />
@@ -117,13 +117,13 @@ const ProductSelectSection = () => {
                         variant="solid"
                         onClick={() => setProductsDialogOpen(true)}
                     >
-                        Browse products
+                        Browse customers
                     </Button>
                 </div>
                 <Table compact={smaller.sm} className="mt-6">
                     <THead>
                         <Tr>
-                            <Th className="w-[70%]">Product</Th>
+                            <Th className="w-[70%]">Customer</Th>
                             <Th>Price</Th>
                             <Th>Quantity</Th>
                         </Tr>
@@ -195,27 +195,12 @@ const ProductSelectSection = () => {
                         ) : (
                             <Tr>
                                 <Td className="text-center" colSpan={3}>
-                                    No product selected!
+                                    No customer selected!
                                 </Td>
                             </Tr>
                         )}
                     </TBody>
                 </Table>
-                <div className="mt-8 flex justify-end">
-                    <span className="text-base flex items-center gap-2">
-                        <span className="font-semibold">Total: </span>
-                        <span className="text-lg font-bold heading-text">
-                            <NumericFormat
-                                fixedDecimalScale
-                                prefix="$"
-                                displayType="text"
-                                value={total}
-                                decimalScale={2}
-                                thousandSeparator={true}
-                            />
-                        </span>
-                    </span>
-                </div>
             </Card>
             <Dialog
                 isOpen={productsDialogOpen}
@@ -290,4 +275,4 @@ const ProductSelectSection = () => {
     )
 }
 
-export default ProductSelectSection
+export default CustomerSelectSection

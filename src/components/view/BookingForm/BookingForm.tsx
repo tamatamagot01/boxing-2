@@ -7,7 +7,7 @@ import Card from '@/components/ui/Card'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import { apiGetProductList } from '@/services/ProductService'
-import ProductSelectSection from './components/ProductSelectSection'
+import CustomerSelectSection from './components/CustomerSelectSection'
 import CustomerDetailSection from './components/CustomerDetailSection'
 import BookingDetailSection from './components/BookingDetailSection'
 import Navigator from './components/Navigator'
@@ -47,6 +47,9 @@ const validationSchema = z.object({
     timeID: z.union([z.string(), z.number()]).refine((v) => v !== '', {
         message: 'Time is required',
     }),
+    participant: z
+        .number()
+        .min(1, { message: 'At least one participant required' }),
 })
 
 const BookingForm = (props: BookingFormProps) => {
@@ -59,7 +62,7 @@ const BookingForm = (props: BookingFormProps) => {
 
     useSWR(
         [
-            '/api/products',
+            '/api/customer/get-customers',
             {
                 pageIndex: '1',
                 pageSize: '10',
@@ -133,7 +136,7 @@ const BookingForm = (props: BookingFormProps) => {
 
                         <div className="flex-1">
                             <div className="flex flex-col gap-4">
-                                <ProductSelectSection />
+                                <CustomerSelectSection />
                                 <CustomerDetailSection
                                     control={control}
                                     errors={errors}
