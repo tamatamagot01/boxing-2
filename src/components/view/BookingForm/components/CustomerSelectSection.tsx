@@ -208,8 +208,8 @@ const CustomerSelectSection = () => {
                 onRequestClose={() => setProductsDialogOpen(false)}
             >
                 <div className="text-center mb-6">
-                    <h4 className="mb-1">All products</h4>
-                    <p>Add products to this order.</p>
+                    <h4 className="mb-1">All customers</h4>
+                    <p>Add customers to this order.</p>
                 </div>
                 <div className="mt-4">
                     <div className="mb-6">
