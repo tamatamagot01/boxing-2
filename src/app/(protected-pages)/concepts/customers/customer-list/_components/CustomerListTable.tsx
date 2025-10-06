@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { TbPencil, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Customer } from '../types'
+import { capitalizeString } from '@/utils/capitalizeString'
 
 type CustomerListTableProps = {
     customerListTotal: number
@@ -24,7 +25,8 @@ const NameColumn = ({ row }: { row: Customer }) => {
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                 href={`/concepts/customers/customer-details/${row.id}`}
             >
-                {row.first_name} {row.last_name}
+                {capitalizeString(row.first_name)}{' '}
+                {capitalizeString(row.last_name)}
             </Link>
         </div>
     )

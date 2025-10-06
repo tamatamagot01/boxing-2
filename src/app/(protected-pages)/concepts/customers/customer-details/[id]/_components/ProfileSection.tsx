@@ -11,6 +11,8 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { HiPencil, HiOutlineTrash } from 'react-icons/hi'
 import { useRouter } from 'next/navigation'
 import { CustomerDetailsProps } from './CustomerDetails'
+import { capitalizeString } from '@/utils/capitalizeString'
+import profileImage from '@/../public/img/avatars/thumb-1.jpg'
 
 type CustomerInfoFieldProps = {
     title?: string
@@ -68,9 +70,14 @@ const ProfileSection = ({ data }: CustomerDetailsProps) => {
             </div>
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="flex xl:flex-col items-center gap-4 mt-6">
-                    <Avatar size={90} shape="circle" src={data.img} />
+                    <Avatar
+                        size={90}
+                        shape="circle"
+                        src={data.img || profileImage.src}
+                    />
                     <h4 className="font-bold">
-                        {data.first_name} {data.last_name}
+                        {capitalizeString(data.first_name)}{' '}
+                        {capitalizeString(data.last_name)}
                     </h4>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-10">

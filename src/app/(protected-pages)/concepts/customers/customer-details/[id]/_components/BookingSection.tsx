@@ -13,6 +13,7 @@ import { NumericFormat } from 'react-number-format'
 import dayjs from 'dayjs'
 import { BookingDetailsProps } from './CustomerDetails'
 import Link from 'next/link'
+import { capitalizeString } from '@/utils/capitalizeString'
 
 const { Tr, Td, TBody } = Table
 
@@ -44,8 +45,21 @@ const columns = [
                     className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                     href={`/concepts/bookings/booking-details/${row.id}`}
                 >
-                    {row.bookingID}
+                    #{row.bookingID}
                 </Link>
+            )
+        },
+    }),
+    columnHelper.accessor('classType', {
+        header: 'Class Type',
+        cell: (props) => {
+            const row = props.row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="font-semibold">
+                        {capitalizeString(row.classType)}
+                    </span>
+                </div>
             )
         },
     }),
@@ -53,9 +67,11 @@ const columns = [
         header: 'Date',
         cell: (props) => {
             const row = props.row.original
+            const formattedDate = dayjs(row.bookingDate).format('DD/MM/YYYY')
+
             return (
                 <div className="flex items-center gap-2">
-                    <span className="font-semibold">{row.bookingDate}</span>
+                    <span className="font-semibold">{formattedDate}</span>
                 </div>
             )
         },
@@ -74,17 +90,6 @@ const columns = [
             )
         },
     }),
-    columnHelper.accessor('classType', {
-        header: 'Class Type',
-        cell: (props) => {
-            const row = props.row.original
-            return (
-                <div className="flex items-center gap-2">
-                    <span className="font-semibold">{row.classType}</span>
-                </div>
-            )
-        },
-    }),
 ]
 
 const BookingSection = ({ data }: { data: BookingDetailsProps }) => {
@@ -98,29 +103,34 @@ const BookingSection = ({ data }: { data: BookingDetailsProps }) => {
     return (
         <>
             <h6 className="mb-4">Booking history</h6>
-            <Table>
-                <TBody>
-                    {table
-                        .getRowModel()
-                        .rows.slice(0, 10)
-                        .map((row) => {
-                            return (
-                                <Tr key={row.id}>
-                                    {row.getVisibleCells().map((cell) => {
-                                        return (
-                                            <Td key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext(),
-                                                )}
-                                            </Td>
-                                        )
-                                    })}
-                                </Tr>
-                            )
-                        })}
-                </TBody>
-            </Table>
+            {data.length === 0 ? (
+                <div>No data</div>
+            ) : (
+                <Table>
+                    <TBody>
+                        {table
+                            .getRowModel()
+                            .rows.slice(0, 10)
+                            .map((row) => {
+                                return (
+                                    <Tr key={row.id}>
+                                        {row.getVisibleCells().map((cell) => {
+                                            return (
+                                                <Td key={cell.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext(),
+                                                    )}
+                                                </Td>
+                                            )
+                                        })}
+                                    </Tr>
+                                )
+                            })}
+                    </TBody>
+                </Table>
+            )}
         </>
     )
 }
