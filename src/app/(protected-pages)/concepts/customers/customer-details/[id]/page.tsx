@@ -1,12 +1,29 @@
+'use client'
+
 import CustomerDetails from './_components/CustomerDetails'
 import NoUserFound from '@/assets/svg/NoUserFound'
-import getCustomer from '@/server/actions/getCustomer'
+import Loading from '@/components/ui/Loading/Loading'
+import { useQuery } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
+import { getCustomerAndBooking } from '../../service/customer/queryFns'
 import isEmpty from 'lodash/isEmpty'
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params
+export default function Page() {
+    const param = useParams()
 
-    const data = await getCustomer(params)
+    const { isPending, error, data } = useQuery({
+        queryKey: ['customer'],
+        queryFn: () => getCustomerAndBooking(Number(param.id)),
+    })
+
+    if (isPending) return <Loading />
+
+    if (error) {
+        return (
+            'An error has occurred: ' +
+            ((error as any).response?.data?.error || (error as Error).message)
+        )
+    }
 
     if (isEmpty(data)) {
         return (
@@ -17,5 +34,5 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         )
     }
 
-    return <CustomerDetails data={data} />
+    return <CustomerDetails data={data.customer} />
 }

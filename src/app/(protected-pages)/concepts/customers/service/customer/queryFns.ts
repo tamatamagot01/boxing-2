@@ -14,6 +14,14 @@ export const getCustomer = async (customerID: number) => {
     return res.data
 }
 
+export const getCustomerAndBooking = async (customerID: number) => {
+    const res = await axiosClient.get('/customer/get-customer-booking', {
+        params: { customerID },
+    })
+
+    return res.data
+}
+
 export const createCustomer = async (payload: CustomerFormSchema) => {
     const res = await axiosClient.post('/customer/create', {
         payload,

@@ -3,13 +3,30 @@
 import Card from '@/components/ui/Card'
 import Tabs from '@/components/ui/Tabs'
 import ProfileSection from './ProfileSection'
-import BillingSection from './BillingSection'
-import ActivitySection from './ActivitySection'
-import type { Customer } from '../types'
+import BookingSection from './BookingSection'
 
-type CustomerDetailsProps = {
-    data: Customer
+export type CustomerDetailsProps = {
+    data: {
+        id: number
+        first_name: string
+        last_name: string
+        email: string
+        phone: string
+        img?: string
+        bookingsAsUser: BookingDetailsProps
+    }
 }
+
+export type BookingDetailsProps = {
+    id: number
+    bookingID: string
+    bookingDate: string
+    time: { time: string }
+    classType: string
+    participant: number
+    trainer?: { first_name: string; last_name: string }
+    createdAt: string
+}[]
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -20,20 +37,13 @@ const CustomerDetails = ({ data }: CustomerDetailsProps) => {
                 <ProfileSection data={data} />
             </div>
             <Card className="w-full">
-                <Tabs defaultValue="billing">
+                <Tabs defaultValue="booking">
                     <TabList>
-                        <TabNav value="billing">Billing</TabNav>
-                        <TabNav value="activity">Activity</TabNav>
+                        <TabNav value="booking">Booking</TabNav>
                     </TabList>
                     <div className="p-4">
-                        <TabContent value="billing">
-                            <BillingSection data={data} />
-                        </TabContent>
-                        <TabContent value="activity">
-                            <ActivitySection
-                                customerName={data.name}
-                                id={data.id}
-                            />
+                        <TabContent value="booking">
+                            <BookingSection data={data.bookingsAsUser} />
                         </TabContent>
                     </div>
                 </Tabs>
