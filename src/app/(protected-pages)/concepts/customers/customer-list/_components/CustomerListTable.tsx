@@ -8,7 +8,7 @@ import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TbPencil, TbEye } from 'react-icons/tb'
-import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
+import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { Customer } from '../types'
 import { capitalizeString } from '@/utils/capitalizeString'
 
@@ -71,17 +71,9 @@ const CustomerListTable = ({
     const router = useRouter()
 
     const customerList = useCustomerListStore((state) => state.customerList)
-    const selectedCustomer = useCustomerListStore(
-        (state) => state.selectedCustomer,
-    )
+
     const isInitialLoading = useCustomerListStore(
         (state) => state.initialLoading,
-    )
-    const setSelectedCustomer = useCustomerListStore(
-        (state) => state.setSelectedCustomer,
-    )
-    const setSelectAllCustomer = useCustomerListStore(
-        (state) => state.setSelectAllCustomer,
     )
 
     const { onAppendQueryParams } = useAppendQueryParams()
@@ -149,22 +141,8 @@ const CustomerListTable = ({
         })
     }
 
-    const handleRowSelect = (checked: boolean, row: Customer) => {
-        setSelectedCustomer(checked, row)
-    }
-
-    const handleAllRowSelect = (checked: boolean, rows: Row<Customer>[]) => {
-        if (checked) {
-            const originalRows = rows.map((row) => row.original)
-            setSelectAllCustomer(originalRows)
-        } else {
-            setSelectAllCustomer([])
-        }
-    }
-
     return (
         <DataTable
-            selectable
             columns={columns}
             data={customerList}
             noData={customerList.length === 0}
@@ -174,14 +152,9 @@ const CustomerListTable = ({
                 pageIndex,
                 pageSize,
             }}
-            checkboxChecked={(row) =>
-                selectedCustomer.some((selected) => selected.id === row.id)
-            }
             onPaginationChange={handlePaginationChange}
             onSelectChange={handleSelectChange}
             onSort={handleSort}
-            onCheckBoxChange={handleRowSelect}
-            onIndeterminateCheckBoxChange={handleAllRowSelect}
         />
     )
 }

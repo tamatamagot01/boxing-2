@@ -64,17 +64,17 @@
             "projectTasksDesc": "Manage project tasks",
             "projectIssueDesc": "Resolve project issues"
         },
-        "conceptsOrders": {
-            "orders": "Orders",
-            "orderList": "List",
-            "orderEdit": "Edit",
-            "orderDetails": "Details",
-            "orderCreate": "Create",
-            "ordersDesc": "Customer orders management",
-            "orderListDesc": "View all customer orders",
-            "orderEditDesc": "Edit order details",
-            "orderCreateDesc": "Create new order",
-            "orderDetailsDesc": "Detailed order information"
+        "conceptsBookings": {
+            "bookings": "Bookings",
+            "bookingList": "List",
+            "bookingEdit": "Edit",
+            "bookingDetails": "Details",
+            "bookingCreate": "Create",
+            "bookingsDesc": "Bookings management",
+            "bookingListDesc": "View all bookings",
+            "bookingEditDesc": "Edit booking details",
+            "bookingCreateDesc": "Create new booking",
+            "orderDetailsDesc": "Detailed booking information"
         },
         "conceptsAccount": {
             "account": "Account",

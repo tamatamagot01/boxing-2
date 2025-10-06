@@ -127,41 +127,41 @@ const conceptsRoute: Routes = {
             footer: false,
         },
     },
-    '/concepts/orders/order-list': {
-        key: 'concepts.orders.orderList',
+    '/concepts/bookings/booking-list': {
+        key: 'concepts.bookings.bookingList',
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'contained',
         },
     },
-    '/concepts/orders/order-create': {
-        key: 'concepts.orders.orderCreate',
+    '/concepts/bookings/booking-create': {
+        key: 'concepts.bookings.bookingCreate',
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Create order',
+                title: 'Create booking',
                 contained: true,
                 description:
-                    'Create new customer orders quickly and accurately',
+                    'Create new customer bookings quickly and accurately',
             },
             footer: false,
         },
     },
-    '/concepts/orders/order-edit/[slug]': {
-        key: 'concepts.orders.orderEdit',
+    '/concepts/bookings/booking-edit/[slug]': {
+        key: 'concepts.bookings.bookingEdit',
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Edit order',
+                title: 'Edit booking',
                 contained: true,
-                description: 'Manage and track orders efficiently',
+                description: 'Manage and track bookings efficiently',
             },
             footer: false,
         },
         dynamicRoute: true,
     },
-    '/concepts/orders/order-details/[slug]': {
-        key: 'concepts.orders.orderDetails',
+    '/concepts/bookings/booking-details/[slug]': {
+        key: 'concepts.bookings.bookingDetails',
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -169,13 +169,13 @@ const conceptsRoute: Routes = {
                 title: lazy(
                     () =>
                         import(
-                            '@/app/(protected-pages)/concepts/orders/order-details/[id]/_components/OrderDetailHeader'
+                            '@/app/(protected-pages)/concepts/bookings/booking-details/[id]/_components/BookingDetailHeader'
                         ),
                 ),
                 extraHeader: lazy(
                     () =>
                         import(
-                            '@/app/(protected-pages)/concepts/orders/order-details/[id]/_components/OrderDetailHeaderExtra'
+                            '@/app/(protected-pages)/concepts/bookings/booking-details/[id]/_components/BookingDetailHeaderExtra'
                         ),
                 ),
             },

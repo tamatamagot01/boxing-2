@@ -8,39 +8,15 @@ import Notification from '@/components/ui/Notification'
 import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import dayjs from 'dayjs'
 import { HiPencil, HiOutlineTrash } from 'react-icons/hi'
-import {
-    FaXTwitter,
-    FaFacebookF,
-    FaLinkedinIn,
-    FaPinterestP,
-} from 'react-icons/fa6'
 import { useRouter } from 'next/navigation'
+import { TrainerDetailsProps } from './TrainerDetails'
+import { capitalizeString } from '@/utils/capitalizeString'
+import profileImage from '@/../public/img/avatars/thumb-1.jpg'
 
 type TrainerInfoFieldProps = {
     title?: string
     value?: string
-}
-
-type ProfileSectionProps = {
-    data: Partial<{
-        id: string
-        img: string
-        name: string
-        email: string
-        lastOnline: number
-        personalInfo: {
-            location: string
-            title: string
-            birthday: string
-            phoneNumber: string
-            facebook: string
-            twitter: string
-            pinterest: string
-            linkedIn: string
-        }
-    }>
 }
 
 const TrainerInfoField = ({ title, value }: TrainerInfoFieldProps) => {
@@ -52,14 +28,10 @@ const TrainerInfoField = ({ title, value }: TrainerInfoFieldProps) => {
     )
 }
 
-const ProfileSection = ({ data = {} }: ProfileSectionProps) => {
+const ProfileSection = ({ data }: TrainerDetailsProps) => {
     const router = useRouter()
 
     const [dialogOpen, setDialogOpen] = useState(false)
-
-    const handleSocialNavigate = (link: string = '') => {
-        window.open(`https://${link}`, '_blank', 'rel=noopener noreferrer')
-    }
 
     const handleDialogClose = () => {
         setDialogOpen(false)
@@ -77,10 +49,6 @@ const ProfileSection = ({ data = {} }: ProfileSectionProps) => {
                 Trainer successfuly deleted
             </Notification>,
         )
-    }
-
-    const handleSendMessage = () => {
-        router.push('/concepts/chat')
     }
 
     const handleEdit = () => {
@@ -102,79 +70,21 @@ const ProfileSection = ({ data = {} }: ProfileSectionProps) => {
             </div>
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="flex xl:flex-col items-center gap-4 mt-6">
-                    <Avatar size={90} shape="circle" src={data.img} />
-                    <h4 className="font-bold">{data.name}</h4>
+                    <Avatar
+                        size={90}
+                        shape="circle"
+                        src={data.img || profileImage.src}
+                    />
+                    <h4 className="font-bold">
+                        {capitalizeString(data.first_name)}{' '}
+                        {capitalizeString(data.last_name)}
+                    </h4>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-10">
                     <TrainerInfoField title="Email" value={data.email} />
-                    <TrainerInfoField
-                        title="Phone"
-                        value={data.personalInfo?.phoneNumber}
-                    />
-                    <TrainerInfoField
-                        title="Date of birth"
-                        value={data.personalInfo?.birthday}
-                    />
-                    <TrainerInfoField
-                        title="Last Online"
-                        value={dayjs
-                            .unix(data.lastOnline as number)
-                            .format('DD MMM YYYY hh:mm A')}
-                    />
-                    <div className="mb-7">
-                        <span>Social</span>
-                        <div className="flex mt-4 gap-2">
-                            <Button
-                                size="sm"
-                                icon={
-                                    <FaFacebookF className="text-[#2259f2]" />
-                                }
-                                onClick={() =>
-                                    handleSocialNavigate(
-                                        data.personalInfo?.facebook,
-                                    )
-                                }
-                            />
-                            <Button
-                                size="sm"
-                                icon={
-                                    <FaXTwitter className="text-black dark:text-white" />
-                                }
-                                onClick={() =>
-                                    handleSocialNavigate(
-                                        data.personalInfo?.twitter,
-                                    )
-                                }
-                            />
-                            <Button
-                                size="sm"
-                                icon={
-                                    <FaLinkedinIn className="text-[#155fb8]" />
-                                }
-                                onClick={() =>
-                                    handleSocialNavigate(
-                                        data.personalInfo?.linkedIn,
-                                    )
-                                }
-                            />
-                            <Button
-                                size="sm"
-                                icon={
-                                    <FaPinterestP className="text-[#df0018]" />
-                                }
-                                onClick={() =>
-                                    handleSocialNavigate(
-                                        data.personalInfo?.pinterest,
-                                    )
-                                }
-                            />
-                        </div>
-                    </div>
+                    <TrainerInfoField title="Phone" value={data.phone} />
                 </div>
-                <div className="flex flex-col gap-4">
-                    <Button block variant="solid" onClick={handleSendMessage}>
-                        Send Messsage
-                    </Button>
+                <div className="flex flex-col gap-4 mt-7">
                     <Button
                         block
                         customColorClass={() =>

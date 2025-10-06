@@ -1,8 +1,25 @@
 import { CustomerFormSchema } from '@/components/view/CustomerForm'
 import axiosClient from '@/services/axiosClient'
 
-export const getCustomers = async () => {
-    const res = await axiosClient.get('/customer/get-customers')
+interface CustomerQueryParams {
+    query?: string
+    pageIndex: string
+    pageSize: string
+}
+
+export const getCustomers = async (params: CustomerQueryParams) => {
+    const search = new URLSearchParams()
+
+    search.append('pageIndex', params.pageIndex)
+    search.append('pageSize', params.pageSize)
+
+    if (params.query) {
+        search.append('query', params.query)
+    }
+
+    const queryString = search.toString()
+
+    const res = await axiosClient.get(`/customer/get-customers?${queryString}`)
     return res.data
 }
 

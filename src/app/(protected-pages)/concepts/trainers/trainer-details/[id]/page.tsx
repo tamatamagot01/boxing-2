@@ -1,12 +1,29 @@
-import TrainerDetails from './_components/TrainerDetails'
+'use client'
+
 import NoUserFound from '@/assets/svg/NoUserFound'
-import getTrainer from '@/server/actions/getTrainer'
+import Loading from '@/components/ui/Loading/Loading'
+import { useQuery } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
 import isEmpty from 'lodash/isEmpty'
+import { getTrainerAndBooking } from '../../service/trainers/queryFns'
+import TrainerDetails from './_components/TrainerDetails'
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params
+export default function Page() {
+    const param = useParams()
 
-    const data = await getTrainer(params)
+    const { isPending, error, data } = useQuery({
+        queryKey: ['trainer', param.id],
+        queryFn: () => getTrainerAndBooking(Number(param.id)),
+    })
+
+    if (isPending) return <Loading />
+
+    if (error) {
+        return (
+            'An error has occurred: ' +
+            ((error as any).response?.data?.error || (error as Error).message)
+        )
+    }
 
     if (isEmpty(data)) {
         return (
@@ -17,5 +34,5 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         )
     }
 
-    return <TrainerDetails data={data} />
+    return <TrainerDetails data={data.trainer} />
 }

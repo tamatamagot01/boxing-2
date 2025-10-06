@@ -7,13 +7,48 @@ const prisma = new PrismaClient()
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
 
-    // const classType = searchParams.get('classType') ?? ''
+    const query = searchParams.get('query') || ''
+    const pageIndex = parseInt(searchParams.get('pageIndex') || '1')
+    const pageSize = parseInt(searchParams.get('pageSize') || '10')
+
+    const searchCondition = query
+        ? {
+              OR: [
+                  {
+                      first_name: {
+                          contains: query,
+                          mode: 'insensitive' as const,
+                      },
+                  },
+                  {
+                      last_name: {
+                          contains: query,
+                          mode: 'insensitive' as const,
+                      },
+                  },
+                  { email: { contains: query, mode: 'insensitive' as const } },
+                  { phone: { contains: query, mode: 'insensitive' as const } },
+              ],
+          }
+        : {}
+
+    const skip = (pageIndex - 1) * pageSize
+    const take = pageSize
 
     try {
         const result = await prisma.$transaction(async (tx) => {
-            const customers = await tx.user.findMany()
+            const customers = await tx.user.findMany({
+                where: searchCondition,
+                skip: skip,
+                take: take,
+                orderBy: {
+                    id: 'desc',
+                },
+            })
 
-            const count = await tx.user.count()
+            const count = await tx.user.count({
+                where: searchCondition,
+            })
 
             return { customers, count }
         })

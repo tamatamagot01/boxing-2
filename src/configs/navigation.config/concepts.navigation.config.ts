@@ -56,17 +56,17 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 subMenu: [],
             },
             {
-                key: 'concepts.orders',
-                path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
+                key: 'concepts.bookings',
+                path: `${CONCEPTS_PREFIX_PATH}/bookings/booking-list`,
                 title: 'Orders',
-                translateKey: 'nav.conceptsOrders.orders',
-                icon: 'orders',
+                translateKey: 'nav.conceptsBookings.bookings',
+                icon: 'bookings',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
-                        translateKey: 'nav.conceptsOrders.ordersDesc',
-                        label: 'Customer orders management',
+                        translateKey: 'nav.conceptsBookings.bookingsDesc',
+                        label: 'Bookings management',
                     },
                 },
                 subMenu: [],

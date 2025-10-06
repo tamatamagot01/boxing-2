@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from 'react'
 import Container from '@/components/shared/Container'
 import Button from '@/components/ui/Button'
@@ -6,28 +7,44 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import TrainerForm from '@/components/view/TrainerForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import sleep from '@/utils/sleep'
 import { TbTrash } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { TrainerFormSchema } from '@/components/view/TrainerForm'
+import { useMutation } from '@tanstack/react-query'
+import { createTrainer } from '../../service/trainers/queryFns'
 
-const TrainerEdit = () => {
+const TrainerCreate = () => {
     const router = useRouter()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
-    const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: TrainerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(
-            <Notification type="success">Trainer created!</Notification>,
-            { placement: 'top-center' },
-        )
-        router.push('/concepts/trainers/trainer-list')
+    const { mutate, isPending } = useMutation({
+        mutationFn: (userData: TrainerFormSchema) => {
+            const payload = userData
+            return createTrainer(payload)
+        },
+        onSuccess: () => {
+            toast.push(
+                <Notification type="success">Trainer created!</Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/trainers/trainer-list')
+        },
+        onError: (error: any) => {
+            console.error(error)
+            toast.push(
+                <Notification type="danger">
+                    {error.response.data.error}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            router.push('/concepts/trainers/trainer-list')
+        },
+    })
+
+    const onSubmit = (userData: TrainerFormSchema) => {
+        mutate(userData)
     }
 
     const handleConfirmDiscard = () => {
@@ -50,21 +67,13 @@ const TrainerEdit = () => {
     return (
         <>
             <TrainerForm
-                newTrainer
                 defaultValues={{
                     firstName: '',
                     lastName: '',
                     email: '',
-                    img: '',
-                    phoneNumber: '',
-                    dialCode: '',
-                    country: '',
-                    address: '',
-                    city: '',
-                    postcode: '',
-                    tags: [],
+                    phone: '',
                 }}
-                onFormSubmit={handleFormSubmit}
+                onFormSubmit={onSubmit}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
@@ -84,7 +93,7 @@ const TrainerEdit = () => {
                             <Button
                                 variant="solid"
                                 type="submit"
-                                loading={isSubmiting}
+                                loading={isPending}
                             >
                                 Create
                             </Button>
@@ -110,4 +119,4 @@ const TrainerEdit = () => {
     )
 }
 
-export default TrainerEdit
+export default TrainerCreate

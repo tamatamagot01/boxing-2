@@ -3,13 +3,30 @@
 import Card from '@/components/ui/Card'
 import Tabs from '@/components/ui/Tabs'
 import ProfileSection from './ProfileSection'
-import BillingSection from './BillingSection'
-import ActivitySection from './ActivitySection'
-import type { Trainer } from '../types'
+import BookingSection from './BookingSection'
 
-type TrainerDetailsProps = {
-    data: Trainer
+export type TrainerDetailsProps = {
+    data: {
+        id: number
+        first_name: string
+        last_name: string
+        email: string
+        phone: string
+        img?: string
+        bookingsAsTrainer: BookingDetailsProps
+    }
 }
+
+export type BookingDetailsProps = {
+    id: number
+    bookingID: string
+    bookingDate: string
+    time: { time: string }
+    classType: string
+    participant: number
+    user?: { first_name: string; last_name: string }
+    createdAt: string
+}[]
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -20,20 +37,13 @@ const TrainerDetails = ({ data }: TrainerDetailsProps) => {
                 <ProfileSection data={data} />
             </div>
             <Card className="w-full">
-                <Tabs defaultValue="billing">
+                <Tabs defaultValue="classList">
                     <TabList>
-                        <TabNav value="billing">Billing</TabNav>
-                        <TabNav value="activity">Activity</TabNav>
+                        <TabNav value="classList">Class List</TabNav>
                     </TabList>
                     <div className="p-4">
-                        <TabContent value="billing">
-                            <BillingSection data={data} />
-                        </TabContent>
-                        <TabContent value="activity">
-                            <ActivitySection
-                                trainerName={data.name}
-                                id={data.id}
-                            />
+                        <TabContent value="classList">
+                            <BookingSection data={data.bookingsAsTrainer} />
                         </TabContent>
                     </div>
                 </Tabs>
