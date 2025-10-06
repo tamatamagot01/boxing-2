@@ -72,6 +72,10 @@ const BookingCreate = () => {
                     lastName: '',
                     email: '',
                     phone: '',
+                    classType: '',
+                    date: '',
+                    participant: 0,
+                    timeID: '',
                 }}
                 onFormSubmit={onSubmit}
             >

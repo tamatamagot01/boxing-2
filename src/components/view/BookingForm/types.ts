@@ -48,9 +48,9 @@ export type BookingDetailFields = {
     participant: number
 }
 
-export type BaseOrderFormSchema = CustomerDetailsFields & BookingDetailFields
+export type BaseBookingFormSchema = CustomerDetailsFields & BookingDetailFields
 
 export type FormSectionBaseProps = {
-    control: Control<BaseOrderFormSchema>
-    errors: FieldErrors<BaseOrderFormSchema>
+    control: Control<BaseBookingFormSchema>
+    errors: FieldErrors<BaseBookingFormSchema>
 }

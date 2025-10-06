@@ -21,18 +21,17 @@ import { z } from 'zod'
 import type { ReactNode } from 'react'
 import type {
     GetProductListResponse,
-    BookingFormSchema,
     SelectedProduct,
-    BaseOrderFormSchema,
+    BaseBookingFormSchema,
 } from './types'
 import type { TableQueries, CommonProps } from '@/@types/common'
 
-type OrderFormProps = {
+type BookingFormProps = {
     children: ReactNode
-    onFormSubmit: (values: BaseOrderFormSchema) => void
-    defaultValues?: BookingFormSchema
+    onFormSubmit: (values: BaseBookingFormSchema) => void
+    defaultValues?: BaseBookingFormSchema
     defaultProducts?: SelectedProduct[]
-    newOrder?: boolean
+    newBooking?: boolean
 } & CommonProps
 
 const validationSchema = z.object({
@@ -43,9 +42,14 @@ const validationSchema = z.object({
         .min(1, { message: 'Email required' })
         .email({ message: 'Invalid email' }),
     phone: z.string().min(1, { message: 'Please select your country code' }),
+    classType: z.string().min(1, { message: 'Class type required' }),
+    date: z.string().min(1, { message: 'Date required' }),
+    timeID: z.union([z.string(), z.number()]).refine((v) => v !== '', {
+        message: 'Time is required',
+    }),
 })
 
-const BookingForm = (props: OrderFormProps) => {
+const BookingForm = (props: BookingFormProps) => {
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
 
     const { setProductOption, setProductList, setSelectedProduct } =
@@ -95,7 +99,7 @@ const BookingForm = (props: OrderFormProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const onSubmit = (values: BaseOrderFormSchema) => {
+    const onSubmit = (values: BaseBookingFormSchema) => {
         onFormSubmit?.(values)
     }
 
@@ -104,7 +108,7 @@ const BookingForm = (props: OrderFormProps) => {
         reset,
         formState: { errors },
         control,
-    } = useForm<BaseOrderFormSchema>({
+    } = useForm<BaseBookingFormSchema>({
         defaultValues: {
             ...(defaultValues ? defaultValues : {}),
         },
