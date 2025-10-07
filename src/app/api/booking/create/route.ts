@@ -65,7 +65,7 @@ export async function POST(req: Request) {
                 data: {
                     userID: customer!.id,
                     classType,
-                    trainerID: trainerID === 0 ? null : trainerID,
+                    trainerID: classType === 'group' ? null : trainerID,
                     bookingDate: date,
                     bookingTimeID: timeID,
                     participant,

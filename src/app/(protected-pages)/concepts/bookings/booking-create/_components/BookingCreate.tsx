@@ -80,7 +80,7 @@ const BookingCreate = () => {
                     trainerID: 0,
                     date: '',
                     participant: 0,
-                    timeID: '',
+                    timeID: 0,
                 }}
                 onFormSubmit={onSubmit}
             >

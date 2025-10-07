@@ -13,10 +13,15 @@ import { useEffect } from 'react'
 import { useClassParticipantStore } from '@/app/(public-pages)/landing/store/clientStore'
 import dayjs from 'dayjs'
 import Loading from '@/components/ui/Loading/Loading'
+import type { UseFormSetValue } from 'react-hook-form'
+import type { BaseBookingFormSchema } from '../types'
 
-type BookingDetailSectionProps = FormSectionBaseProps
+type BookingDetailSectionProps = FormSectionBaseProps & {
+    setValue: UseFormSetValue<BaseBookingFormSchema>
+}
 
 const BookingDetailSection = ({
+    setValue,
     control,
     errors,
 }: BookingDetailSectionProps) => {
@@ -55,6 +60,7 @@ const BookingDetailSection = ({
     const trainerID = useWatch({ control, name: 'trainerID' })
     const date = useWatch({ control, name: 'date' })
     const timeID = useWatch({ control, name: 'timeID' })
+    console.log('🚀 ~ BookingDetailSection ~ timeID:', timeID)
 
     const { data: bookingData, isPending: isPendingBookingData } = useQuery({
         queryKey: ['bookings', classType, trainerID, date, timeID],
@@ -102,9 +108,10 @@ const BookingDetailSection = ({
                                             option.value === field.value,
                                     ) || null
                                 }
-                                onChange={(option) =>
+                                onChange={(option) => {
                                     field.onChange(option?.value)
-                                }
+                                    setValue('timeID', 0)
+                                }}
                                 onBlur={field.onBlur}
                             />
                         )}
@@ -113,7 +120,7 @@ const BookingDetailSection = ({
                 <FormItem
                     label="Trainer"
                     invalid={Boolean(errors.trainerID)}
-                    errorMessage={errors.timeID?.message}
+                    errorMessage={errors.trainerID?.message}
                 >
                     <Controller
                         name="trainerID"
@@ -125,14 +132,20 @@ const BookingDetailSection = ({
                                 isDisabled={!classType || classType === 'group'}
                                 options={trainerOptions}
                                 value={
-                                    trainerOptions.find(
-                                        (option: any) =>
-                                            option.value === field.value,
-                                    ) || null
+                                    classType === 'group'
+                                        ? null
+                                        : trainerOptions.find(
+                                              (option: any) =>
+                                                  option.value === field.value,
+                                          ) || null
                                 }
-                                onChange={(option) =>
-                                    field.onChange(option?.value)
-                                }
+                                onChange={(option) => {
+                                    if (classType === 'group') {
+                                        field.onChange(null)
+                                    } else {
+                                        field.onChange(option?.value ?? null)
+                                    }
+                                }}
                                 onBlur={field.onBlur}
                             />
                         )}
@@ -203,39 +216,41 @@ const BookingDetailSection = ({
                 </FormItem>
             </div>
 
-            <FormItem
-                label="Participant"
-                invalid={Boolean(errors.participant)}
-                errorMessage={errors.participant?.message}
-            >
-                <Controller
-                    name="participant"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            type="text"
-                            disabled={
-                                !classType ||
-                                !date ||
-                                !timeID ||
-                                !currentAvailable
-                            }
-                            value={
-                                (field.value ?? 0) > currentAvailable
-                                    ? currentAvailable
-                                    : (field.value ?? 0)
-                            }
-                            onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                            }
-                            min={1}
-                            max={currentAvailable}
-                            autoComplete="off"
-                            placeholder="Number of participants"
-                        />
-                    )}
-                />
-            </FormItem>
+            {!isPendingBookingData && (
+                <FormItem
+                    label="Participant"
+                    invalid={Boolean(errors.participant)}
+                    errorMessage={errors.participant?.message}
+                >
+                    <Controller
+                        name="participant"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                disabled={
+                                    !classType ||
+                                    !date ||
+                                    !timeID ||
+                                    !currentAvailable
+                                }
+                                value={
+                                    (field.value ?? 0) > currentAvailable
+                                        ? currentAvailable
+                                        : (field.value ?? 0)
+                                }
+                                onChange={(e) =>
+                                    field.onChange(Number(e.target.value))
+                                }
+                                min={1}
+                                max={currentAvailable}
+                                autoComplete="off"
+                                placeholder="Number of participants"
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
 
             {!isPendingBookingData ? (
                 currentAvailable ? (

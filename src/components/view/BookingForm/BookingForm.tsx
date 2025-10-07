@@ -23,26 +23,41 @@ type BookingFormProps = {
     newBooking?: boolean
 } & CommonProps
 
-const validationSchema = z.object({
-    firstName: z.string().min(1, { message: 'First name required' }),
-    lastName: z.string().min(1, { message: 'Last name required' }),
-    email: z
-        .string()
-        .min(1, { message: 'Email required' })
-        .email({ message: 'Invalid email' }),
-    phone: z.string().regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
-    classType: z.string().min(1, { message: 'Class type required' }),
-    trainerID: z.union([z.string(), z.number()]).refine((v) => v !== '', {
-        message: 'Trainer is required',
-    }),
-    date: z.string().min(1, { message: 'Date required' }),
-    timeID: z.union([z.string(), z.number()]).refine((v) => v !== '', {
-        message: 'Time is required',
-    }),
-    participant: z
-        .number()
-        .min(1, { message: 'At least one participant required' }),
-})
+const validationSchema = z
+    .object({
+        firstName: z.string().min(1, { message: 'First name required' }),
+        lastName: z.string().min(1, { message: 'Last name required' }),
+        email: z
+            .string()
+            .min(1, { message: 'Email required' })
+            .email({ message: 'Invalid email' }),
+        phone: z
+            .string()
+            .regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
+        classType: z.string().min(1, { message: 'Class type required' }),
+        trainerID: z.union([z.string(), z.number()]).nullable().optional(),
+        date: z.string().min(1, { message: 'Date required' }),
+        timeID: z
+            .union([z.string(), z.number()])
+            .refine((v) => v !== '' && v !== 0, {
+                message: 'Time is required',
+            }),
+        participant: z
+            .number()
+            .min(1, { message: 'At least one participant required' }),
+    })
+    .superRefine((data, ctx) => {
+        if (
+            data.classType !== 'group' &&
+            (!data.trainerID || data.trainerID === 0 || data.trainerID === '')
+        ) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['trainerID'],
+                message: 'Trainer is required',
+            })
+        }
+    })
 
 const BookingForm = (props: BookingFormProps) => {
     const { onFormSubmit, children, defaultValues } = props
@@ -57,6 +72,7 @@ const BookingForm = (props: BookingFormProps) => {
         handleSubmit,
         formState: { errors },
         control,
+        setValue,
     } = useForm<BaseBookingFormSchema>({
         defaultValues: {
             ...(defaultValues ? defaultValues : {}),
@@ -87,6 +103,7 @@ const BookingForm = (props: BookingFormProps) => {
                                     errors={errors}
                                 />
                                 <BookingDetailSection
+                                    setValue={setValue}
                                     control={control}
                                     errors={errors}
                                 />

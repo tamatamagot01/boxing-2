@@ -5,6 +5,11 @@ export type BookingFields = {
     lastName: string
     email: string
     phone: string
+    classType: string
+    trainerID: number
+    date: string
+    timeID: number
+    participant: number
 }
 
 export type BookingFormSchema = BookingFields
@@ -20,7 +25,7 @@ export type BookingDetailFields = {
     classType: string
     trainerID: number
     date: string
-    timeID: string
+    timeID: number
     participant: number
 }
 

@@ -48,7 +48,7 @@ export const createBooking = async (payload: BookingFormSchema) => {
 }
 
 export const editBooking = async (payload: BookingFormSchema) => {
-    const res = await axiosClient.post('/booking/update', {
+    const res = await axiosClient.put('/booking/update', {
         payload,
     })
 

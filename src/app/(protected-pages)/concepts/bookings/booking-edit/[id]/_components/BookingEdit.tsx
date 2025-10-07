@@ -5,34 +5,58 @@ import Container from '@/components/shared/Container'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
-import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import BookingForm from '@/components/view/BookingForm'
-import sleep from '@/utils/sleep'
-import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { TbTrash } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { BookingFormSchema } from '@/components/view/BookingForm'
-import type { Booking } from '../types'
 import { useMutation } from '@tanstack/react-query'
 import { editBooking } from '../../../service/bookings/queryFns'
 
-type BookingEditProps = {
-    data: Booking
+type BookingPropsType = {
+    booking: {
+        id: number
+        bookingID: string
+        bookingDate: string
+        classType: string
+        participant: number
+        trainerID: number
+        bookingTimeID: number
+        userID: number
+        user: {
+            id: number
+            first_name: string
+            last_name: string
+            email: string
+            phone: string
+        }
+    }
 }
 
-const BookingEdit = ({ data }: BookingEditProps) => {
+const BookingEdit = ({ data }: { data: BookingPropsType }) => {
+    console.log('🚀 ~ BookingEdit ~ data:', data)
     const router = useRouter()
 
-    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
+    const [discardConfirmationOpen, setDiscardConfirmationOpen] =
+        useState(false)
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (userData: BookingFormSchema) => {
-            const payload = { id: data.booking.id, ...userData }
+        mutationFn: (bookingData: BookingFormSchema) => {
+            const bookingID = data.booking.id
+            const userID = data.booking.user.id
 
+            const payload = {
+                bookingID,
+                userID,
+                first_name: bookingData.firstName,
+                last_name: bookingData.lastName,
+                ...bookingData,
+            }
             return editBooking(payload)
         },
         onSuccess: () => {
             toast.push(
-                <Notification type="success">Changes Saved!</Notification>,
+                <Notification type="success">Booking edited!</Notification>,
                 { placement: 'top-center' },
             )
             router.push('/concepts/bookings/booking-list')
@@ -49,64 +73,46 @@ const BookingEdit = ({ data }: BookingEditProps) => {
         },
     })
 
-    const onSubmit = (userData: BookingFormSchema) => {
-        mutate(userData)
+    const onSubmit = (bookingData: BookingFormSchema) => {
+        mutate(bookingData)
     }
 
-    const getDefaultValues = () => {
-        if (data) {
-            const { first_name, last_name, email, phone, img } = data.booking
-
-            return {
-                firstName: first_name,
-                lastName: last_name,
-                email,
-                img,
-                phone,
-            }
-        }
-
-        return {}
-    }
-
-    const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(true)
+    const handleConfirmDiscard = () => {
+        setDiscardConfirmationOpen(true)
         toast.push(
-            <Notification type="success">Booking deleted!</Notification>,
+            <Notification type="success">Booking discard!</Notification>,
             { placement: 'top-center' },
         )
         router.push('/concepts/bookings/booking-list')
     }
 
-    const handleDelete = () => {
-        setDeleteConfirmationOpen(true)
+    const handleDiscard = () => {
+        setDiscardConfirmationOpen(true)
     }
 
     const handleCancel = () => {
-        setDeleteConfirmationOpen(false)
-    }
-
-    const handleBack = () => {
-        history.back()
+        setDiscardConfirmationOpen(false)
     }
 
     return (
         <>
             <BookingForm
-                defaultValues={getDefaultValues() as BookingFormSchema}
+                defaultValues={{
+                    firstName: data.booking.user.first_name,
+                    lastName: data.booking.user.last_name,
+                    email: data.booking.user.email,
+                    phone: data.booking.user.phone,
+                    classType: data.booking.classType,
+                    trainerID: data.booking.trainerID,
+                    date: data.booking.bookingDate,
+                    participant: data.booking.participant,
+                    timeID: data.booking.bookingTimeID,
+                }}
                 onFormSubmit={onSubmit}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
-                        <Button
-                            className="ltr:mr-3 rtl:ml-3"
-                            type="button"
-                            variant="plain"
-                            icon={<TbArrowNarrowLeft />}
-                            onClick={handleBack}
-                        >
-                            Back
-                        </Button>
+                        <span></span>
                         <div className="flex items-center">
                             <Button
                                 className="ltr:mr-3 rtl:ml-3"
@@ -115,33 +121,33 @@ const BookingEdit = ({ data }: BookingEditProps) => {
                                     'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
                                 }
                                 icon={<TbTrash />}
-                                onClick={handleDelete}
+                                onClick={handleDiscard}
                             >
-                                Delete
+                                Discard
                             </Button>
                             <Button
                                 variant="solid"
                                 type="submit"
                                 loading={isPending}
                             >
-                                Save
+                                Edit
                             </Button>
                         </div>
                     </div>
                 </Container>
             </BookingForm>
             <ConfirmDialog
-                isOpen={deleteConfirmationOpen}
+                isOpen={discardConfirmationOpen}
                 type="danger"
-                title="Remove bookings"
+                title="Discard changes"
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
-                onConfirm={handleConfirmDelete}
+                onConfirm={handleConfirmDiscard}
             >
                 <p>
-                    Are you sure you want to remove this booking? This action
-                    can&apos;t be undo.{' '}
+                    Are you sure you want discard this? This action can&apos;t
+                    be undo.{' '}
                 </p>
             </ConfirmDialog>
         </>

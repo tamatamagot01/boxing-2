@@ -12,7 +12,7 @@ export default function Page() {
     const param = useParams()
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['booking'],
+        queryKey: ['booking', param.id],
         queryFn: () => getBooking(Number(param.id)),
     })
 
