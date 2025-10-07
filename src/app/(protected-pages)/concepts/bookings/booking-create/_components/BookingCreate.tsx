@@ -21,7 +21,11 @@ const BookingCreate = () => {
 
     const { mutate, isPending } = useMutation({
         mutationFn: (bookingData: BookingFormSchema) => {
-            const payload = bookingData
+            const payload = {
+                first_name: bookingData.firstName,
+                last_name: bookingData.lastName,
+                ...bookingData,
+            }
             return createBooking(payload)
         },
         onSuccess: () => {
@@ -43,8 +47,8 @@ const BookingCreate = () => {
         },
     })
 
-    const onSubmit = (userData: BookingFormSchema) => {
-        mutate(userData)
+    const onSubmit = (bookingData: BookingFormSchema) => {
+        mutate(bookingData)
     }
 
     const handleConfirmDiscard = () => {
@@ -73,6 +77,7 @@ const BookingCreate = () => {
                     email: '',
                     phone: '',
                     classType: '',
+                    trainerID: 0,
                     date: '',
                     participant: 0,
                     timeID: '',

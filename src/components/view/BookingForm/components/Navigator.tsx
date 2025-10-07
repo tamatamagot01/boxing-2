@@ -6,12 +6,6 @@ import { TbPackage, TbUserSquare, TbMapPin, TbCreditCard } from 'react-icons/tb'
 
 const navigationList = [
     {
-        label: 'Select customers',
-        description: 'Add customer to booking information.',
-        link: 'selectCustomers',
-        icon: <TbPackage />,
-    },
-    {
         label: 'Customer details',
         description:
             'Enter customer information like name, email & phone number.',

@@ -36,7 +36,7 @@ const CustomerDetailSection = ({
                     />
                 </FormItem>
                 <FormItem
-                    label="User Name"
+                    label="Last Name"
                     invalid={Boolean(errors.lastName)}
                     errorMessage={errors.lastName?.message}
                 >

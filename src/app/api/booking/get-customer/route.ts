@@ -11,6 +11,7 @@ export async function GET(req: Request) {
     const bookingDate = searchParams.get('bookingDate') ?? ''
     const bookingTimeID = searchParams.get('bookingTimeID') ?? 0
 
+    console.log(classType, trainerID, bookingDate, bookingTimeID)
     try {
         const bookings = await prisma.booking.aggregate({
             where: {
