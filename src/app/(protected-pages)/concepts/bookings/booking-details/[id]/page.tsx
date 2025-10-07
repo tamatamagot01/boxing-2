@@ -5,15 +5,15 @@ import Loading from '@/components/ui/Loading/Loading'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import isEmpty from 'lodash/isEmpty'
-import { getBookingAndBooking } from '../../service/bookings/queryFns'
 import BookingDetails from './_components/BookingDetails'
+import { getBookingDetail } from '../../service/bookings/queryFns'
 
 export default function Page() {
     const param = useParams()
 
     const { isPending, error, data } = useQuery({
         queryKey: ['booking', param.id],
-        queryFn: () => getBookingAndBooking(Number(param.id)),
+        queryFn: () => getBookingDetail(Number(param.id)),
     })
 
     if (isPending) return <Loading />

@@ -11,6 +11,7 @@ import { TbPencil, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { Booking } from '../types'
 import dayjs from 'dayjs'
+import { capitalizeString } from '@/utils/capitalizeString'
 
 type BookingListTableProps = {
     bookingListTotal: number
@@ -70,6 +71,7 @@ const BookingListTable = ({
     const router = useRouter()
 
     const bookingList = useBookingListStore((state) => state.bookingList)
+    console.log('🚀 ~ BookingListTable ~ bookingList:', bookingList)
 
     const isInitialLoading = useBookingListStore(
         (state) => state.initialLoading,
@@ -93,6 +95,16 @@ const BookingListTable = ({
                 cell: (props) => {
                     const row = props.row.original
                     return <BookingIDColumn row={row} />
+                },
+            },
+            {
+                header: 'Class Type',
+                accessorKey: 'classType',
+                cell: (props) => {
+                    const row = props.row.original
+                    const formattedClassType = capitalizeString(row.classType)
+
+                    return <div>{formattedClassType}</div>
                 },
             },
             {

@@ -1,11 +1,5 @@
-'use client'
-
-import { usePathname } from 'next/navigation'
-
 const BookingDetailHeader = () => {
-    const pathname = usePathname()
-
-    return <h3>Booking: {pathname.split('/').pop()}</h3>
+    return <h3>Booking details</h3>
 }
 
 export default BookingDetailHeader

@@ -14,6 +14,7 @@ type EventColors = Record<
 >
 
 interface CalendarViewProps extends CalendarOptions {
+    bookings: any
     wrapperClass?: string
     eventColors?: (colors: EventColors) => EventColors
 }
@@ -53,10 +54,12 @@ const defaultColorList: Record<
 
 const CalendarView = (props: CalendarViewProps) => {
     const {
+        bookings,
         wrapperClass,
         eventColors = () => defaultColorList,
         ...rest
     } = props
+    console.log('🚀 ~ CalendarView ~ bookings:', bookings)
 
     return (
         <div className={classNames('calendar', wrapperClass)}>

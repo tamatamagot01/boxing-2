@@ -155,22 +155,6 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
-            {
-                key: 'concepts.fileManager',
-                path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
-                title: 'File Manager',
-                translateKey: 'nav.fileManager',
-                icon: 'fileManager',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.fileManagerDesc',
-                        label: 'Manage your files',
-                    },
-                },
-                subMenu: [],
-            },
         ],
     },
 ]

@@ -31,8 +31,8 @@ export const getBooking = async (bookingID: number) => {
     return res.data
 }
 
-export const getBookingAndBooking = async (bookingID: number) => {
-    const res = await axiosClient.get('/booking/get-booking-booking', {
+export const getBookingDetail = async (bookingID: number) => {
+    const res = await axiosClient.get('/booking/get-booking-detail', {
         params: { bookingID },
     })
 

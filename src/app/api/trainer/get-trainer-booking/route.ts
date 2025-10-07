@@ -15,6 +15,7 @@ export async function GET(req: Request) {
             include: {
                 bookingsAsTrainer: {
                     include: { time: true, user: true },
+                    orderBy: [{ bookingDate: 'asc' }, { bookingTimeID: 'asc' }],
                 },
             },
         })

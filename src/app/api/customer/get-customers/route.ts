@@ -13,6 +13,7 @@ export async function GET(req: Request) {
 
     const searchCondition = query
         ? {
+              is_trainer: false,
               OR: [
                   {
                       first_name: {
@@ -30,7 +31,7 @@ export async function GET(req: Request) {
                   { phone: { contains: query, mode: 'insensitive' as const } },
               ],
           }
-        : {}
+        : { is_trainer: false }
 
     const skip = (pageIndex - 1) * pageSize
     const take = pageSize

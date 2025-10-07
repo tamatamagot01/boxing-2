@@ -27,6 +27,7 @@ export async function POST(req: Request) {
 
         const trainer = await prisma.user.create({
             data: {
+                is_trainer: true,
                 first_name: firstName,
                 last_name: lastName,
                 email,

@@ -14,4 +14,5 @@ export type Booking = {
     bookingDate: string
     time: { time: string }
     participant: number
+    classType: string
 }

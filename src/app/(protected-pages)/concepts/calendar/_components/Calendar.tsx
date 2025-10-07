@@ -12,12 +12,20 @@ import type {
     EventClickArg,
     DateSelectArg,
 } from '@fullcalendar/core'
+import { useQuery } from '@tanstack/react-query'
+import { getBookings } from '../service/bookings/queryFns'
+import Loading from '@/components/ui/Loading/Loading'
 
 const Calendar = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
 
     const [selectedCell, setSelectedCell] = useState<SelectedCell>({
         type: '',
+    })
+
+    const { data, isPending, error } = useQuery({
+        queryKey: ['bookings'],
+        queryFn: () => getBookings(),
     })
 
     const events = useCalendar((state) => state.data)
@@ -83,14 +91,19 @@ const Calendar = () => {
 
     return (
         <Container className="h-full">
-            <CalendarView
-                editable
-                selectable
-                events={events}
-                eventClick={handleEventClick}
-                select={handleCellSelect}
-                eventDrop={handleEventChange}
-            />
+            {isPending ? (
+                <Loading />
+            ) : (
+                <CalendarView
+                    editable
+                    selectable
+                    events={events}
+                    bookings={data.bookings.bookings}
+                    eventClick={handleEventClick}
+                    select={handleCellSelect}
+                    eventDrop={handleEventChange}
+                />
+            )}
             <EventDialog
                 open={dialogOpen}
                 selected={selectedCell}
