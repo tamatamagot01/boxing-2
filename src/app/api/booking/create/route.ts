@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@/generated/prisma'
 import { customAlphabet } from 'nanoid'
+import LineNotifyService from '@/services/LineNotifyService'
 
 const prisma = new PrismaClient()
 
@@ -91,6 +92,33 @@ export async function POST(req: Request) {
 
             return newBooking
         })
+
+        // ส่ง LINE Notification หลังจากสร้าง booking สำเร็จ
+        try {
+            await LineNotifyService.sendBookingNotification({
+                bookingID: result.bookingID,
+                customerName: `${result.user.first_name} ${result.user.last_name}`,
+                email: result.user.email || '-',
+                phone: phone || '-',
+                classType: result.classType,
+                trainerName: result.trainer
+                    ? `${result.trainer.first_name} ${result.trainer.last_name}`
+                    : undefined,
+                bookingDate: new Date(result.bookingDate).toLocaleDateString(
+                    'th-TH',
+                    {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                    },
+                ),
+                bookingTime: result.time.time,
+                participant: result.participant,
+            })
+        } catch (notifyError) {
+            // ถ้าส่ง LINE Notification ไม่สำเร็จ ให้ log error แต่ไม่ให้ fail ทั้งหมด
+            console.error('Error sending LINE notification:', notifyError)
+        }
 
         return NextResponse.json({ booking: result })
     } catch (error: any) {
