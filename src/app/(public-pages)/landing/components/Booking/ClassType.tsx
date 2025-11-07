@@ -1,10 +1,9 @@
-import { Button, Select } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { FaUser } from 'react-icons/fa'
 import { FaUserGroup } from 'react-icons/fa6'
 import { useClassTypeStore } from '../../store/clientStore'
 import { headerLists } from '../../store/headerStore'
 import { useQuery } from '@tanstack/react-query'
-import { UserType } from '@/@types/common'
 import Loading from '@/components/ui/Loading/Loading'
 import { getTrainers } from '../../service/trainer/queryFns'
 
@@ -16,10 +15,9 @@ type TrainerOption = {
 export default function ClassType() {
     const header = headerLists[0]
 
-    const { classType, setClassType, trainerID, setTrainer } =
-        useClassTypeStore()
+    const { setClassType } = useClassTypeStore()
 
-    const { isPending, error, data } = useQuery({
+    const { isPending, error } = useQuery({
         queryKey: ['trainers'],
         queryFn: getTrainers,
     })
@@ -33,18 +31,8 @@ export default function ClassType() {
         )
     }
 
-    const options: TrainerOption[] =
-        data?.trainers.map((trainer: UserType) => ({
-            label: trainer.first_name,
-            value: trainer.id,
-        })) ?? []
-
     const handleSelectClassType = (classType: 'private' | 'group') => {
         setClassType(classType)
-
-        if (classType === 'group') {
-            setTrainer(0)
-        }
     }
 
     return (
@@ -69,25 +57,6 @@ export default function ClassType() {
                     Group
                 </Button>
             </div>
-
-            {classType === 'private' && (
-                <div>
-                    <hr className="my-4" />
-                    <label className="font-bold">Trainer</label>
-                    <Select
-                        className="mt-2"
-                        placeholder="Select trainer"
-                        value={
-                            options.find((opt) => opt.value === trainerID) ??
-                            null
-                        }
-                        options={options}
-                        onChange={(
-                            option: { label: string; value: number } | null,
-                        ) => setTrainer(option?.value ?? 0)}
-                    />
-                </div>
-            )}
         </div>
     )
 }

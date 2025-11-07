@@ -34,7 +34,6 @@ type BookingPropsType = {
 }
 
 const BookingEdit = ({ data }: { data: BookingPropsType }) => {
-    console.log('🚀 ~ BookingEdit ~ data:', data)
     const router = useRouter()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =

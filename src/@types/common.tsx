@@ -35,13 +35,13 @@ export type UserType = {
 
 export type TimeListType = {
     id: number
-    time: string
+    start: string
+    end: string
     classType: 'private' | 'group'
 }
 
 export type BookingType = {
     classType: 'private' | 'group'
-    trainerID: number
     date: string
     timeID: number
     first_name: string

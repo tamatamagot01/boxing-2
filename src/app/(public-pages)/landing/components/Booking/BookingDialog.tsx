@@ -14,7 +14,6 @@ import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import BookingConfirmation from './BookingConfirmation'
 import BookingSuccess from './BookingSuccess'
-import { sendMail } from '../../utils/sendMail'
 import { createBooking } from '../../service/booking/queryFns'
 
 type BookingDialogProps = {
@@ -45,8 +44,7 @@ export default function BookingDialog({
         useHeaderStore()
 
     // bookingStore
-    const { classType, trainerID, clearClassType, clearTrainer } =
-        useClassTypeStore()
+    const { classType, clearClassType } = useClassTypeStore()
     const { date, timeID, clearDate, clearTime } = useClassDateStore()
     const { participant, clearParticipant, currentAvailable } =
         useClassParticipantStore()
@@ -74,7 +72,6 @@ export default function BookingDialog({
         setIsOpenBookingDialog(false)
         resetHeaderID()
         clearClassType()
-        clearTrainer()
         clearDate()
         clearTime()
         clearParticipant()
@@ -86,7 +83,6 @@ export default function BookingDialog({
             setIsOpenBookingDialog(false)
             resetHeaderID()
             clearClassType()
-            clearTrainer()
         }
 
         if (headerID === 2) {
@@ -103,7 +99,7 @@ export default function BookingDialog({
 
     const handleDisableNextButton = () => {
         if (headerID === 1) {
-            if (!classType || (classType === 'private' && !trainerID)) {
+            if (!classType) {
                 return true
             }
         }
@@ -135,7 +131,6 @@ export default function BookingDialog({
             const payload = {
                 ...userData,
                 classType: classType!,
-                trainerID,
                 date: date!,
                 timeID: timeID!,
                 participant,
@@ -143,28 +138,7 @@ export default function BookingDialog({
             return createBooking(payload)
         },
         onSuccess: (data) => {
-            const bookingDetails = {
-                bookingID: data.booking.bookingID,
-                customer: {
-                    first_name: data.booking.user.first_name,
-                    last_name: data.booking.user.last_name,
-                    email: data.booking.user.email,
-                },
-                trainer: data.booking.trainer
-                    ? {
-                          first_name: data.booking.trainer.first_name,
-                          last_name: data.booking.trainer.last_name,
-                      }
-                    : null,
-                classType: data.booking.classType,
-                date: data.booking.bookingDate,
-                time: data.booking.time.time,
-                participant: data.booking.participant,
-            }
-
-            sendMail(bookingDetails)
             clearClassType()
-            clearTrainer()
             clearDate()
             clearTime()
             clearParticipant()

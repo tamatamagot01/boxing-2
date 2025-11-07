@@ -71,7 +71,6 @@ const BookingListTable = ({
     const router = useRouter()
 
     const bookingList = useBookingListStore((state) => state.bookingList)
-    console.log('🚀 ~ BookingListTable ~ bookingList:', bookingList)
 
     const isInitialLoading = useBookingListStore(
         (state) => state.initialLoading,

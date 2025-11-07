@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@/generated/prisma'
 import { customAlphabet } from 'nanoid'
-import LineNotifyService from '@/services/LineNotifyService'
+import { sendMail } from '@/app/(public-pages)/landing/utils/sendMail'
 
 const prisma = new PrismaClient()
 
@@ -14,7 +14,6 @@ export async function POST(req: Request) {
         email,
         phone,
         classType,
-        trainerID,
         date,
         timeID,
         participant,
@@ -40,24 +39,39 @@ export async function POST(req: Request) {
 
     try {
         const result = await prisma.$transaction(async (tx) => {
-            const existedCustomer = await tx.user.findFirst({
+            // Normalize ข้อมูล
+            const normalizedEmail = email.toLowerCase().trim()
+            const normalizedPhone = phone.replace(/\D/g, '') // เอาเฉพาะตัวเลข
+
+            // ค้นหา customer ด้วย email (unique identifier)
+            const existedCustomer = await tx.user.findUnique({
                 where: {
-                    first_name,
-                    last_name,
-                    email,
-                    phone,
+                    email: normalizedEmail,
                 },
             })
 
             let customer = existedCustomer
 
             if (!existedCustomer) {
+                // สร้าง user ใหม่ถ้ายังไม่มี
                 customer = await tx.user.create({
                     data: {
                         first_name,
                         last_name,
-                        email,
-                        phone,
+                        email: normalizedEmail,
+                        phone: normalizedPhone,
+                    },
+                })
+            } else {
+                // อัปเดตข้อมูล user ถ้ามีการเปลี่ยนแปลง
+                customer = await tx.user.update({
+                    where: {
+                        email: normalizedEmail,
+                    },
+                    data: {
+                        first_name,
+                        last_name,
+                        phone: normalizedPhone,
                     },
                 })
             }
@@ -66,7 +80,6 @@ export async function POST(req: Request) {
                 data: {
                     userID: customer!.id,
                     classType,
-                    trainerID: classType === 'group' ? null : trainerID,
                     bookingDate: date,
                     bookingTimeID: timeID,
                     participant,
@@ -75,10 +88,7 @@ export async function POST(req: Request) {
                 },
                 include: {
                     time: {
-                        select: { time: true },
-                    },
-                    trainer: {
-                        select: { first_name: true, last_name: true },
+                        select: { start: true, end: true },
                     },
                     user: {
                         select: {
@@ -93,31 +103,38 @@ export async function POST(req: Request) {
             return newBooking
         })
 
-        // ส่ง LINE Notification หลังจากสร้าง booking สำเร็จ
+        // ส่ง Email ให้ลูกค้าและเจ้าของค่ายหลังจากสร้าง booking สำเร็จ
         try {
-            await LineNotifyService.sendBookingNotification({
+            const bookingDetails = {
                 bookingID: result.bookingID,
-                customerName: `${result.user.first_name} ${result.user.last_name}`,
-                email: result.user.email || '-',
-                phone: phone || '-',
+                customer: {
+                    first_name: result.user.first_name,
+                    last_name: result.user.last_name,
+                    email: result.user.email,
+                },
                 classType: result.classType,
-                trainerName: result.trainer
-                    ? `${result.trainer.first_name} ${result.trainer.last_name}`
-                    : undefined,
-                bookingDate: new Date(result.bookingDate).toLocaleDateString(
-                    'th-TH',
-                    {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                    },
-                ),
-                bookingTime: result.time.time,
+                date: result.bookingDate,
+                time: {
+                    start: result.time.start,
+                    end: result.time.end,
+                },
                 participant: result.participant,
-            })
-        } catch (notifyError) {
-            // ถ้าส่ง LINE Notification ไม่สำเร็จ ให้ log error แต่ไม่ให้ fail ทั้งหมด
-            console.error('Error sending LINE notification:', notifyError)
+            }
+
+            await sendMail(bookingDetails)
+
+            const ownerEmail = process.env.OWNER_EMAIL
+            if (ownerEmail) {
+                await sendMail({
+                    ...bookingDetails,
+                    customer: {
+                        ...bookingDetails.customer,
+                        email: ownerEmail,
+                    },
+                })
+            }
+        } catch (emailError) {
+            console.error('Error sending email notification:', emailError)
         }
 
         return NextResponse.json({ booking: result })

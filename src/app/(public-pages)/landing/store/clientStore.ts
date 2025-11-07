@@ -4,10 +4,6 @@ type ClassTypeStore = {
     classType: 'private' | 'group' | null
     setClassType: (selectedClassType: 'private' | 'group' | null) => void
     clearClassType: () => void
-
-    trainerID: number
-    setTrainer: (selectedTrainer: number) => void
-    clearTrainer: () => void
 }
 
 export const useClassTypeStore = create<ClassTypeStore>()((set) => ({
@@ -15,11 +11,6 @@ export const useClassTypeStore = create<ClassTypeStore>()((set) => ({
     setClassType: (selectedClassType: 'private' | 'group' | null) =>
         set({ classType: selectedClassType }),
     clearClassType: () => set({ classType: null }),
-
-    trainerID: 0,
-    setTrainer: (selectedTrainer: number) =>
-        set({ trainerID: selectedTrainer }),
-    clearTrainer: () => set({ trainerID: 0 }),
 }))
 
 type ClassDateStore = {
@@ -57,7 +48,7 @@ type ClassParticipantStore = {
 
 export const useClassParticipantStore = create<ClassParticipantStore>()(
     (set) => ({
-        maxGroupParticipant: 28,
+        maxGroupParticipant: 6,
         maxPrivateParticipant: 2,
 
         participant: 1,

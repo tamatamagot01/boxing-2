@@ -5,10 +5,9 @@ import nodemailer from 'nodemailer'
 type BookignDetailType = {
     bookingID: string
     customer: { first_name: string; last_name: string; email: string }
-    trainer: { first_name: string; last_name: string } | null
     classType: string
     date: string
-    time: string
+    time: { start: string; end: string }
     participant: number
 }
 
@@ -40,10 +39,6 @@ export async function sendMail(bookingDetails: BookignDetailType) {
 }
 
 function generateBookingConfirmationHtml(details: BookignDetailType): string {
-    const trainerName = details.trainer
-        ? `${capitalizeString(details.trainer.first_name)} ${capitalizeString(details.trainer.last_name)}`
-        : 'N/A' // หรือข้อความอื่นที่เหมาะสมถ้าไม่มีเทรนเนอร์
-
     // กำหนดสีและรูปแบบหลัก
     const primaryColor = '#FF4500' // Orange-Red, สื่อถึง Boxing/Energy
     const secondaryColor = '#333333'
@@ -134,16 +129,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
                             Date/Time:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; border-bottom: 1px solid #eeeeee;">
-                            ${details.date} / ${details.time}
-                        </td>
-                    </tr>
-
-                    <tr style="${!details.trainer && 'display: none'}">
-                        <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee;">
-                            Trainer:
-                        </td>
-                        <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; border-bottom: 1px solid #eeeeee;">
-                            ${trainerName}
+                            ${details.date} / ${details.time.start} - ${details.time.end}
                         </td>
                     </tr>
 

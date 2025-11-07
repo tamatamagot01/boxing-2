@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 import { getThisDayCustomer } from '../../service/booking/queryFns'
 
 export default function ClassParticipant({}) {
-    const { classType, trainerID } = useClassTypeStore()
+    const { classType } = useClassTypeStore()
     const { date, timeID } = useClassDateStore()
     const {
         maxGroupParticipant,
@@ -28,8 +28,8 @@ export default function ClassParticipant({}) {
     }
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['bookings', classType, trainerID, date, timeID],
-        queryFn: () => getThisDayCustomer(classType!, trainerID, date, timeID),
+        queryKey: ['bookings', classType, date, timeID],
+        queryFn: () => getThisDayCustomer(classType!, date, timeID),
         enabled: !!date && !!timeID,
     })
 

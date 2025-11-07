@@ -27,13 +27,13 @@ export default function BookingConfirmation({
     const userData = getUserData()
 
     // bookingStore
-    const { classType, trainerID } = useClassTypeStore()
+    const { classType } = useClassTypeStore()
     const { date, timeID } = useClassDateStore()
     const { participant } = useClassParticipantStore()
 
     const { isPending, error, data } = useQuery({
         queryKey: ['result'],
-        queryFn: () => getConfirmBookingDetail(trainerID, timeID!),
+        queryFn: () => getConfirmBookingDetail(timeID!),
     })
 
     if (isPending) return <Loading />
@@ -76,7 +76,7 @@ export default function BookingConfirmation({
                     />
                     <DetailRow
                         title="Time & Date"
-                        value={`${date} @ ${data.time.time}`}
+                        value={`${date} @ ${data.time.start} - ${data.time.end}`}
                     />
                     <DetailRow title="Participants" value={participant} />
                     {data.trainer && (

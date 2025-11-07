@@ -39,7 +39,7 @@ export default function ClassTime({}) {
 
     const options: TimeOption[] =
         data?.times.map((time: TimeListType) => ({
-            label: time.time,
+            label: `${time.start} - ${time.end}`,
             value: time.id,
         })) ?? []
 
