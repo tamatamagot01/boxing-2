@@ -22,7 +22,7 @@ enum ClassType {
 model User {
   id            Int      @id @default(autoincrement())
   email         String   @unique
-  phone         String
+  phone         String?
   first_name    String
   last_name     String
   password      String?
@@ -79,13 +79,20 @@ model Booking {
   bookingDate   String
   classType     String
   participant   Int
-  userID        Int
+  
+  guestFirstName String?
+  guestLastName  String?
+  guestEmail     String?
+  guestPhone     String?
+  
+  userID        Int?
+  user          User?    @relation("UserBookings", fields: [userID], references: [id])
+  
   bookingTimeID Int
+  time          TimeList @relation(fields: [bookingTimeID], references: [id])
+  
   createdAt     DateTime @default(now())
   createdBy     Int?
   updatedAt     DateTime @default(now())
   updatedBy     Int?
-
-  user    User  @relation("UserBookings", fields: [userID], references: [id])
-  time TimeList @relation(fields: [bookingTimeID], references: [id])
 }

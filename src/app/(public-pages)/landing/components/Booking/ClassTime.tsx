@@ -37,6 +37,8 @@ export default function ClassTime({}) {
         )
     }
 
+    console.log('ClassTime data:', data)
+
     const options: TimeOption[] =
         data?.times.map((time: TimeListType) => ({
             label: `${time.start} - ${time.end}`,

@@ -18,7 +18,9 @@ export async function GET(req: Request) {
     try {
         const times = await prisma.timeList.findMany({
             where: { classType },
+            orderBy: { start: 'asc' },
         })
+        console.log('🚀 ~ GET ~ times:', times)
 
         return NextResponse.json({ times })
     } catch (error: any) {

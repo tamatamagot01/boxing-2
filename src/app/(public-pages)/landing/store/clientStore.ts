@@ -1,5 +1,20 @@
 import { create } from 'zustand'
 
+type UserTypeStore = {
+    userType: 'member' | 'register' | 'guest' | null
+    setUserType: (
+        selectedUserType: 'member' | 'register' | 'guest' | null,
+    ) => void
+    clearUserType: () => void
+}
+
+export const useUserTypeStore = create<UserTypeStore>()((set) => ({
+    userType: null,
+    setUserType: (selectedUserType: 'member' | 'register' | 'guest' | null) =>
+        set({ userType: selectedUserType }),
+    clearUserType: () => set({ userType: null }),
+}))
+
 type ClassTypeStore = {
     classType: 'private' | 'group' | null
     setClassType: (selectedClassType: 'private' | 'group' | null) => void

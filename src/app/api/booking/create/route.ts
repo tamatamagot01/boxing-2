@@ -17,6 +17,7 @@ export async function POST(req: Request) {
         date,
         timeID,
         participant,
+        userID, // Optional - ถ้ามีแปลว่า login แล้ว
     } = payload
 
     const generateBookingID = customAlphabet(
@@ -39,79 +40,77 @@ export async function POST(req: Request) {
 
     try {
         const result = await prisma.$transaction(async (tx) => {
-            // Normalize ข้อมูล
-            const normalizedEmail = email.toLowerCase().trim()
-            const normalizedPhone = phone.replace(/\D/g, '') // เอาเฉพาะตัวเลข
-
-            // ค้นหา customer ด้วย email (unique identifier)
-            const existedCustomer = await tx.user.findUnique({
-                where: {
-                    email: normalizedEmail,
-                },
-            })
-
-            let customer = existedCustomer
-
-            if (!existedCustomer) {
-                // สร้าง user ใหม่ถ้ายังไม่มี
-                customer = await tx.user.create({
+            // ถ้ามี userID แปลว่า login แล้ว (member booking)
+            if (userID) {
+                const newBooking = await tx.booking.create({
                     data: {
-                        first_name,
-                        last_name,
-                        email: normalizedEmail,
-                        phone: normalizedPhone,
+                        userID,
+                        classType,
+                        bookingDate: date,
+                        bookingTimeID: timeID,
+                        participant,
+                        bookingID,
+                        createdBy: userID,
                     },
-                })
-            } else {
-                // อัปเดตข้อมูล user ถ้ามีการเปลี่ยนแปลง
-                customer = await tx.user.update({
-                    where: {
-                        email: normalizedEmail,
-                    },
-                    data: {
-                        first_name,
-                        last_name,
-                        phone: normalizedPhone,
-                    },
-                })
-            }
-
-            const newBooking = await tx.booking.create({
-                data: {
-                    userID: customer!.id,
-                    classType,
-                    bookingDate: date,
-                    bookingTimeID: timeID,
-                    participant,
-                    bookingID,
-                    createdBy: customer!.id,
-                },
-                include: {
-                    time: {
-                        select: { start: true, end: true },
-                    },
-                    user: {
-                        select: {
-                            first_name: true,
-                            last_name: true,
-                            email: true,
+                    include: {
+                        time: {
+                            select: { start: true, end: true },
+                        },
+                        user: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                                email: true,
+                            },
                         },
                     },
-                },
-            })
+                })
 
-            return newBooking
+                return {
+                    ...newBooking,
+                    customerInfo: {
+                        first_name: newBooking.user!.first_name,
+                        last_name: newBooking.user!.last_name,
+                        email: newBooking.user!.email,
+                    },
+                }
+            } else {
+                // Guest booking - เก็บข้อมูลใน booking เลย
+                const newBooking = await tx.booking.create({
+                    data: {
+                        guestFirstName: first_name,
+                        guestLastName: last_name,
+                        guestEmail: email.toLowerCase().trim(),
+                        guestPhone: phone.replace(/\D/g, ''),
+                        classType,
+                        bookingDate: date,
+                        bookingTimeID: timeID,
+                        participant,
+                        bookingID,
+                    },
+                    include: {
+                        time: {
+                            select: { start: true, end: true },
+                        },
+                    },
+                })
+
+                return {
+                    ...newBooking,
+                    customerInfo: {
+                        first_name: newBooking.guestFirstName!,
+                        last_name: newBooking.guestLastName!,
+                        email: newBooking.guestEmail!,
+                    },
+                }
+            }
         })
 
         // ส่ง Email ให้ลูกค้าและเจ้าของค่ายหลังจากสร้าง booking สำเร็จ
         try {
             const bookingDetails = {
                 bookingID: result.bookingID,
-                customer: {
-                    first_name: result.user.first_name,
-                    last_name: result.user.last_name,
-                    email: result.user.email,
-                },
+                customer: result.customerInfo,
                 classType: result.classType,
                 date: result.bookingDate,
                 time: {

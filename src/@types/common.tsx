@@ -48,4 +48,6 @@ export type BookingType = {
     last_name: string
     email: string
     phone: string
+    participant: number
+    userID?: number // Optional - for member bookings
 }

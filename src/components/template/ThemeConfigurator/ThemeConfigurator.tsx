@@ -1,4 +1,3 @@
-import ModeSwitcher from './ModeSwitcher'
 import LayoutSwitcher from './LayoutSwitcher'
 import ThemeSwitcher from './ThemeSwitcher'
 import DirectionSwitcher from './DirectionSwitcher'
@@ -12,13 +11,7 @@ const ThemeConfigurator = ({ callBackClose }: ThemeConfiguratorProps) => {
     return (
         <div className="flex flex-col h-full justify-between">
             <div className="flex flex-col gap-y-10 mb-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h6>Dark Mode</h6>
-                        <span>Switch theme to dark mode</span>
-                    </div>
-                    <ModeSwitcher />
-                </div>
+                {/* Dark Mode Switcher removed - always dark */}
                 <div className="flex items-center justify-between">
                     <div>
                         <h6>Direction</h6>

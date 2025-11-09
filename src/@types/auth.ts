@@ -15,13 +15,21 @@ export type SignInResponse = {
 }
 
 export type SignUpResponse = {
-    status: string
+    success: boolean
     message: string
+    user?: {
+        id: number
+        email: string
+        firstName: string
+        lastName: string
+    }
 }
 
 export type SignUpCredential = {
-    userName: string
+    firstName: string
+    lastName: string
     email: string
+    phone?: string
     password: string
 }
 

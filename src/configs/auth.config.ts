@@ -7,6 +7,24 @@ import Google from 'next-auth/providers/google'
 import type { SignInCredential } from '@/@types/auth'
 
 export default {
+    session: {
+        strategy: 'jwt', // Use JWT for session
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    cookies: {
+        sessionToken: {
+            name:
+                process.env.NODE_ENV === 'production'
+                    ? '__Secure-next-auth.session-token'
+                    : 'next-auth.session-token',
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+            },
+        },
+    },
     providers: [
         Github({
             clientId: process.env.GITHUB_AUTH_CLIENT_ID,
@@ -36,6 +54,15 @@ export default {
         }),
     ],
     callbacks: {
+        async jwt({ token, user }) {
+            // Add user info to JWT token on sign in
+            if (user) {
+                token.id = user.id
+                token.email = user.email
+                token.name = user.name
+            }
+            return token
+        },
         async session(payload) {
             /** apply extra user attributes here, for example, we add 'authority' & 'id' in this section */
             return {
