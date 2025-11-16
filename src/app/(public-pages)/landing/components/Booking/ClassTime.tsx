@@ -7,13 +7,18 @@ import { TimeListType } from '@/@types/common'
 import dayjs from 'dayjs'
 import Loading from '@/components/ui/Loading/Loading'
 import { getClassTime } from '../../service/time/queryFns'
+import { useEffect } from 'react'
 
 type TimeOption = {
     label: string
     value: number
 }
 
-export default function ClassTime({}) {
+type ClassTimeProps = {
+    onLoadingChange?: (isLoading: boolean) => void
+}
+
+export default function ClassTime({ onLoadingChange }: ClassTimeProps) {
     const header = headerLists[1]
 
     const today = new Date()
@@ -28,6 +33,11 @@ export default function ClassTime({}) {
         enabled: !!classType,
     })
 
+    // Notify parent about loading state
+    useEffect(() => {
+        onLoadingChange?.(isPending)
+    }, [isPending, onLoadingChange])
+
     if (isPending) return <Loading />
 
     if (error) {
@@ -36,8 +46,6 @@ export default function ClassTime({}) {
             ((error as any).response?.data?.error || (error as Error).message)
         )
     }
-
-    console.log('ClassTime data:', data)
 
     const options: TimeOption[] =
         data?.times.map((time: TimeListType) => ({
@@ -85,7 +93,9 @@ export default function ClassTime({}) {
 
             <hr className="my-4" />
 
-            {date && timeID && <ClassParticipant />}
+            {date && timeID && (
+                <ClassParticipant onLoadingChange={onLoadingChange} />
+            )}
         </div>
     )
 }

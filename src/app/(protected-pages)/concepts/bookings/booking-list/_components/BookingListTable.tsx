@@ -125,8 +125,12 @@ const BookingListTable = ({
                 },
             },
             {
-                header: 'Time',
-                accessorKey: 'time.time',
+                header: 'Start Time',
+                accessorKey: 'time.start',
+            },
+            {
+                header: 'End Time',
+                accessorKey: 'time.end',
             },
             {
                 header: 'Participants',

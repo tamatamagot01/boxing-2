@@ -53,6 +53,9 @@ export default function BookingDialog({
         phone: string
     } | null>(null)
 
+    // State for tracking loading status of child components
+    const [isChildLoading, setIsChildLoading] = useState(false)
+
     // Check if user is already logged in when dialog opens
     useEffect(() => {
         const checkSession = async () => {
@@ -159,6 +162,11 @@ export default function BookingDialog({
     }
 
     const handleDisableNextButton = () => {
+        // Disable if child component is loading
+        if (isChildLoading) {
+            return true
+        }
+
         if (headerID === 1) {
             if (!userType) {
                 return true
@@ -344,8 +352,12 @@ export default function BookingDialog({
                     )}
                 </>
             )}
-            {headerID === 2 && <ClassType />}
-            {headerID === 3 && <ClassTime />}
+            {headerID === 2 && (
+                <ClassType onLoadingChange={setIsChildLoading} />
+            )}
+            {headerID === 3 && (
+                <ClassTime onLoadingChange={setIsChildLoading} />
+            )}
             {/* Only show ClassUserDetail if user is NOT logged in */}
             {headerID === 4 && !registeredUser && (
                 <ClassUserDetail register={register} errors={errors} />
@@ -362,6 +374,7 @@ export default function BookingDialog({
                               })
                             : getValues
                     }
+                    onLoadingChange={setIsChildLoading}
                 />
             )}
             {isSuccess && (

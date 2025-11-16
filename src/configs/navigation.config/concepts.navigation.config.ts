@@ -39,22 +39,22 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
-            {
-                key: 'concepts.trainers',
-                path: `${CONCEPTS_PREFIX_PATH}/trainers/trainer-list`,
-                title: 'Trainers',
-                translateKey: 'nav.conceptsTrainers.trainers',
-                icon: 'trainers',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsTrainers.trainersDesc',
-                        label: 'Trainer management',
-                    },
-                },
-                subMenu: [],
-            },
+            // {
+            //     key: 'concepts.trainers',
+            //     path: `${CONCEPTS_PREFIX_PATH}/trainers/trainer-list`,
+            //     title: 'Trainers',
+            //     translateKey: 'nav.conceptsTrainers.trainers',
+            //     icon: 'trainers',
+            //     type: NAV_ITEM_TYPE_ITEM,
+            //     authority: [ADMIN, USER],
+            //     meta: {
+            //         description: {
+            //             translateKey: 'nav.conceptsTrainers.trainersDesc',
+            //             label: 'Trainer management',
+            //         },
+            //     },
+            //     subMenu: [],
+            // },
             {
                 key: 'concepts.bookings',
                 path: `${CONCEPTS_PREFIX_PATH}/bookings/booking-list`,

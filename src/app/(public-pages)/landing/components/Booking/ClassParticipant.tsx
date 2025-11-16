@@ -11,7 +11,13 @@ import Loading from '@/components/ui/Loading/Loading'
 import { useEffect } from 'react'
 import { getThisDayCustomer } from '../../service/booking/queryFns'
 
-export default function ClassParticipant({}) {
+type ClassParticipantProps = {
+    onLoadingChange?: (isLoading: boolean) => void
+}
+
+export default function ClassParticipant({
+    onLoadingChange,
+}: ClassParticipantProps) {
     const { classType } = useClassTypeStore()
     const { date, timeID } = useClassDateStore()
     const {
@@ -34,6 +40,11 @@ export default function ClassParticipant({}) {
     })
 
     const thisDayCustomer = data?.bookings._sum.participant ?? 0
+
+    // Notify parent about loading state
+    useEffect(() => {
+        onLoadingChange?.(isPending)
+    }, [isPending, onLoadingChange])
 
     useEffect(() => {
         if (classType === 'private') {

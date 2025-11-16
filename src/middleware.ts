@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth'
 
-import authConfig from '@/configs/auth.config'
+import authConfig from '@/configs/auth.config.edge'
 import {
     authRoutes as _authRoutes,
     publicRoutes as _publicRoutes,
@@ -15,16 +15,27 @@ const authRoutes = Object.entries(_authRoutes).map(([key]) => key)
 
 const apiAuthPrefix = `${appConfig.apiPrefix}/auth`
 
+// Public API routes that don't require authentication
+const publicApiPrefixes = [
+    `${appConfig.apiPrefix}/time`,
+    `${appConfig.apiPrefix}/booking`,
+    `${appConfig.apiPrefix}/public`,
+    // Add more public API prefixes here if needed
+]
+
 export default auth((req) => {
     const { nextUrl } = req
     const isSignedIn = !!req.auth
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+    const isPublicApiRoute = publicApiPrefixes.some((prefix) =>
+        nextUrl.pathname.startsWith(prefix),
+    )
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-    /** Skip auth middleware for api routes */
-    if (isApiAuthRoute) return
+    /** Skip auth middleware for api auth routes and public api routes */
+    if (isApiAuthRoute || isPublicApiRoute) return
 
     if (isAuthRoute) {
         if (isSignedIn) {

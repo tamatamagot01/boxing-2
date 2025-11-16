@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import Loading from '@/components/ui/Loading/Loading'
 import { capitalizeString } from '@/utils/capitalizeString'
 import { getConfirmBookingDetail } from '../../service/booking/queryFns'
+import { useEffect } from 'react'
 
 type BookingConfirmationType = {
     getUserData: () => {
@@ -17,10 +18,12 @@ type BookingConfirmationType = {
         email: string
         phone: string
     }
+    onLoadingChange?: (isLoading: boolean) => void
 }
 
 export default function BookingConfirmation({
     getUserData,
+    onLoadingChange,
 }: BookingConfirmationType) {
     const header = headerLists[3]
 
@@ -35,6 +38,11 @@ export default function BookingConfirmation({
         queryKey: ['result'],
         queryFn: () => getConfirmBookingDetail(timeID!),
     })
+
+    // Notify parent about loading state
+    useEffect(() => {
+        onLoadingChange?.(isPending)
+    }, [isPending, onLoadingChange])
 
     if (isPending) return <Loading />
 

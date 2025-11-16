@@ -24,16 +24,16 @@ export async function GET(req: Request) {
                         img: true,
                     },
                 },
-                trainer: {
-                    select: {
-                        id: true,
-                        first_name: true,
-                        last_name: true,
-                        img: true,
-                        email: true,
-                        phone: true,
-                    },
-                },
+                // trainer: {
+                //     select: {
+                //         id: true,
+                //         first_name: true,
+                //         last_name: true,
+                //         img: true,
+                //         email: true,
+                //         phone: true,
+                //     },
+                // },
             },
         })
 

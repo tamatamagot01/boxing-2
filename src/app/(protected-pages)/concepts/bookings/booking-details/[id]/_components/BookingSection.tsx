@@ -8,7 +8,7 @@ type BookingProps = {
     id: number
     bookingID: string
     bookingDate: string
-    time: { time: string }
+    time: { start: string; end: string }
     classType: string
     participant: number
 }
@@ -47,7 +47,10 @@ const BookingSection = ({ data }: { data: BookingProps }) => {
                         {capitalizeString(classType)}
                     </p>
                 </div>
-                <BookingInfoField title="Time" value={time.time || '-'} />
+                <BookingInfoField
+                    title="Time"
+                    value={`${time.start} - ${time.end}`}
+                />
                 <BookingInfoField
                     title="Participants"
                     value={String(participant)}

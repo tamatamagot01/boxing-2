@@ -6,13 +6,18 @@ import { headerLists } from '../../store/headerStore'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '@/components/ui/Loading/Loading'
 import { getTrainers } from '../../service/trainer/queryFns'
+import { useEffect } from 'react'
 
 type TrainerOption = {
     label: string
     value: number
 }
 
-export default function ClassType() {
+type ClassTypeProps = {
+    onLoadingChange?: (isLoading: boolean) => void
+}
+
+export default function ClassType({ onLoadingChange }: ClassTypeProps) {
     const header = headerLists[0]
 
     const { setClassType } = useClassTypeStore()
@@ -21,6 +26,11 @@ export default function ClassType() {
         queryKey: ['trainers'],
         queryFn: getTrainers,
     })
+
+    // Notify parent about loading state
+    useEffect(() => {
+        onLoadingChange?.(isPending)
+    }, [isPending, onLoadingChange])
 
     if (isPending) return <Loading />
 

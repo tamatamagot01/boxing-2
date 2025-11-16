@@ -59,7 +59,6 @@ const CalendarView = (props: CalendarViewProps) => {
         eventColors = () => defaultColorList,
         ...rest
     } = props
-    console.log('🚀 ~ CalendarView ~ bookings:', bookings)
 
     return (
         <div className={classNames('calendar', wrapperClass)}>

@@ -8,7 +8,7 @@ import type { FormSectionBaseProps } from '../types'
 import { DatePicker, Select } from '@/components/ui'
 import { useQuery } from '@tanstack/react-query'
 import { getThisDayCustomer } from '@/app/(public-pages)/landing/service/booking/queryFns'
-import { getTrainerAndClassTime } from '../service/trainer-time/queryFns'
+import { getClassTime } from '../service/class-time/queryFns'
 import { useEffect } from 'react'
 import { useClassParticipantStore } from '@/app/(public-pages)/landing/store/clientStore'
 import dayjs from 'dayjs'
@@ -35,8 +35,8 @@ const BookingDetailSection = ({
     } = useClassParticipantStore()
 
     const { isPending, data } = useQuery({
-        queryKey: ['results', classType],
-        queryFn: () => getTrainerAndClassTime(classType as any),
+        queryKey: ['times', classType],
+        queryFn: () => getClassTime(classType as any),
         enabled: !!classType,
     })
 
@@ -45,32 +45,20 @@ const BookingDetailSection = ({
         { label: 'Group', value: 'group' },
     ]
 
-    const trainerOptions =
-        data?.results.trainers?.map((trainer: any) => ({
-            label: `${trainer.first_name} ${trainer.last_name}`,
-            value: trainer.id,
-        })) ?? []
-
     const timeOptions =
-        data?.results.times?.map((time: any) => ({
-            label: time.time,
+        data?.times?.map((time: any) => ({
+            label: time.start + ' - ' + time.end,
             value: time.id,
         })) ?? []
 
     const trainerID = useWatch({ control, name: 'trainerID' })
     const date = useWatch({ control, name: 'date' })
     const timeID = useWatch({ control, name: 'timeID' })
-    console.log('🚀 ~ BookingDetailSection ~ timeID:', timeID)
 
     const { data: bookingData, isPending: isPendingBookingData } = useQuery({
         queryKey: ['bookings', classType, trainerID, date, timeID],
         queryFn: () =>
-            getThisDayCustomer(
-                classType!,
-                trainerID,
-                date.split('T')[0],
-                Number(timeID),
-            ),
+            getThisDayCustomer(classType!, date.split('T')[0], Number(timeID)),
         enabled: !!classType && !!date && !!timeID,
     })
 
@@ -111,40 +99,6 @@ const BookingDetailSection = ({
                                 onChange={(option) => {
                                     field.onChange(option?.value)
                                     setValue('timeID', 0)
-                                }}
-                                onBlur={field.onBlur}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="Trainer"
-                    invalid={Boolean(errors.trainerID)}
-                    errorMessage={errors.trainerID?.message}
-                >
-                    <Controller
-                        name="trainerID"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                placeholder="Trainer"
-                                isLoading={isPending}
-                                isDisabled={!classType || classType === 'group'}
-                                options={trainerOptions}
-                                value={
-                                    classType === 'group'
-                                        ? null
-                                        : trainerOptions.find(
-                                              (option: any) =>
-                                                  option.value === field.value,
-                                          ) || null
-                                }
-                                onChange={(option) => {
-                                    if (classType === 'group') {
-                                        field.onChange(null)
-                                    } else {
-                                        field.onChange(option?.value ?? null)
-                                    }
                                 }}
                                 onBlur={field.onBlur}
                             />
@@ -197,7 +151,7 @@ const BookingDetailSection = ({
                         render={({ field }) => (
                             <Select
                                 placeholder="Time"
-                                isLoading={isPending}
+                                isLoading={isPending && !!classType}
                                 isDisabled={!classType}
                                 options={timeOptions}
                                 value={
@@ -216,7 +170,7 @@ const BookingDetailSection = ({
                 </FormItem>
             </div>
 
-            {!isPendingBookingData && (
+            {classType && date && timeID && !isPendingBookingData && (
                 <FormItem
                     label="Participant"
                     invalid={Boolean(errors.participant)}
@@ -252,8 +206,13 @@ const BookingDetailSection = ({
                 </FormItem>
             )}
 
-            {!isPendingBookingData ? (
-                currentAvailable ? (
+            {classType &&
+                date &&
+                timeID &&
+                timeID !== 0 &&
+                (isPendingBookingData ? (
+                    <Loading />
+                ) : currentAvailable > 0 ? (
                     <p className="text-success mt-1.5">
                         Available spots : <span>{currentAvailable}</span>
                     </p>
@@ -261,10 +220,7 @@ const BookingDetailSection = ({
                     <p className="text-error mt-1.5">
                         No available spots for this time
                     </p>
-                )
-            ) : (
-                <Loading />
-            )}
+                ))}
         </Card>
     )
 }

@@ -20,7 +20,6 @@ export async function GET(req: Request) {
             where: { classType },
             orderBy: { start: 'asc' },
         })
-        console.log('🚀 ~ GET ~ times:', times)
 
         return NextResponse.json({ times })
     } catch (error: any) {
