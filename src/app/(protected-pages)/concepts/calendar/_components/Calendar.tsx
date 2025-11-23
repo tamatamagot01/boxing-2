@@ -13,7 +13,7 @@ import type {
     DateSelectArg,
 } from '@fullcalendar/core'
 import { useQuery } from '@tanstack/react-query'
-import { getBookings } from '../service/bookings/queryFns'
+import { getBookingCalendar, getBookings } from '../service/bookings/queryFns'
 import Loading from '@/components/ui/Loading/Loading'
 
 const Calendar = () => {
@@ -25,10 +25,12 @@ const Calendar = () => {
 
     const { data, isPending, error } = useQuery({
         queryKey: ['bookings'],
-        queryFn: () => getBookings(),
+        queryFn: () => getBookingCalendar(),
     })
-
-    const events = useCalendar((state) => state.data)
+    console.log('🚀 ~ Calendar ~ data:', data?.bookings)
+    const events = data?.bookings || []
+    // const events = useCalendar((state) => state.data)
+    console.log('🚀 ~ Calendar ~ events:', events)
     const setEvents = useCalendar((state) => state.setData)
 
     const handleCellSelect = (event: DateSelectArg) => {
@@ -56,7 +58,7 @@ const Calendar = () => {
     }
 
     const handleEventChange = (arg: EventDropArg) => {
-        const newEvents = cloneDeep(events)?.map((event) => {
+        const newEvents = cloneDeep(events)?.map((event: any) => {
             if (arg.event.id === event.id) {
                 const { id, extendedProps, start, end, title } = arg.event
                 event = {
@@ -79,7 +81,7 @@ const Calendar = () => {
         }
 
         if (type === 'EDIT') {
-            newEvents = newEvents?.map((event) => {
+            newEvents = newEvents?.map((event: any) => {
                 if (data.id === event.id) {
                     event = data
                 }

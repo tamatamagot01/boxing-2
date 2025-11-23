@@ -1,11 +1,10 @@
 import Button from '@/components/ui/Button'
 import { motion } from 'framer-motion'
 import TextGenerateEffect from './TextGenerateEffect'
-import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
+import { MODE_DARK } from '@/constants/theme.constant'
 import Image from 'next/image'
 import type { Mode } from '@/@types/theme'
 import BookingDialog from './Booking/BookingDialog'
-import { useState } from 'react'
 
 type HeroContentType = {
     mode: Mode
@@ -29,9 +28,9 @@ const HeroContent = ({
                 <div>
                     <TextGenerateEffect
                         wordClassName="text-2xl md:text-4xl lg:text-8xl font-bold max-w-7xl mx-auto text-center mt-6 relative z-10"
-                        words="Unleash Your Inner Fighter"
+                        words="CRUSH  YOUR GOALS"
                         wordsCallbackClass={({ word }) => {
-                            if (word === 'Fighter') {
+                            if (word === 'GOALS') {
                                 return 'bg-gradient-to-r from-[#2feaa8] to-[#0eb9ce] bg-clip-text text-transparent'
                             }
 
@@ -44,10 +43,7 @@ const HeroContent = ({
                         transition={{ duration: 0.3, delay: 0.5 }}
                         className="text-center mt-6 text-base md:text-xl text-muted dark:text-muted-dark max-w-5xl mx-auto relative z-10 font-normal"
                     >
-                        Step into the ring and discover your strength. Our gym
-                        provides a supportive community and expert coaching to
-                        help you build confidence, master new skills, and
-                        transform your body and mind through the art of boxing.
+                        FIND YOUR NEW 'EXPERIENCE'
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, translateY: 40 }}
@@ -66,15 +62,6 @@ const HeroContent = ({
                 <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative">
                     <div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-black/50 dark:to-black scale-[1.1] pointer-events-none" />
                     <div className="bg-white dark:bg-black dark:border-gray-700 border border-gray-200 rounded-[24px]">
-                        {mode === MODE_LIGHT && (
-                            <Image
-                                className="rounded-2xl lg:rounded-[24px]"
-                                src="/img/landing/hero/hero.webp"
-                                width={1920}
-                                height={1040}
-                                alt="Ecme homepage"
-                            />
-                        )}
                         {mode === MODE_DARK && (
                             <Image
                                 className="rounded-2xl lg:rounded-[24px]"

@@ -24,17 +24,17 @@ const conceptsNavigationConfig: NavigationTree[] = [
         },
         subMenu: [
             {
-                key: 'concepts.customers.customerList',
-                path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
-                title: 'Customers',
-                translateKey: 'nav.conceptsCustomers.customers',
-                icon: 'customers',
+                key: 'concepts.users.userList',
+                path: `${CONCEPTS_PREFIX_PATH}/users/user-list`,
+                title: 'Users',
+                translateKey: 'nav.conceptsUsers.users',
+                icon: 'users',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
-                        translateKey: 'nav.conceptsCustomers.customersDesc',
-                        label: 'Customer management',
+                        translateKey: 'nav.conceptsUsers.usersDesc',
+                        label: 'User management',
                     },
                 },
                 subMenu: [],

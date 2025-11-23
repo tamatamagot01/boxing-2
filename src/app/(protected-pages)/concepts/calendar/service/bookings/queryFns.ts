@@ -18,3 +18,8 @@ export const getBooking = async (bookingID: number) => {
 
     return res.data
 }
+
+export const getBookingCalendar = async () => {
+    const res = await axiosClient.get('/booking/get-booking-calendar')
+    return res.data
+}

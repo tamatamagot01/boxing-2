@@ -28,17 +28,17 @@
             "trainerCreateDesc": "Add a new trainer",
             "trainerDetailsDesc": "Detailed trainer info"
         },
-        "conceptsCustomers": {
-            "customers": "Customer",
-            "customerList": "List",
-            "customerEdit": "Edit",
-            "customerCreate": "Create",
-            "customerDetails": "Details",
-            "customersDesc": "Customer management",
-            "customerListDesc": "List of all customers",
-            "customerEditDesc": "Edit customer info",
-            "customerCreateDesc": "Add a new customer",
-            "customerDetailsDesc": "Detailed customer info"
+        "conceptsUsers": {
+            "users": "Users",
+            "userList": "List",
+            "userEdit": "Edit",
+            "userCreate": "Create",
+            "userDetails": "Details",
+            "usersDesc": "User management",
+            "userListDesc": "List of all users",
+            "userEditDesc": "Edit user info",
+            "userCreateDesc": "Add a new user",
+            "userDetailsDesc": "Detailed user info"
         },
         "conceptsProducts": {
             "products": "Products",

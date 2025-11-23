@@ -13,7 +13,6 @@ export async function GET(req: Request) {
 
     const searchCondition = query
         ? {
-              is_trainer: false,
               OR: [
                   {
                       first_name: {
@@ -42,6 +41,16 @@ export async function GET(req: Request) {
                 where: searchCondition,
                 skip: skip,
                 take: take,
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    phone: true,
+                    is_backOffice: true,
+                    is_trainer: true,
+                    img: true,
+                },
                 orderBy: {
                     id: 'desc',
                 },

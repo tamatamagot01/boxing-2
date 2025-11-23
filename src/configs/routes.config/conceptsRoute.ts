@@ -57,39 +57,39 @@ const conceptsRoute: Routes = {
         },
         dynamicRoute: true,
     },
-    '/concepts/customers/customer-list': {
-        key: 'concepts.customers.customerList',
+    '/concepts/users/user-list': {
+        key: 'concepts.users.userList',
         authority: [ADMIN, USER],
     },
-    '/concepts/customers/customer-edit/[slug]': {
-        key: 'concepts.customers.customerEdit',
+    '/concepts/users/user-edit/[slug]': {
+        key: 'concepts.users.userEdit',
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Edit customer',
+                title: 'Edit user',
                 description:
-                    'Manage customer details, purchase history, and preferences.',
+                    'Manage user details, purchase history, and preferences.',
                 contained: true,
             },
             footer: false,
         },
         dynamicRoute: true,
     },
-    '/concepts/customers/customer-create': {
-        key: 'concepts.customers.customerCreate',
+    '/concepts/users/user-create': {
+        key: 'concepts.users.userCreate',
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Create customer',
+                title: 'Create user',
                 description:
-                    'Manage customer details, track purchases, and update preferences easily.',
+                    'Manage user details, track purchases, and update preferences easily.',
                 contained: true,
             },
             footer: false,
         },
     },
-    '/concepts/customers/customer-details/[slug]': {
-        key: 'concepts.customers.customerDetails',
+    '/concepts/users/user-details/[slug]': {
+        key: 'concepts.users.userDetails',
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'contained',

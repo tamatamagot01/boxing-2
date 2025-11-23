@@ -108,7 +108,7 @@ const navigationIcon: NavigationIcons = {
     uiGraphMaps: <PiMapTrifoldDuotone />,
     concepts: <PiLightbulbDuotone />,
     trainers: <PiUserSquare />,
-    customers: <PiUsersDuotone />,
+    users: <PiUsersDuotone />,
     bookings: <PiShoppingCartDuotone />,
     calendar: <PiCalendarDuotone />,
     account: <PiUserCircleDuotone />,
