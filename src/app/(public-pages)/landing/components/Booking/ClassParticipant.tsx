@@ -78,7 +78,15 @@ export default function ClassParticipant({
                         : participant
                 }
                 disabled={!currentAvailable}
-                onChange={(e) => setParticipant(Number(e.target.value))}
+                onChange={(e) =>
+                    setParticipant(
+                        Number(
+                            Number(e.target.value) > currentAvailable
+                                ? currentAvailable
+                                : e.target.value,
+                        ),
+                    )
+                }
                 min={1}
                 max={currentAvailable}
             />

@@ -36,6 +36,10 @@ type ClassDateStore = {
     timeID: number | null
     setTime: (selectedTime: number | null) => void
     clearTime: () => void
+
+    timeLabel: string | null
+    setTimeLabel: (label: string | null) => void
+    clearTimeLabel: () => void
 }
 
 export const useClassDateStore = create<ClassDateStore>()((set) => ({
@@ -46,6 +50,10 @@ export const useClassDateStore = create<ClassDateStore>()((set) => ({
     timeID: null,
     setTime: (selectedTime: number | null) => set({ timeID: selectedTime }),
     clearTime: () => set({ timeID: null }),
+
+    timeLabel: null,
+    setTimeLabel: (label: string | null) => set({ timeLabel: label }),
+    clearTimeLabel: () => set({ timeLabel: null }),
 }))
 
 type ClassParticipantStore = {
