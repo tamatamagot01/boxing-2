@@ -10,6 +10,10 @@ export const protectedRoutes: Routes = {
 }
 
 export const publicRoutes: Routes = {
+    '/': {
+        key: 'root',
+        authority: [],
+    },
     '/landing': {
         key: 'landing',
         authority: [],
