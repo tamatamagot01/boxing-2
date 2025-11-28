@@ -2,7 +2,10 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@/generated/prisma'
 import { customAlphabet } from 'nanoid'
-import { sendMail } from '@/app/(public-pages)/landing/utils/sendMail'
+import {
+    sendMail,
+    sendOwnerNotification,
+} from '@/app/(public-pages)/landing/utils/sendMail'
 
 const prisma = new PrismaClient()
 
@@ -61,6 +64,7 @@ export async function POST(req: Request) {
                                 first_name: true,
                                 last_name: true,
                                 email: true,
+                                phone: true,
                             },
                         },
                     },
@@ -72,6 +76,7 @@ export async function POST(req: Request) {
                         first_name: newBooking.user!.first_name,
                         last_name: newBooking.user!.last_name,
                         email: newBooking.user!.email,
+                        phone: newBooking.user!.phone || '',
                     },
                 }
             } else {
@@ -101,6 +106,7 @@ export async function POST(req: Request) {
                         first_name: newBooking.guestFirstName!,
                         last_name: newBooking.guestLastName!,
                         email: newBooking.guestEmail!,
+                        phone: newBooking.guestPhone || '',
                     },
                 }
             }
@@ -120,18 +126,11 @@ export async function POST(req: Request) {
                 participant: result.participant,
             }
 
+            // ส่ง email ยืนยันให้ลูกค้า
             await sendMail(bookingDetails)
 
-            const ownerEmail = process.env.OWNER_EMAIL
-            if (ownerEmail) {
-                await sendMail({
-                    ...bookingDetails,
-                    customer: {
-                        ...bookingDetails.customer,
-                        email: ownerEmail,
-                    },
-                })
-            }
+            // ส่ง email แจ้งเตือนให้เจ้าของค่าย
+            await sendOwnerNotification(bookingDetails)
         } catch (emailError) {
             console.error('Error sending email notification:', emailError)
         }

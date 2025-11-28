@@ -15,8 +15,8 @@ type HeaderStore = {
 }
 
 export const useHeaderStore = create<HeaderStore>()((set) => ({
-    headerID: 1,
-    resetHeaderID: () => set({ headerID: 1 }),
+    headerID: 2,
+    resetHeaderID: () => set({ headerID: 2 }),
     incHeaderID: () => set((state) => ({ headerID: state.headerID + 1 })),
     decHeaderID: () => set((state) => ({ headerID: state.headerID - 1 })),
 }))

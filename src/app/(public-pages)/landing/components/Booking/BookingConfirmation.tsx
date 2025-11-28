@@ -60,7 +60,7 @@ export default function BookingConfirmation({
             <hr className="my-4" />
 
             <div className="mb-4">
-                <h5 className="text-lg font-bold mb-3 border-b pb-1 text-success">
+                <h5 className="text-lg font-bold mb-3 border-b border-gray-200 dark:border-gray-700 pb-1 text-success dark:text-green-400">
                     Your Information
                 </h5>
 
@@ -73,7 +73,7 @@ export default function BookingConfirmation({
                     <DetailRow title="Phone" value={userData.phone} />
                 </div>
 
-                <h5 className="text-lg font-bold my-3 border-b pb-1 text-success">
+                <h5 className="text-lg font-bold my-3 border-b border-gray-200 dark:border-gray-700 pb-1 text-success dark:text-green-400">
                     Class Details
                 </h5>
 
@@ -106,8 +106,12 @@ const DetailRow = ({
     title: string
     value: string | number
 }) => (
-    <div className="flex justify-between py-1 text-gray-700">
-        <div className="font-medium text-gray-500">{title}</div>
-        <div className="font-semibold text-right">{value}</div>
+    <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300">
+        <div className="font-medium text-gray-500 dark:text-gray-400">
+            {title}
+        </div>
+        <div className="font-semibold text-right text-gray-300 dark:text-gray-200">
+            {value}
+        </div>
     </div>
 )

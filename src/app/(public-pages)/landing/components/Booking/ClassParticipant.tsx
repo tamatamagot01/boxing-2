@@ -69,33 +69,48 @@ export default function ClassParticipant({
         <>
             <label className="font-bold">Participants</label>
             <Input
-                className={`mt-2 ${!currentAvailable && 'opacity-40'}`}
+                className={`mt-2 ${!currentAvailable && 'opacity-40'} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                 placeholder="Number of participants"
                 type="number"
-                value={
-                    participant > currentAvailable
-                        ? currentAvailable
-                        : participant
-                }
+                value={participant || ''}
                 disabled={!currentAvailable}
-                onChange={(e) =>
-                    setParticipant(
-                        Number(
-                            Number(e.target.value) > currentAvailable
-                                ? currentAvailable
-                                : e.target.value,
-                        ),
-                    )
-                }
+                onChange={(e) => {
+                    const value = e.target.value
+                    // If empty, set to 0 temporarily
+                    if (value === '' || value === '0') {
+                        setParticipant(0)
+                        return
+                    }
+
+                    const numValue = parseInt(value, 10)
+
+                    // Ignore if NaN or less than 1
+                    if (isNaN(numValue) || numValue < 1) {
+                        return
+                    }
+
+                    // Cap at currentAvailable
+                    if (numValue > currentAvailable) {
+                        setParticipant(currentAvailable)
+                    } else {
+                        setParticipant(numValue)
+                    }
+                }}
+                onBlur={() => {
+                    // If still 0 after blur, set to 1
+                    if (participant === 0 && currentAvailable > 0) {
+                        setParticipant(1)
+                    }
+                }}
                 min={1}
                 max={currentAvailable}
             />
             {currentAvailable ? (
-                <p className="text-success mt-1.5">
+                <p className="text-success dark:text-green-400 mt-1.5">
                     Available spots : <span>{currentAvailable}</span>
                 </p>
             ) : (
-                <p className="text-error mt-1.5">
+                <p className="text-error dark:text-red-400 mt-1.5">
                     No available spots for this time
                 </p>
             )}

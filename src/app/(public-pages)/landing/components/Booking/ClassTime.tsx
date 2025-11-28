@@ -67,17 +67,14 @@ export default function ClassTime({ onLoadingChange }: ClassTimeProps) {
             <hr className="my-4" />
 
             {/* Booking Summary Card */}
-            <div className="mb-4 p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                <h6 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                    Booking Summary
-                </h6>
+            <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="space-y-2">
                     {classType && (
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
-                                Class Type
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                Class:
                             </span>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500 text-white text-xs font-semibold">
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                 {classType.charAt(0).toUpperCase() +
                                     classType.slice(1)}
                             </span>
@@ -86,11 +83,11 @@ export default function ClassTime({ onLoadingChange }: ClassTimeProps) {
 
                     {date && timeLabel && (
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
-                                Date & Time
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                Date & Time:
                             </span>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500 text-white text-xs font-semibold">
-                                {date.split('-').reverse().join('/')} at{' '}
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {date.split('-').reverse().join('/')} •{' '}
                                 {timeLabel}
                             </span>
                         </div>
@@ -98,10 +95,10 @@ export default function ClassTime({ onLoadingChange }: ClassTimeProps) {
 
                     {date && timeID && participant && (
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
-                                Participants
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                Participants:
                             </span>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500 text-white text-xs font-semibold">
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                 {participant}{' '}
                                 {participant > 1 ? 'people' : 'person'}
                             </span>

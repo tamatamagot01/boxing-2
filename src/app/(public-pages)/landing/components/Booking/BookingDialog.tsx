@@ -30,14 +30,18 @@ export type UserDetailInputType = {
     first_name: string
     last_name: string
     email: string
-    phone: string
+    phone?: string
 }
 
 const userDetailSchema = z.object({
     first_name: z.string().min(1, { message: 'Required' }),
     last_name: z.string().min(1, { message: 'Required' }),
     email: z.string().email({ message: 'Invalid email address' }),
-    phone: z.string().regex(/^0\d{9}$/, { message: 'Invalid phone number' }),
+    phone: z
+        .string()
+        .regex(/^0\d{9}$/, { message: 'Invalid phone number' })
+        .or(z.literal(''))
+        .optional(),
 })
 
 export default function BookingDialog({
@@ -56,47 +60,20 @@ export default function BookingDialog({
     // State for tracking loading status of child components
     const [isChildLoading, setIsChildLoading] = useState(false)
 
-    // Check if user is already logged in when dialog opens
-    useEffect(() => {
-        const checkSession = async () => {
-            if (isOpen && !registeredUser) {
-                try {
-                    const userData = await getCurrentUser()
-                    if (userData.success && userData.user) {
-                        // User is logged in, set their data
-                        setRegisteredUser({
-                            id: userData.user.id,
-                            email: userData.user.email,
-                            firstName: userData.user.first_name,
-                            lastName: userData.user.last_name,
-                            phone: userData.user.phone || '',
-                        })
-                        setUserType('member')
-
-                        // Pre-fill the form
-                        reset({
-                            first_name: userData.user.first_name,
-                            last_name: userData.user.last_name,
-                            email: userData.user.email,
-                            phone: userData.user.phone || '',
-                        })
-                    }
-                } catch (error) {
-                    // User not logged in, do nothing
-                    console.log('No active session')
-                }
-            }
-        }
-
-        checkSession()
-    }, [isOpen])
-
     // headerStore
     const { headerID, resetHeaderID, incHeaderID, decHeaderID } =
         useHeaderStore()
 
     // bookingStore
     const { userType, setUserType, clearUserType } = useUserTypeStore()
+
+    // Set user type to guest when dialog opens
+    useEffect(() => {
+        if (isOpen) {
+            // Always set as guest by default
+            setUserType('guest')
+        }
+    }, [isOpen, setUserType])
     const { classType, clearClassType } = useClassTypeStore()
     const { date, timeID, clearDate, clearTime } = useClassDateStore()
     const { participant, clearParticipant, currentAvailable } =
@@ -134,29 +111,24 @@ export default function BookingDialog({
     }
 
     const handlePreviousButton = () => {
-        if (headerID === 1) {
+        if (headerID === 2) {
             setIsOpenBookingDialog(false)
             resetHeaderID()
-            clearUserType()
-        }
-
-        if (headerID === 2) {
-            decHeaderID()
             clearClassType()
-        }
-
-        if (headerID === 3) {
+        } else if (headerID === 3) {
             decHeaderID()
             clearDate()
             clearTime()
             clearParticipant()
-        }
-
-        // If going back from confirmation and user is logged in, skip user detail page
-        if (headerID === 5 && registeredUser) {
+        } else if (headerID === 4) {
+            // Clear form when going back from ClassUserDetail
+            reset()
+            decHeaderID()
+        } else if (headerID === 5 && registeredUser) {
+            // If going back from confirmation and user is logged in, skip user detail page
             decHeaderID()
             decHeaderID() // Skip headerID 4 (ClassUserDetail)
-        } else if (headerID === 4 || headerID === 5) {
+        } else if (headerID === 5) {
             decHeaderID()
         }
     }
@@ -167,46 +139,31 @@ export default function BookingDialog({
             return true
         }
 
-        if (headerID === 1) {
-            if (!userType) {
-                return true
-            }
-        }
-
         if (headerID === 2) {
-            if (!classType) {
-                return true
-            }
+            return !classType
         }
 
         if (headerID === 3) {
             if (!date || !timeID || !participant) {
                 return true
             }
-
-            if (currentAvailable - participant < 0) {
-                return true
-            }
+            return currentAvailable - participant < 0
         }
 
         if (headerID === 4) {
             // Only validate form fields if user is NOT logged in
             if (!registeredUser) {
-                if (
-                    firstName === '' ||
-                    lastName === '' ||
-                    email === '' ||
-                    phone === ''
-                ) {
-                    return true
-                }
+                return firstName === '' || lastName === '' || email === ''
             }
-        }
-
-        // At confirmation page, never disable if user is logged in
-        if (headerID === 5 && registeredUser) {
             return false
         }
+
+        if (headerID === 5) {
+            // At confirmation page, never disable
+            return false
+        }
+
+        return false
     }
 
     const { mutate, isPending, error, isSuccess, data } = useMutation({
@@ -257,6 +214,11 @@ export default function BookingDialog({
         if (headerID === 3 && registeredUser) {
             incHeaderID() // Go to 4
             incHeaderID() // Go to 5
+        } else if (headerID === 4 && !registeredUser) {
+            // Validate form before going to confirmation
+            handleSubmit(() => {
+                incHeaderID() // Only go to next page if validation passes
+            })()
         } else if (headerID === 5 && registeredUser) {
             // If user is logged in, submit with their data directly
             onSubmit({
@@ -329,29 +291,12 @@ export default function BookingDialog({
             width={headerID === 4 || headerID === 5 ? 500 : 375}
             style={{
                 content: {
-                    marginTop: headerID === 1 || headerID === 2 ? 150 : 100,
+                    marginTop: headerID === 2 || headerID === 3 ? 150 : 100,
                 },
             }}
             contentClassName="pb-0 px-0"
             onClose={handleCloseDialog}
         >
-            {headerID === 1 && (
-                <>
-                    {userType !== 'register' ? (
-                        <UserTypeSelection
-                            selectedType={userType}
-                            onSelectType={setUserType}
-                            onNext={incHeaderID}
-                            onLoginSuccess={handleLoginSuccess}
-                        />
-                    ) : (
-                        <RegisterForm
-                            onRegister={handleRegister}
-                            onBackToLogin={handleBackToLogin}
-                        />
-                    )}
-                </>
-            )}
             {headerID === 2 && (
                 <ClassType onLoadingChange={setIsChildLoading} />
             )}
@@ -370,9 +315,14 @@ export default function BookingDialog({
                                   first_name: registeredUser.firstName,
                                   last_name: registeredUser.lastName,
                                   email: registeredUser.email,
-                                  phone: registeredUser.phone,
+                                  phone: registeredUser.phone || '',
                               })
-                            : getValues
+                            : () => ({
+                                  first_name: getValues('first_name'),
+                                  last_name: getValues('last_name'),
+                                  email: getValues('email'),
+                                  phone: getValues('phone') || '',
+                              })
                     }
                     onLoadingChange={setIsChildLoading}
                 />
@@ -380,7 +330,7 @@ export default function BookingDialog({
             {isSuccess && (
                 <BookingSuccess
                     bookingID={data.booking.bookingID}
-                    customerEmail={data.booking.user.email}
+                    customerEmail={data.booking.guestEmail}
                 />
             )}
 
@@ -394,29 +344,27 @@ export default function BookingDialog({
                     </Button>
                 </div>
             ) : (
-                headerID !== 1 && (
-                    <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
-                        <Button
-                            className="ltr:mr-2 rtl:ml-2"
-                            onClick={() => handlePreviousButton()}
-                        >
-                            {headerID === 1 ? 'Cancel' : 'Previous'}
-                        </Button>
-                        <Button
-                            variant="solid"
-                            disabled={handleDisableNextButton()}
-                            loading={isPending}
-                            type={
-                                headerID === 4 || headerID === 5
-                                    ? 'submit'
-                                    : 'button'
-                            }
-                            onClick={handleNextButton}
-                        >
-                            {headerID === 5 ? 'Submit' : 'Next'}
-                        </Button>
-                    </div>
-                )
+                <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        onClick={() => handlePreviousButton()}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="solid"
+                        disabled={handleDisableNextButton()}
+                        loading={isPending}
+                        type={
+                            headerID === 4 || headerID === 5
+                                ? 'submit'
+                                : 'button'
+                        }
+                        onClick={handleNextButton}
+                    >
+                        {headerID === 5 ? 'Submit' : 'Next'}
+                    </Button>
+                </div>
             )}
         </Dialog>
     )
