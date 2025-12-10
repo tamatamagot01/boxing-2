@@ -13,7 +13,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
     const router = useRouter()
 
     const handlePreview = () => {
-        router.push('/dashboards/ecommerce')
+        router.push('/landing')
     }
 
     return (
@@ -61,15 +61,14 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                             )}
                             {mode === MODE_DARK && (
                                 <img
-                                    src="/img/logo/logo-1.png"
-                                    width={120}
-                                    height={40}
+                                    src="/img/landing/hero/boxing.png"
+                                    className='w-10 h-10 md:w-12 md:h-12 overflow-hidden'
                                     alt="logo"
                                 />
                             )}
                         </Link>
                         <p className="text-center">
-                            Copyright © {year} Theme_Nate. All rights reserved.
+                            Copyright © All rights reserved.
                         </p>
                     </div>
                 </div>

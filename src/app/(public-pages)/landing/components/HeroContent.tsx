@@ -5,6 +5,7 @@ import { MODE_DARK } from '@/constants/theme.constant'
 import Image from 'next/image'
 import type { Mode } from '@/@types/theme'
 import BookingDialog from './Booking/BookingDialog'
+import Features from './Features'
 
 type HeroContentType = {
     mode: Mode
@@ -59,20 +60,18 @@ const HeroContent = ({
                         </Button>
                     </motion.div>
                 </div>
-                <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative">
-                    <div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-black/50 dark:to-black scale-[1.1] pointer-events-none" />
-                    <div className="bg-white dark:bg-black dark:border-gray-700 border border-gray-200 rounded-[24px]">
-                        {mode === MODE_DARK && (
-                            <Image
-                                className="rounded-2xl lg:rounded-[24px]"
-                                src="/img/landing/hero/hero-dark.webp"
-                                width={1920}
-                                height={1040}
-                                alt="Ecme homepage"
-                            />
-                        )}
-                    </div>
+                <div className="mt-20 relative w-full max-w-7xl mx-auto flex flex-col gap-20 pb-20">
+                    <Features />
                 </div>
+                 <Image
+                            src="/img/landing/hero/boxing_training.png"
+                            width={3840}
+                            height={2160}
+                            alt="Boxing Action 4K"
+                            className="w-full h-[50vh] object-cover object-contain"
+                            quality={100}
+                            priority
+                        />
             </div>
 
             {isOpenBookingDialog && (
