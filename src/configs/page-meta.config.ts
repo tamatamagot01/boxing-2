@@ -1,11 +1,11 @@
 import { Metadata } from 'next'
 
 const pageMeta: Metadata = {
-    title: 'Webpage',
+    title: 'MuayThai Income',
     description:
-        'Admin Template and Starter Kit with React, Tailwind Components and Next.js',
+        'Book Muay Thai classes online. Train with professional instructors for fitness, weight loss, and self-defense. Experience the art of Thai boxing.',
     icons: {
-        icon: '/favicon.ico',
+        icon: '/img/logo/boxing.ico',
     },
 }
 

@@ -17,7 +17,7 @@ const AuroraBackground = ({
     return (
         <div
             className={classNames(
-                'relative flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-900  transition-bg',
+                'relative flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 to-stone-100 dark:from-zinc-900 dark:to-neutral-900 transition-bg',
                 className,
             )}
             {...props}
@@ -28,28 +28,42 @@ const AuroraBackground = ({
                     auroraClassName,
                 )}
             >
+                {/* Primary glow */}
                 <div
                     className={classNames(
-                        `[--white-gradient:repeating-linear-gradient(100deg,var(--color-white)_0%,var(--color-white)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--color-white)_16%)]
-            [--dark-gradient:repeating-linear-gradient(100deg,var(--color-black)_0%,var(--color-black)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--color-black)_16%)]
-            [--aurora:repeating-linear-gradient(100deg,var(--color-purple-300)_10%,var(--color-fuchsia-200)_15%,var(--color-pink-200)_20%,var(--color-rose-300)_25%,var(--color-violet-400)_30%)]
-            [--transparent:rgba(255,255,255,0)]
-            [background-image:var(--white-gradient),var(--aurora)]
-            dark:[background-image:var(--dark-gradient),var(--aurora)]
-            [background-size:300%,_200%]
-            [background-position:50%_50%,50%_50%]
-            filter blur-[10px] invert dark:invert-0
-            after:content-[""] after:absolute after:inset-0 after:[background-image:var(--white-gradient),var(--aurora)] 
-            after:dark:[background-image:var(--dark-gradient),var(--aurora)]
-            after:[background-size:200%,_100%] 
-            animate-aurora after:[background-attachment:fixed] after:mix-blend-difference
-            pointer-events-none
-            absolute -inset-[10px] opacity-50 will-change-transform`,
-
-                        showRadialGradient &&
-                            `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`,
+                        'absolute -top-1/2 -left-1/2 w-full h-full rounded-full',
+                        'bg-gradient-to-br from-red-500/30 via-orange-400/20 to-transparent',
+                        'dark:from-red-600/25 dark:via-orange-500/15 dark:to-transparent',
+                        'blur-3xl animate-pulse-slow',
                     )}
-                ></div>
+                />
+                {/* Secondary glow */}
+                <div
+                    className={classNames(
+                        'absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full',
+                        'bg-gradient-to-tl from-amber-500/25 via-yellow-400/15 to-transparent',
+                        'dark:from-amber-600/20 dark:via-yellow-500/10 dark:to-transparent',
+                        'blur-3xl animate-float',
+                    )}
+                />
+                {/* Accent glow */}
+                <div
+                    className={classNames(
+                        'absolute top-1/4 right-1/4 w-1/2 h-1/2 rounded-full',
+                        'bg-gradient-to-br from-rose-400/20 via-red-300/10 to-transparent',
+                        'dark:from-rose-500/15 dark:via-red-400/10 dark:to-transparent',
+                        'blur-2xl animate-drift',
+                    )}
+                />
+                {/* Overlay gradient */}
+                {showRadialGradient && (
+                    <div
+                        className={classNames(
+                            'absolute inset-0',
+                            '[mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)]',
+                        )}
+                    />
+                )}
             </div>
             {children}
         </div>

@@ -6,8 +6,12 @@ import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Mode } from '@/@types/theme'
+import { useState } from 'react'
+import ContactDialog from './Contact/ContactDialog'
 
 const LandingFooter = ({ mode }: { mode: Mode }) => {
+    const [isOpenContactDialog, setIsOpenContactDialog] = useState(false)
+
     const year = new Date().getFullYear()
 
     const router = useRouter()
@@ -37,11 +41,14 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                             <h2 className="text-5xl">Have a Question?</h2>
                             <p className="mt-4 max-w-[400px] mx-auto">
                                 We're here to help! If you have any questions
-                                about our classes, membership, or anything else,
-                                feel free to reach out.
+                                about our classes or anything else, feel free to
+                                reach out.
                             </p>
                             <div className="mt-6">
-                                <Button variant="solid" onClick={handlePreview}>
+                                <Button
+                                    variant="solid"
+                                    onClick={() => setIsOpenContactDialog(true)}
+                                >
                                     Contact Us
                                 </Button>
                             </div>
@@ -51,18 +58,10 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                 <div className="py-6 border-t border-gray-200 dark:border-gray-800">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4">
                         <Link href="/">
-                            {mode === MODE_LIGHT && (
-                                <img
-                                    src="/img/logo/logo-2.png"
-                                    width={120}
-                                    height={40}
-                                    alt="logo"
-                                />
-                            )}
                             {mode === MODE_DARK && (
                                 <img
                                     src="/img/landing/hero/boxing.png"
-                                    className='w-10 h-10 md:w-12 md:h-12 overflow-hidden'
+                                    className="w-10 h-10 md:w-12 md:h-12 overflow-hidden"
                                     alt="logo"
                                 />
                             )}
@@ -73,6 +72,13 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                     </div>
                 </div>
             </Container>
+
+            {isOpenContactDialog && (
+                <ContactDialog
+                    isOpen={isOpenContactDialog}
+                    setIsOpenContactDialog={setIsOpenContactDialog}
+                />
+            )}
         </div>
     )
 }
