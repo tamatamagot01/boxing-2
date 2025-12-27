@@ -72,7 +72,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                                 href="https://maps.google.com/?q=IC+Muay+Thai+Chiang+Mai+61+1+Sri+Phum+Chiang+Mai+50200"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-500 transition-colors"
+                                className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-500 transition-colors underline underline-offset-4 cursor-pointer"
                             >
                                 IC Muay Thai Chiang Mai, 61/1 Sri Phum, Chiang
                                 Mai 50200, Thailand
