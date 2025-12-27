@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+    # PostgreSQL Database
+    postgres:
+        image: postgres:16-alpine
+        container_name: boxing-postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-boxing_user}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-boxing_password}
+            POSTGRES_DB: ${POSTGRES_DB:-boxing}
+        ports:
+            - '${POSTGRES_PORT:-5432}:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-boxing_user}']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    # Next.js Application
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: boxing-app
+        restart: unless-stopped
+        ports:
+            - '${APP_PORT:-3000}:3000'
+        environment:
+            # Database
+            DATABASE_URL: postgresql://${POSTGRES_USER:-boxing_user}:${POSTGRES_PASSWORD:-boxing_password}@postgres:5432/${POSTGRES_DB:-boxing}
+
+            # NextAuth
+            AUTH_SECRET: ${AUTH_SECRET}
+            NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+            AUTH_TRUST_HOST: ${AUTH_TRUST_HOST:-true}
+
+            # OAuth (Google)
+            GOOGLE_AUTH_CLIENT_ID: ${GOOGLE_AUTH_CLIENT_ID}
+            GOOGLE_AUTH_CLIENT_SECRET: ${GOOGLE_AUTH_CLIENT_SECRET}
+
+            # OAuth (Github)
+            GITHUB_AUTH_CLIENT_ID: ${GITHUB_AUTH_CLIENT_ID}
+            GITHUB_AUTH_CLIENT_SECRET: ${GITHUB_AUTH_CLIENT_SECRET}
+
+            # Email
+            GOOGLE_APP_PASSWORD: ${GOOGLE_APP_PASSWORD}
+            OWNER_EMAIL: ${OWNER_EMAIL}
+
+            # Node
+            NODE_ENV: production
+        depends_on:
+            postgres:
+                condition: service_healthy
+        command: >
+            sh -c "
+              echo 'Running Prisma migrations...' &&
+              pnpm prisma migrate deploy &&
+              echo 'Starting application...' &&
+              node server.js
+            "
+
+volumes:
+    postgres_data:
+        driver: local
