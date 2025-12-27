@@ -24,13 +24,48 @@ const Landing = () => {
     return (
         <main className="px-4 lg:px-0 text-base bg-gray-900">
             {!isOpenBookingDialog && <NavigationBar mode={mode} />}
-            <div className="relative">
-                <div
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='50' height='50' fill='none' stroke='rgb(255 255 255 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
-                    }}
-                    className="absolute inset-0 [mask-image:linear-gradient(to_bottom,white_5%,transparent_70%)] pointer-events-none select-none"
-                ></div>
+            <div className="relative min-h-screen">
+                {/* Minimal Mesh Gradient Background */}
+                <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                    {/* Mesh gradient base */}
+                    <div
+                        className="absolute inset-0 opacity-40"
+                        style={{
+                            background: `
+                                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.15) 0px, transparent 50%),
+                                radial-gradient(at 100% 0%, rgba(239, 68, 68, 0.1) 0px, transparent 50%),
+                                radial-gradient(at 100% 100%, rgba(234, 88, 12, 0.12) 0px, transparent 50%),
+                                radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.08) 0px, transparent 50%)
+                            `,
+                        }}
+                    />
+
+                    {/* Subtle grid overlay */}
+                    <div
+                        className="absolute inset-0 opacity-[0.03]"
+                        style={{
+                            backgroundImage: `
+                                linear-gradient(rgba(249, 115, 22, 0.3) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(249, 115, 22, 0.3) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '80px 80px',
+                            maskImage:
+                                'linear-gradient(to bottom, black 0%, transparent 100%)',
+                            WebkitMaskImage:
+                                'linear-gradient(to bottom, black 0%, transparent 100%)',
+                        }}
+                    />
+
+                    {/* Floating gradient sphere */}
+                    <div
+                        className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] opacity-20"
+                        style={{
+                            background:
+                                'radial-gradient(ellipse, rgba(249, 115, 22, 0.25) 0%, transparent 60%)',
+                            filter: 'blur(90px)',
+                        }}
+                    />
+                </div>
                 <HeroContent
                     mode={mode}
                     isOpenBookingDialog={isOpenBookingDialog}

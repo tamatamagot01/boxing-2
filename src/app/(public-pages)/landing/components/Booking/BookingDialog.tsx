@@ -289,11 +289,6 @@ export default function BookingDialog({
         <Dialog
             isOpen={isOpen}
             width={headerID === 4 || headerID === 5 ? 500 : 375}
-            style={{
-                content: {
-                    marginTop: headerID === 2 || headerID === 3 ? 150 : 100,
-                },
-            }}
             contentClassName="pb-0 px-0"
             onClose={handleCloseDialog}
         >
@@ -337,7 +332,7 @@ export default function BookingDialog({
             {isSuccess ? (
                 <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                     <Button
-                        className="w-full"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
                         onClick={() => window.location.reload()}
                     >
                         Back to home
@@ -353,6 +348,7 @@ export default function BookingDialog({
                     </Button>
                     <Button
                         variant="solid"
+                        className="bg-orange-500 hover:bg-orange-600 text-white"
                         disabled={handleDisableNextButton()}
                         loading={isPending}
                         type={

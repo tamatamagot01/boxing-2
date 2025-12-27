@@ -1,6 +1,7 @@
 @layer components {
   .date-picker {
-    @apply z-40 max-w-xs shadow-xl dark:shadow-2xl bg-white dark:bg-gray-800 rounded-xl p-4;
+    @apply z-50 max-w-xs shadow-xl dark:shadow-2xl bg-white dark:bg-gray-800 rounded-xl p-4;
+    position: absolute !important;
   }
 
   .date-picker-panel {
@@ -55,7 +56,8 @@
   }
 
   .picker {
-    @apply z-40;
+    @apply z-50;
+    position: absolute !important;
   }
 
   .picker-panel {

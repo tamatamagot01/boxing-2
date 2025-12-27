@@ -97,28 +97,29 @@ const Navigation = ({}: NavigationProps) => {
             style={{ transition: 'all 0.2s ease-in-out' }}
             className={classNames(
                 'w-full fixed inset-x-0 z-[50] transition-all duration-300',
-                isSticky 
-                    ? 'top-0 bg-black/80 backdrop-blur-md border-b border-white/10 py-4' 
+                isSticky
+                    ? 'top-0 bg-black/80 backdrop-blur-md border-b border-white/10 py-4'
                     : 'top-0 bg-transparent py-6',
             )}
         >
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">           
-                   <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden">
-                        <Image
-                            src="/img/landing/hero/boxing.png"
-                            alt="Boxing Gym Logo"
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
+            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+                {/* Logo - Left */}
+                <div className="relative w-10 h-10 md:w-12 md:h-12 flex-shrink-0">
+                    <Image
+                        src="/img/landing/hero/boxing.png"
+                        alt="Boxing Gym Logo"
+                        fill
+                        className="object-cover"
+                    />
+                </div>
 
-                {/* Desktop Navigation */}
-                <div className="w-full hidden lg:flex items-center justify-center gap-8">
+                {/* Desktop Navigation - Center */}
+                <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2">
                     <NavList tabs={navMenu} />
                 </div>
 
-                {/* Right Section */}
-               <div className="flex items-center gap-4">
+                {/* Right Section - Menu Button */}
+                <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={openDrawer}
@@ -145,8 +146,12 @@ const Navigation = ({}: NavigationProps) => {
                                     <TbUser size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-white">{user.firstName}</p>
-                                    <p className="text-xs text-gray-400">{user.email}</p>
+                                    <p className="text-sm font-bold text-white">
+                                        {user.firstName}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                        {user.email}
+                                    </p>
                                 </div>
                             </div>
                             <button

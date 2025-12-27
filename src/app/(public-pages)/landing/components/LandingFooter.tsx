@@ -48,6 +48,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                                 <Button
                                     variant="solid"
                                     onClick={() => setIsOpenContactDialog(true)}
+                                    className="bg-orange-500 hover:bg-orange-600"
                                 >
                                     Contact Us
                                 </Button>
@@ -66,8 +67,16 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                                 />
                             )}
                         </Link>
-                        <p className="text-center">
-                            Copyright © All rights reserved.
+                        <p className="text-center text-sm">
+                            <a
+                                href="https://maps.google.com/?q=IC+Muay+Thai+Chiang+Mai+61+1+Sri+Phum+Chiang+Mai+50200"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-500 transition-colors"
+                            >
+                                IC Muay Thai Chiang Mai, 61/1 Sri Phum, Chiang
+                                Mai 50200, Thailand
+                            </a>
                         </p>
                     </div>
                 </div>

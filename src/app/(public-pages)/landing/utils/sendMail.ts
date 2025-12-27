@@ -31,7 +31,7 @@ export async function sendMail(bookingDetails: BookignDetailType) {
         const info = await transporter.sendMail({
             from: '"Boxing Club Team" <boxingclub@gmail.com>',
             to: `${bookingDetails.customer.email}`,
-            subject: `🥊 Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
+            subject: `Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
             html: htmlContent,
         })
 
@@ -55,7 +55,7 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
         const info = await transporter.sendMail({
             from: '"Boxing Club Booking System" <boxingclub@gmail.com>',
             to: ownerEmail,
-            subject: `📋 New Booking Received - ${bookingDetails.bookingID}`,
+            subject: `New Booking Received - ${bookingDetails.bookingID}`,
             html: htmlContent,
         })
 
@@ -145,6 +145,15 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
 
                     <tr>
                         <td width="30%" style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
+                            Name:
+                        </td>
+                        <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
+                            ${capitalizeString(details.customer.first_name)} ${capitalizeString(details.customer.last_name)}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="30%" style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${secondaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
                             Class Type:
                         </td>
                         <td style="padding: 15px; font-family: ${font}; font-size: 16px; color: ${primaryColor}; font-weight: bold; border-bottom: 1px solid #eeeeee; background-color: #f9f9f9;">
@@ -177,7 +186,10 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px; background-color: ${secondaryColor};">
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px;">
-                    Boxing Club Team | 090-3210596 | 123 Victory Lane, Unit 4B, Bang Rak, Bangkok 10500
+                    Boxing Club Team | 090-3210596 | 
+                    <a href="https://maps.google.com/?q=IC+Muay+Thai+Chiang+Mai+61+1+Sri+Phum+Chiang+Mai+50200" target="_blank" style="color: #FF4500; text-decoration: none;">
+                        IC Muay Thai Chiang Mai, 61/1 Sri Phum, Chiang Mai 50200, Thailand
+                    </a>
                 </p>
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px; margin-top: 5px;">
                     © ${new Date().getFullYear()} All rights reserved.
