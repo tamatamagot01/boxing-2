@@ -1,23 +1,32 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { FlatCompat } from '@eslint/eslintrc'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+    baseDirectory: __dirname,
+})
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    rules: {
-      "@typescript-eslint/no-unused-expressions": "off",
-      "@next/next/no-img-element": "off",
-      "react-hooks/rules-of-hooks": "off"
+    ...compat.extends('next/core-web-vitals', 'next/typescript'),
+    {
+        ignores: [
+            '**/src/generated/**/*',
+            '**/.next/**/*',
+            '**/node_modules/**/*',
+            '**/dist/**/*',
+            '**/build/**/*',
+        ],
     },
-  },
-];
+    {
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
+            '@next/next/no-img-element': 'off',
+            'react-hooks/rules-of-hooks': 'off',
+        },
+    },
+]
 
-export default eslintConfig;
+export default eslintConfig
