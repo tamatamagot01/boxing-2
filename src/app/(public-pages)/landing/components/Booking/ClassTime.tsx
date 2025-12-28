@@ -115,11 +115,11 @@ export default function ClassTime({ onLoadingChange }: ClassTimeProps) {
                         placeholder="Select date"
                         value={date ? new Date(date) : null}
                         onChange={(e) => {
-                            const formattedDate = dayjs(
-                                e?.toLocaleDateString(),
-                            ).format('YYYY-MM-DD')
+                            const formattedDate = e
+                                ? dayjs(e).format('YYYY-MM-DD')
+                                : null
 
-                            setDate(formattedDate || null)
+                            setDate(formattedDate)
                         }}
                         inputFormat="DD/MM/YYYY"
                         minDate={today}
