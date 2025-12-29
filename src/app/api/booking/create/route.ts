@@ -113,28 +113,38 @@ export async function POST(req: Request) {
         })
 
         // ส่ง Email ให้ลูกค้าและเจ้าของค่ายหลังจากสร้าง booking สำเร็จ
-        try {
-            const bookingDetails = {
-                bookingID: result.bookingID,
-                customer: result.customerInfo,
-                classType: result.classType,
-                date: result.bookingDate,
-                time: {
-                    start: result.time.start,
-                    end: result.time.end,
-                },
-                participant: result.participant,
-            }
-
-            // ส่ง email ยืนยันให้ลูกค้า
-            await sendMail(bookingDetails)
-
-            // ส่ง email แจ้งเตือนให้เจ้าของค่าย
-            await sendOwnerNotification(bookingDetails)
-        } catch (emailError) {
-            console.error('Error sending email notification:', emailError)
+        // ใช้ Promise.allSettled เพื่อไม่ block response และ ignore errors
+        const bookingDetails = {
+            bookingID: result.bookingID,
+            customer: result.customerInfo,
+            classType: result.classType,
+            date: result.bookingDate,
+            time: {
+                start: result.time.start,
+                end: result.time.end,
+            },
+            participant: result.participant,
         }
 
+        // Send emails in background - don't await
+        Promise.allSettled([
+            sendMail(bookingDetails),
+            sendOwnerNotification(bookingDetails),
+        ]).then((results) => {
+            results.forEach((result, index) => {
+                const emailType = index === 0 ? 'Customer' : 'Owner'
+                if (result.status === 'fulfilled') {
+                    console.log(`✅ ${emailType} email sent successfully`)
+                } else {
+                    console.error(
+                        `❌ ${emailType} email failed:`,
+                        result.reason,
+                    )
+                }
+            })
+        })
+
+        // Return booking result immediately without waiting for emails
         return NextResponse.json({ booking: result })
     } catch (error: any) {
         console.error('Error creating booking:', error)
