@@ -27,7 +27,7 @@ export async function sendMail(bookingDetails: BookignDetailType) {
         const htmlContent = generateBookingConfirmationHtml(bookingDetails)
 
         const { data, error } = await resend.emails.send({
-            from: 'Boxing Club <noreply@incomemuaythai.online>',
+            from: 'Income Muay Thai <noreply@incomemuaythai.online>',
             to: [bookingDetails.customer.email],
             subject: `Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
             html: htmlContent,
@@ -70,7 +70,7 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
         const htmlContent = generateOwnerNotificationHtml(bookingDetails)
 
         const { data, error } = await resend.emails.send({
-            from: 'Boxing Club System <noreply@incomemuaythai.online>',
+            from: 'Income Muay Thai System <noreply@incomemuaythai.online>',
             to: [ownerEmail],
             subject: `New Booking Received - ${bookingDetails.bookingID}`,
             html: htmlContent,
@@ -107,7 +107,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmed - Boxing Club Team</title>
+    <title>Booking Confirmed - Income Muay Thai  Team</title>
     <style>
         /* Global Styles */
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
@@ -139,7 +139,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px 0; background-color: ${primaryColor};">
                 <h1 style="color: #ffffff; font-family: ${font}; font-size: 28px; font-weight: 700;">
-                    BOXING CLUB TEAM 🥊
+                    Income Muay Thai
                 </h1>
             </td>
         </tr>
@@ -213,7 +213,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px; background-color: ${secondaryColor};">
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px;">
-                    Boxing Club Team | 090-3210596 | 
+                    Income Muay Thai Team | 090-3210596 | 
                     <a href="https://maps.google.com/?q=IC+Muay+Thai+Chiang+Mai+61+1+Sri+Phum+Chiang+Mai+50200" target="_blank" style="color: #FF4500; text-decoration: none;">
                         IC Muay Thai Chiang Mai, 61/1 Sri Phum, Chiang Mai 50200, Thailand
                     </a>
@@ -246,7 +246,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Booking Notification</title>
+    <title>แจ้งเตือนการจองใหม่</title>
     <style>
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
         table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -264,10 +264,10 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 25px 20px; background: linear-gradient(135deg, ${primaryColor} 0%, #3B82F6 100%);">
                 <h1 style="color: #ffffff; font-family: ${font}; font-size: 26px; font-weight: 700; margin-bottom: 5px;">
-                    New Booking Notification
+                    แจ้งเตือนการจองใหม่
                 </h1>
                 <p style="color: #E0E7FF; font-family: ${font}; font-size: 14px;">
-                    Boxing Club Management System
+                    ระบบแจ้งเตือนการจอง
                 </p>
             </td>
         </tr>
@@ -276,7 +276,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px 20px 0; background-color: #ffffff;">
                 <div style="display: inline-block; background-color: ${successColor}; color: #ffffff; padding: 8px 20px; border-radius: 20px; font-family: ${font}; font-size: 14px; font-weight: 600;">
-                    ✓ New Booking Received
+                    ✓ มีการจองเข้ามาใหม่
                 </div>
             </td>
         </tr>
@@ -285,7 +285,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
         <tr>
             <td style="padding: 20px 30px; background-color: #ffffff;">
                 <p style="color: ${secondaryColor}; font-family: ${font}; font-size: 16px; line-height: 1.6;">
-                    A new booking has been made. Please review the details below:
+                    มีลูกค้าจองคลาสเข้ามาใหม่ กรุณาตรวจสอบรายละเอียดด้านล่าง:
                 </p>
             </td>
         </tr>
@@ -299,11 +299,11 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     <tr>
                         <td colspan="2" style="background-color: ${primaryColor}; padding: 15px 20px;">
                             <p style="color: #ffffff; font-family: ${font}; font-size: 18px; font-weight: bold;">
-                                Booking ID: ${details.bookingID}
+                                รหัสการจอง: ${details.bookingID}
                             </p>
                             <p style="color: #E0E7FF; font-family: ${font}; font-size: 13px; margin-top: 3px;">
                                 ${new Date().toLocaleString('th-TH', {
-                                    dateStyle: 'medium',
+                                    dateStyle: 'full',
                                     timeStyle: 'short',
                                     timeZone: 'Asia/Bangkok',
                                 })}
@@ -315,13 +315,13 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     <tr>
                         <td colspan="2" style="background-color: #F9FAFB; padding: 15px 20px; border-bottom: 2px solid #E5E7EB;">
                             <p style="color: ${primaryColor}; font-family: ${font}; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                                👤 Customer Information
+                                ข้อมูลลูกค้า
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td width="35%" style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Name:
+                            ชื่อ-นามสกุล:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; font-weight: 600; border-bottom: 1px solid #E5E7EB;">
                             ${capitalizeString(details.customer.first_name)} ${capitalizeString(details.customer.last_name)}
@@ -329,7 +329,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     </tr>
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Email:
+                            อีเมล:
                         </td>
                           <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; font-weight: 600; border-bottom: 1px solid #E5E7EB;">
                              ${details.customer.email}
@@ -340,7 +340,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                             ? `
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Phone:
+                            เบอร์โทร:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; font-weight: 600; border-bottom: 1px solid #E5E7EB;">
                             ${details.customer.phone}
@@ -353,13 +353,13 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     <tr>
                         <td colspan="2" style="background-color: #F9FAFB; padding: 15px 20px; border-bottom: 2px solid #E5E7EB;">
                             <p style="color: ${primaryColor}; font-family: ${font}; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                                🥊 Class Details
+                                รายละเอียดคลาส
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Class Type:
+                            ประเภทคลาส:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; border-bottom: 1px solid #E5E7EB;">
                             <span style="background-color: #DBEAFE; color: ${primaryColor}; padding: 4px 12px; border-radius: 12px; font-weight: 600;">
@@ -369,7 +369,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     </tr>
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Date:
+                            วันที่:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; font-weight: 600; border-bottom: 1px solid #E5E7EB;">
                             ${details.date}
@@ -377,7 +377,7 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     </tr>
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280; border-bottom: 1px solid #E5E7EB;">
-                            Time:
+                            เวลา:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor}; font-weight: 600; border-bottom: 1px solid #E5E7EB;">
                             ${details.time.start} - ${details.time.end}
@@ -385,11 +385,11 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
                     </tr>
                     <tr>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: #6B7280;">
-                            Participants:
+                            จำนวนผู้เข้าร่วม:
                         </td>
                         <td style="padding: 12px 20px; font-family: ${font}; font-size: 15px; color: ${secondaryColor};">
                             <span style="background-color: ${successColor}; color: #ffffff; padding: 4px 12px; border-radius: 12px; font-weight: 600;">
-                                ${details.participant} ${details.participant > 1 ? 'persons' : 'person'}
+                                ${details.participant} คน
                             </span>
                         </td>
                     </tr>
@@ -397,23 +397,14 @@ function generateOwnerNotificationHtml(details: BookignDetailType): string {
             </td>
         </tr>
 
-        <!-- Action Required -->
-        <tr>
-            <td style="padding: 25px 30px; background-color: #ffffff; border-top: 1px solid #E5E7EB;">
-                <p style="color: #6B7280; font-family: ${font}; font-size: 14px; line-height: 1.6; text-align: center;">
-                    💡 <strong>Action Required:</strong> Please confirm this booking and prepare the necessary equipment for the scheduled class.
-                </p>
-            </td>
-        </tr>
-
         <!-- Footer -->
         <tr>
             <td align="center" style="padding: 20px; background-color: ${secondaryColor};">
                 <p style="color: #9CA3AF; font-family: ${font}; font-size: 12px;">
-                    This is an automated notification from your Boxing Club Management System
+                    อีเมลนี้ส่งอัตโนมัติจากระบบจัดการ Income Muay Thai
                 </p>
                 <p style="color: #6B7280; font-family: ${font}; font-size: 11px; margin-top: 8px;">
-                    © ${new Date().getFullYear()} Boxing Club Team. All rights reserved.
+                    © ${new Date().getFullYear()} Income Muay Thai Team สงวนลิขสิทธิ์
                 </p>
             </td>
         </tr>
