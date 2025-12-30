@@ -46,8 +46,8 @@ services:
             GITHUB_AUTH_CLIENT_ID: ${GITHUB_AUTH_CLIENT_ID}
             GITHUB_AUTH_CLIENT_SECRET: ${GITHUB_AUTH_CLIENT_SECRET}
 
-            # Email
-            GOOGLE_APP_PASSWORD: ${GOOGLE_APP_PASSWORD}
+            # Email (Resend)
+            RESEND_API_KEY: ${RESEND_API_KEY}
             OWNER_EMAIL: ${OWNER_EMAIL}
 
             # Node

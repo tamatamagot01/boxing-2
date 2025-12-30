@@ -1,6 +1,6 @@
 'use server'
 import { capitalizeString } from '@/utils/capitalizeString'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
 type BookignDetailType = {
     bookingID: string
@@ -16,57 +16,39 @@ type BookignDetailType = {
     participant: number
 }
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'itsaree.n9@gmail.com',
-        pass: process.env.GOOGLE_APP_PASSWORD,
-    },
-    pool: true, // Use connection pooling
-    maxConnections: 5,
-    maxMessages: 100,
-    rateDelta: 1000,
-    rateLimit: 5,
-    socketTimeout: 30000, // 30 seconds timeout
-    connectionTimeout: 30000,
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendMail(bookingDetails: BookignDetailType) {
     console.log('📧 Attempting to send customer email...')
-    console.log(
-        'GOOGLE_APP_PASSWORD exists:',
-        !!process.env.GOOGLE_APP_PASSWORD,
-    )
+    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY)
     console.log('Target email:', bookingDetails.customer.email)
 
     try {
         const htmlContent = generateBookingConfirmationHtml(bookingDetails)
 
-        // Set a timeout for the email sending operation
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Email sending timeout')), 60000) // 60s timeout
-        })
-
-        const sendPromise = transporter.sendMail({
-            from: '"Boxing Club Team" <itsaree.n9@gmail.com>',
-            to: `${bookingDetails.customer.email}`,
+        const { data, error } = await resend.emails.send({
+            from: 'Boxing Club <onboarding@resend.dev>',
+            to: [bookingDetails.customer.email],
             subject: `Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
             html: htmlContent,
         })
 
-        const info = await Promise.race([sendPromise, timeoutPromise])
+        if (error) {
+            console.error('❌ Resend error:', error)
+            return null
+        }
+
         console.log(
             '✅ Customer email sent successfully:',
             bookingDetails.customer.email,
         )
-        return info
+        return data
     } catch (error) {
         console.error('❌ Error sending customer email:', error)
         console.error(
             'Error details:',
             error instanceof Error ? error.message : String(error),
         )
-        // Don't throw - just log and return null so the booking continues
         return null
     }
 }
@@ -87,28 +69,26 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
 
         const htmlContent = generateOwnerNotificationHtml(bookingDetails)
 
-        // Set a timeout for the email sending operation
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Email sending timeout')), 60000) // 60s timeout
-        })
-
-        const sendPromise = transporter.sendMail({
-            from: '"Boxing Club Booking System" <itsaree.n9@gmail.com>',
-            to: ownerEmail,
+        const { data, error } = await resend.emails.send({
+            from: 'Boxing Club System <onboarding@resend.dev>',
+            to: [ownerEmail],
             subject: `New Booking Received - ${bookingDetails.bookingID}`,
             html: htmlContent,
         })
 
-        const info = await Promise.race([sendPromise, timeoutPromise])
+        if (error) {
+            console.error('❌ Resend error:', error)
+            return null
+        }
+
         console.log('✅ Owner notification sent successfully:', ownerEmail)
-        return info
+        return data
     } catch (error) {
         console.error('❌ Error sending owner notification:', error)
         console.error(
             'Error details:',
             error instanceof Error ? error.message : String(error),
         )
-        // Don't throw - just log and return null so the booking continues
         return null
     }
 }
