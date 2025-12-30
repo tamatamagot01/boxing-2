@@ -20,6 +20,8 @@ const publicApiPrefixes = [
     `${appConfig.apiPrefix}/time`,
     `${appConfig.apiPrefix}/booking`,
     `${appConfig.apiPrefix}/public`,
+    `${appConfig.apiPrefix}/trainer`,
+    `${appConfig.apiPrefix}/user`,
     // Add more public API prefixes here if needed
 ]
 
