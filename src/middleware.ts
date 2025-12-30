@@ -26,43 +26,44 @@ const publicApiPrefixes = [
 ]
 
 export default auth((req) => {
-    const { nextUrl } = req
-    const isSignedIn = !!req.auth
+    // TEMPORARY: Disable all authentication
+    return
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-    const isPublicApiRoute = publicApiPrefixes.some((prefix) =>
-        nextUrl.pathname.startsWith(prefix),
-    )
-    const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
-    const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+    // ORIGINAL CODE - Uncomment to re-enable authentication
+    // const { nextUrl } = req
+    // const isSignedIn = !!req.auth
 
-    /** Skip auth middleware for api auth routes and public api routes */
-    if (isApiAuthRoute || isPublicApiRoute) return
+    // const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+    // const isPublicApiRoute = publicApiPrefixes.some((prefix) =>
+    //     nextUrl.pathname.startsWith(prefix),
+    // )
+    // const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+    // const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-    if (isAuthRoute) {
-        if (isSignedIn) {
-            /** Redirect to authenticated entry path if signed in & path is auth route */
-            return Response.redirect(
-                new URL(appConfig.authenticatedEntryPath, nextUrl),
-            )
-        }
-        return
-    }
+    // if (isApiAuthRoute || isPublicApiRoute) return
 
-    /** Redirect to authenticated entry path if signed in & path is public route */
-    if (!isSignedIn && !isPublicRoute) {
-        let callbackUrl = nextUrl.pathname
-        if (nextUrl.search) {
-            callbackUrl += nextUrl.search
-        }
+    // if (isAuthRoute) {
+    //     if (isSignedIn) {
+    //         return Response.redirect(
+    //             new URL(appConfig.authenticatedEntryPath, nextUrl),
+    //         )
+    //     }
+    //     return
+    // }
 
-        return Response.redirect(
-            new URL(
-                `${appConfig.unAuthenticatedEntryPath}?${REDIRECT_URL_KEY}=${callbackUrl}`,
-                nextUrl,
-            ),
-        )
-    }
+    // if (!isSignedIn && !isPublicRoute) {
+    //     let callbackUrl = nextUrl.pathname
+    //     if (nextUrl.search) {
+    //         callbackUrl += nextUrl.search
+    //     }
+
+    //     return Response.redirect(
+    //         new URL(
+    //             `${appConfig.unAuthenticatedEntryPath}?${REDIRECT_URL_KEY}=${callbackUrl}`,
+    //             nextUrl,
+    //         ),
+    //     )
+    // }
 
     /** Uncomment this and `import { protectedRoutes } from '@/configs/routes.config'` if you want to enable role based access */
     // if (isSignedIn && nextUrl.pathname !== '/access-denied') {
