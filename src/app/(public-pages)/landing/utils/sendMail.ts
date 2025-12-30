@@ -19,10 +19,6 @@ type BookignDetailType = {
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendMail(bookingDetails: BookignDetailType) {
-    console.log('📧 Attempting to send customer email...')
-    console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY)
-    console.log('Target email:', bookingDetails.customer.email)
-
     try {
         const htmlContent = generateBookingConfirmationHtml(bookingDetails)
 
@@ -38,10 +34,6 @@ export async function sendMail(bookingDetails: BookignDetailType) {
             return null
         }
 
-        console.log(
-            '✅ Customer email sent successfully:',
-            bookingDetails.customer.email,
-        )
         return data
     } catch (error) {
         console.error('❌ Error sending customer email:', error)
@@ -54,8 +46,6 @@ export async function sendMail(bookingDetails: BookignDetailType) {
 }
 
 export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
-    console.log('📧 Attempting to send owner notification...')
-
     try {
         const ownerEmail = process.env.OWNER_EMAIL
         if (!ownerEmail) {
@@ -64,8 +54,6 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
             )
             return null
         }
-
-        console.log('OWNER_EMAIL:', ownerEmail)
 
         const htmlContent = generateOwnerNotificationHtml(bookingDetails)
 
@@ -81,7 +69,6 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
             return null
         }
 
-        console.log('✅ Owner notification sent successfully:', ownerEmail)
         return data
     } catch (error) {
         console.error('❌ Error sending owner notification:', error)
