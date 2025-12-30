@@ -27,7 +27,7 @@ export async function sendMail(bookingDetails: BookignDetailType) {
         const htmlContent = generateBookingConfirmationHtml(bookingDetails)
 
         const { data, error } = await resend.emails.send({
-            from: 'Boxing Club <onboarding@resend.dev>',
+            from: 'Boxing Club <noreply@incomemuaythai.online>',
             to: [bookingDetails.customer.email],
             subject: `Your Booking is Confirmed! (ID: ${bookingDetails.bookingID})`,
             html: htmlContent,
@@ -70,7 +70,7 @@ export async function sendOwnerNotification(bookingDetails: BookignDetailType) {
         const htmlContent = generateOwnerNotificationHtml(bookingDetails)
 
         const { data, error } = await resend.emails.send({
-            from: 'Boxing Club System <onboarding@resend.dev>',
+            from: 'Boxing Club System <noreply@incomemuaythai.online>',
             to: [ownerEmail],
             subject: `New Booking Received - ${bookingDetails.bookingID}`,
             html: htmlContent,
