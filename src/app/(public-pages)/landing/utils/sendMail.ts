@@ -200,7 +200,7 @@ function generateBookingConfirmationHtml(details: BookignDetailType): string {
         <tr>
             <td align="center" style="padding: 20px; background-color: ${secondaryColor};">
                 <p style="color: #cccccc; font-family: ${font}; font-size: 12px;">
-                    Income Muay Thai Team | 090-3210596 | 
+                    Income Muay Thai Team | 080-6430456 | incomemuaythai@gmail.com | 
                     <a href="https://maps.google.com/?q=IC+Muay+Thai+Chiang+Mai+61+1+Sri+Phum+Chiang+Mai+50200" target="_blank" style="color: #FF4500; text-decoration: none;">
                         IC Muay Thai Chiang Mai, 61/1 Sri Phum, Chiang Mai 50200, Thailand
                     </a>
