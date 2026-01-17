@@ -5,6 +5,8 @@ export type UserFields = {
     lastName: string
     email: string
     phone: string
+    password?: string
+    confirmPassword?: string
 }
 
 export type UserFormSchema = UserFields

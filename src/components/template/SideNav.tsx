@@ -11,6 +11,7 @@ import queryRoute from '@/utils/queryRoute'
 import appConfig from '@/configs/app.config'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { GiBoxingGlove } from 'react-icons/gi'
 
 import {
     SIDE_NAV_WIDTH,
@@ -72,19 +73,15 @@ const SideNav = ({
         >
             <Link
                 href={appConfig.authenticatedEntryPath}
-                className="side-nav-header flex flex-col justify-center"
+                className="side-nav-header flex flex-col justify-center items-center mx-5 mt-5 mb-2"
                 style={{ height: HEADER_HEIGHT }}
             >
                 <Logo
-                    imgClass="max-h-10"
+                    imgClass={sideNavCollapse ? 'max-h-10' : 'max-h-14'}
                     mode={mode || defaultMode}
                     type={sideNavCollapse ? 'streamline' : 'full'}
-                    className={classNames(
-                        sideNavCollapse && 'ltr:ml-[11.5px] ltr:mr-[11.5px]',
-                        sideNavCollapse
-                            ? SIDE_NAV_CONTENT_GUTTER
-                            : LOGO_X_GUTTER,
-                    )}
+                    logoWidth={sideNavCollapse ? 40 : 56}
+                    logoHeight={sideNavCollapse ? 40 : 56}
                 />
             </Link>
             <div className={classNames('side-nav-content', contentClass)}>

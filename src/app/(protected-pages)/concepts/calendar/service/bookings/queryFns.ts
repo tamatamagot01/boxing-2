@@ -23,3 +23,15 @@ export const getBookingCalendar = async () => {
     const res = await axiosClient.get('/booking/get-booking-calendar')
     return res.data
 }
+
+export const getTimeLists = async () => {
+    const res = await axiosClient.get('/time/get-all')
+    return res.data
+}
+
+export const getThisDayCustomer = async (bookingDate: string) => {
+    const res = await axiosClient.get('/booking/get-today-customer', {
+        params: { bookingDate },
+    })
+    return res.data
+}

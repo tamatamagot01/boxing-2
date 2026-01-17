@@ -6,14 +6,14 @@ import EventDialog from './EventDialog'
 import { useCalendar } from '../_store/calendarStore'
 import cloneDeep from 'lodash/cloneDeep'
 import dayjs from 'dayjs'
-import type { SelectedCell, CalendarEventParam } from '../types'
+import type { SelectedCell } from '../types'
 import type {
     EventDropArg,
     EventClickArg,
     DateSelectArg,
 } from '@fullcalendar/core'
 import { useQuery } from '@tanstack/react-query'
-import { getBookingCalendar, getBookings } from '../service/bookings/queryFns'
+import { getBookingCalendar } from '../service/bookings/queryFns'
 import Loading from '@/components/ui/Loading/Loading'
 
 const Calendar = () => {
@@ -27,9 +27,8 @@ const Calendar = () => {
         queryKey: ['bookings'],
         queryFn: () => getBookingCalendar(),
     })
-    console.log('🚀 ~ Calendar ~ data:', data?.bookings)
+
     const events = data?.bookings || []
-    // const events = useCalendar((state) => state.data)
     console.log('🚀 ~ Calendar ~ events:', events)
     const setEvents = useCalendar((state) => state.setData)
 
@@ -74,42 +73,23 @@ const Calendar = () => {
         setEvents(newEvents)
     }
 
-    const handleSubmit = (data: CalendarEventParam, type: string) => {
-        let newEvents = cloneDeep(events)
-        if (type === 'NEW') {
-            newEvents?.push(data)
-        }
-
-        if (type === 'EDIT') {
-            newEvents = newEvents?.map((event: any) => {
-                if (data.id === event.id) {
-                    event = data
-                }
-                return event
-            })
-        }
-        setEvents(newEvents)
-    }
-
     return (
         <Container className="h-full">
             {isPending ? (
                 <Loading />
             ) : (
                 <CalendarView
-                    editable
+                    editable={false}
                     selectable
                     events={events}
-                    bookings={data.bookings.bookings}
+                    bookings={data?.bookings?.bookings}
                     eventClick={handleEventClick}
                     select={handleCellSelect}
-                    eventDrop={handleEventChange}
                 />
             )}
             <EventDialog
                 open={dialogOpen}
                 selected={selectedCell}
-                submit={handleSubmit}
                 onDialogOpen={setDialogOpen}
             />
         </Container>

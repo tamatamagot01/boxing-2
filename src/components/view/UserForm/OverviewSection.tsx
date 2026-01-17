@@ -2,13 +2,20 @@
 
 import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
+import PasswordInput from '@/components/ui/PasswordInput'
 import { FormItem } from '@/components/ui/Form'
 import { Controller } from 'react-hook-form'
 import type { FormSectionBaseProps } from './types'
 
-type OverviewSectionProps = FormSectionBaseProps
+type OverviewSectionProps = FormSectionBaseProps & {
+    isEditMode?: boolean
+}
 
-const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
+const OverviewSection = ({
+    control,
+    errors,
+    isEditMode = false,
+}: OverviewSectionProps) => {
     return (
         <Card>
             <h4 className="mb-6">Overview</h4>
@@ -82,6 +89,48 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 type="phone"
                                 autoComplete="off"
                                 placeholder="Phone"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+                <FormItem
+                    label={isEditMode ? 'New Password (optional)' : 'Password'}
+                    invalid={Boolean(errors.password)}
+                    errorMessage={errors.password?.message}
+                >
+                    <Controller
+                        name="password"
+                        control={control}
+                        render={({ field }) => (
+                            <PasswordInput
+                                autoComplete="off"
+                                placeholder={
+                                    isEditMode
+                                        ? 'Leave blank to keep current password'
+                                        : 'Password (min 6 characters)'
+                                }
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+                <FormItem
+                    label={
+                        isEditMode ? 'Confirm New Password' : 'Confirm Password'
+                    }
+                    invalid={Boolean(errors.confirmPassword)}
+                    errorMessage={errors.confirmPassword?.message}
+                >
+                    <Controller
+                        name="confirmPassword"
+                        control={control}
+                        render={({ field }) => (
+                            <PasswordInput
+                                autoComplete="off"
+                                placeholder="Confirm Password"
                                 {...field}
                             />
                         )}

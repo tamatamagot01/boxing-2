@@ -1,16 +1,20 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { useUserListStore } from '../_store/userListStore'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TbPencil, TbEye } from 'react-icons/tb'
+import { TbPencil, TbEye, TbTrash } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { User } from '../types'
 import { capitalizeString } from '@/utils/capitalizeString'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteUser } from '../../service/user/queryFns'
+import { Notification, toast } from '@/components/ui'
 
 type UserListTableProps = {
     userListTotal: number
@@ -35,30 +39,47 @@ const NameColumn = ({ row }: { row: User }) => {
 const ActionColumn = ({
     onEdit,
     onViewDetail,
+    onDelete,
 }: {
-    onEdit: () => void
-    onViewDetail: () => void
+    onEdit?: () => void
+    onViewDetail?: () => void
+    onDelete?: () => void
 }) => {
     return (
         <div className="flex items-center gap-3">
-            <Tooltip title="Edit">
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onEdit}
-                >
-                    <TbPencil />
-                </div>
-            </Tooltip>
-            <Tooltip title="View">
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onViewDetail}
-                >
-                    <TbEye />
-                </div>
-            </Tooltip>
+            {onEdit && (
+                <Tooltip title="Edit">
+                    <div
+                        className={`text-xl cursor-pointer select-none font-semibold`}
+                        role="button"
+                        onClick={onEdit}
+                    >
+                        <TbPencil />
+                    </div>
+                </Tooltip>
+            )}
+            {onViewDetail && (
+                <Tooltip title="View">
+                    <div
+                        className={`text-xl cursor-pointer select-none font-semibold`}
+                        role="button"
+                        onClick={onViewDetail}
+                    >
+                        <TbEye />
+                    </div>
+                </Tooltip>
+            )}
+            {onDelete && (
+                <Tooltip title="Delete">
+                    <div
+                        className={`text-xl cursor-pointer select-none font-semibold`}
+                        role="button"
+                        onClick={onDelete}
+                    >
+                        <TbTrash />
+                    </div>
+                </Tooltip>
+            )}
         </div>
     )
 }
@@ -69,6 +90,10 @@ const UserListTable = ({
     pageSize = 10,
 }: UserListTableProps) => {
     const router = useRouter()
+    const queryClient = useQueryClient()
+
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
     const userList = useUserListStore((state) => state.userList)
 
@@ -76,12 +101,49 @@ const UserListTable = ({
 
     const { onAppendQueryParams } = useAppendQueryParams()
 
+    const { mutate: deleteMutate, isPending: isDeleting } = useMutation({
+        mutationFn: (userId: string) => deleteUser(Number(userId)),
+        onSuccess: () => {
+            toast.push(
+                <Notification type="success">User deleted!</Notification>,
+                { placement: 'top-center' },
+            )
+            setDeleteConfirmOpen(false)
+            setUserToDelete(null)
+            // Refetch users list
+            queryClient.invalidateQueries({ queryKey: ['users'] })
+        },
+        onError: (error: any) => {
+            console.error(error)
+            toast.push(
+                <Notification type="danger">
+                    {error.response?.data?.message || 'Failed to delete user'}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            setDeleteConfirmOpen(false)
+            setUserToDelete(null)
+        },
+    })
+
     const handleEdit = (user: User) => {
         router.push(`/concepts/users/user-edit/${user.id}`)
     }
 
-    const handleViewDetails = (user: User) => {
-        router.push(`/concepts/users/user-details/${user.id}`)
+    const handleDelete = (user: User) => {
+        setUserToDelete(user)
+        setDeleteConfirmOpen(true)
+    }
+
+    const handleConfirmDelete = () => {
+        if (userToDelete) {
+            deleteMutate(userToDelete.id)
+        }
+    }
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmOpen(false)
+        setUserToDelete(null)
     }
 
     const columns: ColumnDef<User>[] = useMemo(
@@ -124,9 +186,7 @@ const UserListTable = ({
                 cell: (props) => (
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original)}
-                        onViewDetail={() =>
-                            handleViewDetails(props.row.original)
-                        }
+                        onDelete={() => handleDelete(props.row.original)}
                     />
                 ),
             },
@@ -156,20 +216,40 @@ const UserListTable = ({
     }
 
     return (
-        <DataTable
-            columns={columns}
-            data={userList}
-            noData={userList.length === 0}
-            loading={isInitialLoading}
-            pagingData={{
-                total: userListTotal,
-                pageIndex,
-                pageSize,
-            }}
-            onPaginationChange={handlePaginationChange}
-            onSelectChange={handleSelectChange}
-            onSort={handleSort}
-        />
+        <>
+            <DataTable
+                columns={columns}
+                data={userList}
+                noData={userList.length === 0}
+                loading={isInitialLoading}
+                pagingData={{
+                    total: userListTotal,
+                    pageIndex,
+                    pageSize,
+                }}
+                onPaginationChange={handlePaginationChange}
+                onSelectChange={handleSelectChange}
+                onSort={handleSort}
+            />
+            <ConfirmDialog
+                isOpen={deleteConfirmOpen}
+                type="danger"
+                title="Delete User"
+                onClose={handleCancelDelete}
+                onRequestClose={handleCancelDelete}
+                onCancel={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+                confirmButtonProps={{ loading: isDeleting }}
+            >
+                <p>
+                    Are you sure you want to delete{' '}
+                    <strong>
+                        {userToDelete?.first_name} {userToDelete?.last_name}
+                    </strong>
+                    ? This action cannot be undone.
+                </p>
+            </ConfirmDialog>
+        </>
     )
 }
 

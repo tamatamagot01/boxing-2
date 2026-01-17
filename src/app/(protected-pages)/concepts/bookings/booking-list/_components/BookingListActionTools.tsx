@@ -17,18 +17,6 @@ const BookingListActionTools = () => {
 
     return (
         <div className="flex flex-col md:flex-row gap-3">
-            <CSVLink
-                className="w-full"
-                filename="customerList.csv"
-                data={bookingList}
-            >
-                <Button
-                    icon={<TbCloudDownload className="text-xl" />}
-                    className="w-full"
-                >
-                    Download
-                </Button>
-            </CSVLink>
             <Button
                 variant="solid"
                 icon={<TbPlus className="text-xl" />}

@@ -28,14 +28,14 @@ const CollapsibleSide = ({ children }: CommonProps) => {
                             <>
                                 <MobileNav />
                                 <SideNavToggle />
-                                <Search />
+                                {/* <Search /> */}
                             </>
                         }
                         headerEnd={
                             <>
-                                <LanguageSelector />
-                                <Notification />
-                                <SidePanel />
+                                {/* <LanguageSelector /> */}
+                                {/* <Notification /> */}
+                                {/* <SidePanel /> */}
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }

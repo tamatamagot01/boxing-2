@@ -1,29 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
-import Select from '@/components/ui/Select'
-import DatePicker from '@/components/ui/DatePicker'
+import { useState } from 'react'
 import Dialog from '@/components/ui/Dialog'
-import { Form, FormItem } from '@/components/ui/Form'
-import Badge from '@/components/ui/Badge'
-import hooks from '@/components/ui/hooks'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { TbChecks } from 'react-icons/tb'
-import { components } from 'react-select'
-import dayjs from 'dayjs'
 import type { SelectedCell } from '../types'
-import type { ControlProps, OptionProps } from 'react-select'
-
-type FormModel = {
-    title: string
-    startDate: Date
-    endDate: Date
-    color: string
-}
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { getThisDayCustomer, getTimeLists } from '../service/bookings/queryFns'
+import { useRouter } from 'next/navigation'
 
 export type EventParam = {
     id: string
@@ -33,151 +15,79 @@ export type EventParam = {
     end?: string
 }
 
-type ColorOption = {
-    value: string
-    label: string
-    color: string
-}
-
 type EventDialogProps = {
     open: boolean
     selected: SelectedCell
     onDialogOpen: (open: boolean) => void
-    submit: (eventData: EventParam, type: string) => void
 }
-
-const { Control } = components
-
-const { useUniqueId } = hooks
-
-const colorOptions = [
-    {
-        value: 'red',
-        label: 'red',
-        color: 'bg-red-400',
-    },
-    {
-        value: 'orange',
-        label: 'orange',
-        color: 'bg-orange-400',
-    },
-    {
-        value: 'yellow',
-        label: 'yellow',
-        color: 'bg-yellow-400',
-    },
-    {
-        value: 'green',
-        label: 'green',
-        color: 'bg-green-400',
-    },
-    {
-        value: 'blue',
-        label: 'blue',
-        color: 'bg-blue-400',
-    },
-    {
-        value: 'purple',
-        label: 'purple',
-        color: 'bg-purple-400',
-    },
-]
-
-const CustomSelectOption = ({
-    innerProps,
-    label,
-    data,
-    isSelected,
-}: OptionProps<ColorOption>) => {
-    return (
-        <div
-            className={`flex items-center justify-between rounded-lg p-2 ${
-                isSelected
-                    ? 'bg-gray-100 dark:bg-gray-500'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-600'
-            }`}
-            {...innerProps}
-        >
-            <div className="flex items-center">
-                <Badge className={data.color} />
-                <span className="ml-2 rtl:mr-2 capitalize">{label}</span>
-            </div>
-            {isSelected && <TbChecks className="text-emerald-500 text-xl" />}
-        </div>
-    )
-}
-
-const CustomControl = ({ children, ...props }: ControlProps<ColorOption>) => {
-    const selected = props.getValue()[0]
-
-    return (
-        <Control className="capitalize" {...props}>
-            {selected && (
-                <Badge className={`${selected.color} ltr:ml-4 rtl:mr-4`} />
-            )}
-            {children}
-        </Control>
-    )
-}
-
-const validationSchema = z.object({
-    title: z.string().min(1, { message: 'Event title required' }),
-    startDate: z.date({
-        required_error: 'Please select a date',
-        invalid_type_error: "That's not a date!",
-    }),
-    endDate: z.date({
-        required_error: 'Please select a date',
-        invalid_type_error: "That's not a date!",
-    }),
-    color: z.string().min(1, { message: 'Color required' }),
-})
 
 const EventDialog = (props: EventDialogProps) => {
-    const { submit, open, selected, onDialogOpen } = props
+    const { open, selected, onDialogOpen } = props
+    const [selectedTimeId, setSelectedTimeId] = useState<number | null>(null)
+    const router = useRouter()
 
-    const newId = useUniqueId('event-')
+    // Max participants per class type
+    const MAX_PARTICIPANTS = {
+        group: 6,
+        private: 2,
+    }
+
+    const { start } = selected
+
+    const date = start?.split('T')[0]
+
+    // Format date for display (e.g., "Thursday, 16 January 2026")
+    const formattedDate = date
+        ? new Date(date).toLocaleDateString('en-GB', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+          })
+        : ''
+
+    const [timeListQuery, bookingsQuery] = useQueries({
+        queries: [
+            {
+                queryKey: ['times'],
+                queryFn: () => getTimeLists(),
+            },
+            {
+                queryKey: ['bookings', 'participants', date],
+                queryFn: () => getThisDayCustomer(date!),
+            },
+        ],
+    })
+
+    const isPending = timeListQuery.isPending || bookingsQuery.isPending
+
+    const participants = bookingsQuery.data?.participants || []
+    const timeLists = timeListQuery.data?.times || []
+    const allBookings = bookingsQuery.data?.bookings || []
+
+    // ฟังก์ชันหาจำนวนคนจองตาม bookingTimeID
+    const getParticipantCount = (bookingTimeID: number) => {
+        const found = participants.find(
+            (p: any) => p.bookingTimeID === bookingTimeID,
+        )
+        return found?._sum?.participant || 0
+    }
+
+    // ฟังก์ชันหา bookings ตาม bookingTimeID
+    const getBookingsByTimeId = (bookingTimeID: number) => {
+        return allBookings.filter(
+            (booking: any) => booking.bookingTimeID === bookingTimeID,
+        )
+    }
+
+    // จัดการการคลิกที่การ์ด
+    const handleTimeClick = (timeId: number) => {
+        setSelectedTimeId(selectedTimeId === timeId ? null : timeId)
+    }
 
     const handleDialogClose = () => {
         onDialogOpen(false)
     }
-
-    const onSubmit = (values: FormModel) => {
-        const eventData: EventParam = {
-            id: selected.id || newId,
-            title: values.title,
-            start: dayjs(values.startDate).format(),
-            eventColor: values.color,
-        }
-        if (values.endDate) {
-            eventData.end = dayjs(values.endDate).format()
-        }
-        console.log('eventData', eventData)
-        submit?.(eventData, selected.type)
-        handleDialogClose()
-    }
-
-    const {
-        handleSubmit,
-        reset,
-        formState: { errors },
-        control,
-    } = useForm<FormModel>({
-        resolver: zodResolver(validationSchema),
-    })
-
-    useEffect(() => {
-        if (selected) {
-            reset({
-                title: selected.title || '',
-                startDate: (selected.start &&
-                    dayjs(selected.start).toDate()) as Date,
-                endDate: (selected.end && dayjs(selected.end).toDate()) as Date,
-                color: selected.eventColor || colorOptions[0].value,
-            })
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selected])
 
     return (
         <Dialog
@@ -185,96 +95,238 @@ const EventDialog = (props: EventDialogProps) => {
             onClose={handleDialogClose}
             onRequestClose={handleDialogClose}
         >
-            <h5 className="mb-4">
-                {selected.type === 'NEW' ? 'Add New Event' : 'Edit Event'}
-            </h5>
-            <Form
-                className="flex-1 flex flex-col"
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <FormItem
-                    label="Event title"
-                    invalid={Boolean(errors.title)}
-                    errorMessage={errors.title?.message}
-                >
-                    <Controller
-                        name="title"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                placeholder="Event title"
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="Start date"
-                    invalid={Boolean(errors.startDate)}
-                    errorMessage={errors.startDate?.message}
-                >
-                    <Controller
-                        name="startDate"
-                        control={control}
-                        render={({ field }) => (
-                            <DatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="End date"
-                    invalid={Boolean(errors.endDate)}
-                    errorMessage={errors.endDate?.message}
-                >
-                    <Controller
-                        name="endDate"
-                        control={control}
-                        render={({ field }) => (
-                            <DatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="Event color"
-                    asterisk={true}
-                    invalid={Boolean(errors.color)}
-                    errorMessage={errors.color?.message}
-                >
-                    <Controller
-                        name="color"
-                        control={control}
-                        render={({ field }) => (
-                            <Select<ColorOption>
-                                instanceId="event-color"
-                                options={colorOptions}
-                                value={colorOptions.filter(
-                                    (option) => option.value === field.value,
-                                )}
-                                components={{
-                                    Option: CustomSelectOption,
-                                    Control: CustomControl,
-                                }}
-                                onChange={(selected) => {
-                                    field.onChange(selected?.value)
-                                }}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem className="mb-0 text-right rtl:text-left">
-                    <Button block variant="solid" type="submit">
-                        {selected.type === 'NEW' ? 'Create' : 'Update'}
-                    </Button>
-                </FormItem>
-            </Form>
+            <div className="custom-scrollbar max-h-[80vh] w-full max-w-lg overflow-y-auto sm:max-h-[70vh]">
+                <style jsx>{`
+                    .custom-scrollbar::-webkit-scrollbar {
+                        width: 6px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-track {
+                        background: transparent;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background: rgba(255, 255, 255, 0.2);
+                        border-radius: 3px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                        background: rgba(255, 255, 255, 0.3);
+                    }
+                `}</style>
+                {/* Header */}
+                <div className="px-4 pb-3 pt-2 sm:px-6 sm:pb-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 sm:text-xs">
+                        Schedule
+                    </p>
+                    <h3 className="mt-1.5 text-xl font-medium tracking-tight text-white sm:mt-2 sm:text-2xl">
+                        {formattedDate}
+                    </h3>
+                </div>
+
+                <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+                    {isPending ? (
+                        <div className="flex items-center justify-center py-20">
+                            <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-600 border-t-white"></div>
+                        </div>
+                    ) : (
+                        <div className="space-y-1.5 sm:space-y-2">
+                            {timeLists.map((time: any) => {
+                                const participantCount = getParticipantCount(
+                                    time.id,
+                                )
+
+                                const isSelected = selectedTimeId === time.id
+                                const bookingsForTime = getBookingsByTimeId(
+                                    time.id,
+                                )
+                                return (
+                                    <div key={time.id} className="group">
+                                        <div
+                                            className={`cursor-pointer rounded-lg px-3 py-3 transition-colors sm:px-4 sm:py-4 ${
+                                                isSelected
+                                                    ? 'bg-white/10'
+                                                    : 'hover:bg-white/5'
+                                            }`}
+                                            onClick={() =>
+                                                handleTimeClick(time.id)
+                                            }
+                                        >
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div className="flex items-baseline gap-2 sm:gap-3">
+                                                    <span className="text-lg font-medium tabular-nums text-white sm:text-xl">
+                                                        {time.start}
+                                                    </span>
+                                                    <span className="text-xs font-medium text-gray-400 sm:text-sm">
+                                                        → {time.end}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2 sm:gap-3">
+                                                    <span className="hidden text-sm font-medium capitalize text-gray-300 sm:inline">
+                                                        {time.classType}
+                                                    </span>
+                                                    <div
+                                                        className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold sm:gap-1.5 sm:px-2 sm:py-1 sm:text-sm ${
+                                                            participantCount > 0
+                                                                ? participantCount >=
+                                                                  (MAX_PARTICIPANTS[
+                                                                      time.classType as keyof typeof MAX_PARTICIPANTS
+                                                                  ] || 6)
+                                                                    ? 'bg-red-500 text-white'
+                                                                    : 'bg-white text-gray-900'
+                                                                : 'bg-gray-700 text-gray-400'
+                                                        }`}
+                                                    >
+                                                        <svg
+                                                            className="h-3 w-3 sm:h-3.5 sm:w-3.5"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                                        </svg>
+                                                        {participantCount}/
+                                                        {MAX_PARTICIPANTS[
+                                                            time.classType as keyof typeof MAX_PARTICIPANTS
+                                                        ] || 6}
+                                                    </div>
+                                                    {participantCount > 0 && (
+                                                        <svg
+                                                            className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
+                                                                isSelected
+                                                                    ? 'rotate-180'
+                                                                    : ''
+                                                            }`}
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M19 9l-7 7-7-7"
+                                                            />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Bookings List */}
+                                        <div
+                                            className={`overflow-hidden transition-all duration-300 ease-out ${
+                                                isSelected &&
+                                                bookingsForTime.length > 0
+                                                    ? 'max-h-[300px] opacity-100'
+                                                    : 'max-h-0 opacity-0'
+                                            }`}
+                                        >
+                                            <div className="ml-3 border-l-2 border-gray-600 pl-3 sm:ml-4 sm:pl-4">
+                                                {bookingsForTime.map(
+                                                    (booking: any) => (
+                                                        <div
+                                                            key={booking.id}
+                                                            className="flex items-center justify-between gap-2 py-2.5 sm:py-3"
+                                                        >
+                                                            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                                                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-gray-900 sm:h-8 sm:w-8 sm:text-[11px]">
+                                                                    {booking.guestFirstName?.charAt(
+                                                                        0,
+                                                                    )}
+                                                                    {booking.guestLastName?.charAt(
+                                                                        0,
+                                                                    )}
+                                                                </div>
+                                                                <div className="min-w-0">
+                                                                    <p className="truncate text-xs font-semibold text-white sm:text-sm">
+                                                                        {
+                                                                            booking.guestFirstName
+                                                                        }{' '}
+                                                                        {
+                                                                            booking.guestLastName
+                                                                        }
+                                                                    </p>
+                                                                    <p className="truncate text-[10px] text-gray-400 sm:text-xs">
+                                                                        {
+                                                                            booking.guestEmail
+                                                                        }
+                                                                    </p>
+                                                                    {booking.guestPhone && (
+                                                                        <p className="text-[10px] text-gray-400 sm:text-xs">
+                                                                            {
+                                                                                booking.guestPhone
+                                                                            }
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                                                                <span className="inline-flex items-center gap-1 rounded bg-gray-700 px-1.5 py-0.5 text-[10px] font-semibold text-gray-200 sm:text-xs">
+                                                                    <svg
+                                                                        className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                                                        fill="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                                                    </svg>
+                                                                    {
+                                                                        booking.participant
+                                                                    }
+                                                                </span>
+                                                                <button
+                                                                    onClick={(
+                                                                        e,
+                                                                    ) => {
+                                                                        e.stopPropagation()
+                                                                        router.push(
+                                                                            `/concepts/bookings/booking-details/${booking.id}`,
+                                                                        )
+                                                                    }}
+                                                                    className="rounded-md bg-primary/20 p-1.5 text-primary hover:bg-primary/30 transition-colors"
+                                                                    title="View Details"
+                                                                >
+                                                                    <svg
+                                                                        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth={
+                                                                                2
+                                                                            }
+                                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                                        />
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth={
+                                                                                2
+                                                                            }
+                                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                                        />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+
+                            {timeLists.length === 0 && (
+                                <div className="py-20 text-center">
+                                    <p className="text-sm font-medium text-gray-400">
+                                        No classes scheduled
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
         </Dialog>
     )
 }

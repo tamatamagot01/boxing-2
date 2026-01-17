@@ -69,9 +69,20 @@ const CalendarView = (props: CalendarViewProps) => {
                     center: '',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay prev,next',
                 }}
+                eventTimeFormat={{
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                }}
                 eventContent={(arg) => {
                     const { extendedProps } = arg.event
                     const { isEnd, isStart } = arg
+
+                    // Extract customer name from title (format: "Booking ID - Name")
+                    const titleParts = arg.event.title.split(' - ')
+                    const customerName =
+                        titleParts.length > 1 ? titleParts[1] : arg.event.title
+
                     return (
                         <div
                             className={classNames(
@@ -96,12 +107,16 @@ const CalendarView = (props: CalendarViewProps) => {
                                     'rounded-tr-none! rounded-br-none! !rtl:rounded-tl-none !rtl:rounded-bl-none',
                             )}
                         >
-                            {!(isEnd && !isStart) && (
-                                <span>{arg.timeText}</span>
-                            )}
-                            <span className="font-bold ml-1 rtl:mr-1">
-                                {arg.event.title}
-                            </span>
+                            <div className="flex items-center gap-1.5 overflow-hidden">
+                                {!(isEnd && !isStart) && (
+                                    <span className="shrink-0 text-[10px] opacity-80">
+                                        {arg.timeText}
+                                    </span>
+                                )}
+                                <span className="truncate font-semibold">
+                                    {customerName}
+                                </span>
+                            </div>
                         </div>
                     )
                 }}

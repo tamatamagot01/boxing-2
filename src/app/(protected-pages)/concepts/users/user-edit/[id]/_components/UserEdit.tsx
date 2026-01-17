@@ -1,14 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import Container from '@/components/shared/Container'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
-import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import UserForm from '@/components/view/UserForm'
-import sleep from '@/utils/sleep'
-import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
+import { TbArrowNarrowLeft } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import type { UserFormSchema } from '@/components/view/UserForm'
 import type { User } from '../types'
@@ -21,8 +18,6 @@ type UserEditProps = {
 
 const UserEdit = ({ data }: UserEditProps) => {
     const router = useRouter()
-
-    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
 
     const { mutate, isPending } = useMutation({
         mutationFn: (userData: UserFormSchema) => {
@@ -63,30 +58,16 @@ const UserEdit = ({ data }: UserEditProps) => {
                 email,
                 img,
                 phone,
+                password: '',
+                confirmPassword: '',
             }
         }
 
         return {}
     }
 
-    const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(true)
-        toast.push(<Notification type="success">User deleted!</Notification>, {
-            placement: 'top-center',
-        })
-        router.push('/concepts/users/user-list')
-    }
-
-    const handleDelete = () => {
-        setDeleteConfirmationOpen(true)
-    }
-
-    const handleCancel = () => {
-        setDeleteConfirmationOpen(false)
-    }
-
     const handleBack = () => {
-        history.back()
+        router.push('/concepts/users/user-list')
     }
 
     return (
@@ -94,30 +75,18 @@ const UserEdit = ({ data }: UserEditProps) => {
             <UserForm
                 defaultValues={getDefaultValues() as UserFormSchema}
                 onFormSubmit={onSubmit}
+                isEditMode={true}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <Button
-                            className="ltr:mr-3 rtl:ml-3"
                             type="button"
-                            variant="plain"
                             icon={<TbArrowNarrowLeft />}
                             onClick={handleBack}
                         >
                             Back
                         </Button>
                         <div className="flex items-center">
-                            <Button
-                                className="ltr:mr-3 rtl:ml-3"
-                                type="button"
-                                customColorClass={() =>
-                                    'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
-                                }
-                                icon={<TbTrash />}
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </Button>
                             <Button
                                 variant="solid"
                                 type="submit"
@@ -129,20 +98,6 @@ const UserEdit = ({ data }: UserEditProps) => {
                     </div>
                 </Container>
             </UserForm>
-            <ConfirmDialog
-                isOpen={deleteConfirmationOpen}
-                type="danger"
-                title="Remove users"
-                onClose={handleCancel}
-                onRequestClose={handleCancel}
-                onCancel={handleCancel}
-                onConfirm={handleConfirmDelete}
-            >
-                <p>
-                    Are you sure you want to remove this user? This action
-                    can&apos;t be undo.{' '}
-                </p>
-            </ConfirmDialog>
         </>
     )
 }

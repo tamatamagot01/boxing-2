@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 
-import BookingListTableFilter from './BookingListTableFilter'
 import BookingListSearch from './BookingListSearch'
 
 const BookingsListTableTools = () => {
@@ -30,7 +29,6 @@ const BookingsListTableTools = () => {
                 value={query}
                 onInputChange={handleInputChange}
             />
-            <BookingListTableFilter />
         </div>
     )
 }

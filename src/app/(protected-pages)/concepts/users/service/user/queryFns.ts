@@ -54,3 +54,11 @@ export const editUser = async (payload: UserFormSchema) => {
 
     return res.data
 }
+
+export const deleteUser = async (userId: number) => {
+    const res = await axiosClient.get('/user/delete', {
+        params: { userID: userId },
+    })
+
+    return res.data
+}

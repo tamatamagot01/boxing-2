@@ -19,6 +19,9 @@ const MenuGroup = (props: MenuGroupProps) => {
 
     return (
         <div className={menuGroupClass}>
+            {!sideCollapsed && (
+                <div className="mx-3 border-t border-gray-700/50 mt-4 mb-2" />
+            )}
             {label && !sideCollapsed && (
                 <div className={classNames('menu-title')}>{label}</div>
             )}

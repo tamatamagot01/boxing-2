@@ -1,5 +1,6 @@
 import { cloneElement } from 'react'
 import type { CommonProps } from '@/@types/common'
+import Logo from '@/components/template/Logo'
 
 type SideProps = CommonProps
 
@@ -16,12 +17,49 @@ const Side = ({ children, ...rest }: SideProps) => {
                         : null}
                 </div>
             </div>
-            <div className="py-6 px-10 lg:flex flex-col flex-1 justify-between hidden rounded-3xl items-end relative max-w-[520px] 2xl:max-w-[720px]">
-                <img
-                    src="/img/others/auth-side-bg.png"
-                    className="absolute h-full w-full top-0 left-0 rounded-3xl"
-                    alt="auth-side-bg"
+            <div className="lg:flex flex-col flex-1 justify-center items-center hidden rounded-3xl relative max-w-[520px] 2xl:max-w-[720px] bg-gray-900 overflow-hidden">
+                {/* Animated Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
+
+                {/* Glow Effects */}
+                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-red-500/20 rounded-full blur-[100px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-red-600/15 rounded-full blur-[80px]" />
+
+                {/* Grid Pattern */}
+                <div
+                    className="absolute inset-0 opacity-[0.03]"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
+                        backgroundSize: '50px 50px',
+                    }}
                 />
+
+                {/* Content */}
+                <div className="relative z-10 flex flex-col items-center text-center px-12">
+                    {/* Logo */}
+                    <div className="mb-8 p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                        <Logo
+                            type="full"
+                            mode="dark"
+                            logoWidth={100}
+                            logoHeight={100}
+                        />
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-3xl font-bold text-white mb-3">
+                        Income Muaythai
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p className="text-gray-400 text-base mb-8 max-w-xs">
+                        Management System for Modern Gyms
+                    </p>
+                </div>
+
+                {/* Bottom Accent */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent" />
             </div>
         </div>
     )

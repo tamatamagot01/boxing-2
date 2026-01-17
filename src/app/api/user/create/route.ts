@@ -46,7 +46,7 @@ export async function POST(request: Request) {
                 first_name: firstName,
                 last_name: lastName,
                 password: hashedPassword,
-                is_backOffice: false,
+                is_backOffice: true,
                 is_trainer: false,
                 resetPassword: false,
             },

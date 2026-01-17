@@ -24,8 +24,7 @@ const Logo = (props: LogoProps) => {
         logoHeight,
     } = props
 
-    const width = logoWidth || (type === 'full' ? 120 : 40)
-    const height = logoHeight || (type === 'full' ? 40 : 40)
+    const size = logoWidth || logoHeight || 40
 
     return (
         <div className={classNames('logo', className)} style={style}>
@@ -37,10 +36,10 @@ const Logo = (props: LogoProps) => {
                             type === 'full' ? '' : 'hidden',
                             imgClass,
                         )}
-                        src={`${LOGO_SRC_PATH}logo-2.png`}
+                        src={`${LOGO_SRC_PATH}muaythai-income.png`}
                         alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
+                        width={size}
+                        height={size}
                         priority
                     />
                     <Image
@@ -49,10 +48,10 @@ const Logo = (props: LogoProps) => {
                             type === 'streamline' ? '' : 'hidden',
                             imgClass,
                         )}
-                        src={`${LOGO_SRC_PATH}logo-2.png`}
+                        src={`${LOGO_SRC_PATH}muaythai-income.png`}
                         alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
+                        width={size}
+                        height={size}
                         priority
                     />
                 </>
@@ -64,10 +63,10 @@ const Logo = (props: LogoProps) => {
                             type === 'full' ? '' : 'hidden',
                             imgClass,
                         )}
-                        src={`${LOGO_SRC_PATH}logo-1.png`}
+                        src={`${LOGO_SRC_PATH}muaythai-income.png`}
                         alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
+                        width={size}
+                        height={size}
                         priority
                     />
                     <Image
@@ -75,10 +74,10 @@ const Logo = (props: LogoProps) => {
                             type === 'streamline' ? '' : 'hidden',
                             imgClass,
                         )}
-                        src={`${LOGO_SRC_PATH}logo-1.png`}
+                        src={`${LOGO_SRC_PATH}muaythai-income.png`}
                         alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
+                        width={size}
+                        height={size}
                         priority
                     />
                 </>

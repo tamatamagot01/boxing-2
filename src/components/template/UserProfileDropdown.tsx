@@ -20,23 +20,23 @@ type DropdownList = {
     icon: JSX.Element
 }
 
-const dropdownItemList: DropdownList[] = [
-    {
-        label: 'Profile',
-        path: '/concepts/account/settings',
-        icon: <PiUserDuotone />,
-    },
-    {
-        label: 'Account Setting',
-        path: '/concepts/account/settings',
-        icon: <PiGearDuotone />,
-    },
-    {
-        label: 'Activity Log',
-        path: '/concepts/account/activity-log',
-        icon: <PiPulseDuotone />,
-    },
-]
+// const dropdownItemList: DropdownList[] = [
+//     {
+//         label: 'Profile',
+//         path: '/concepts/account/settings',
+//         icon: <PiUserDuotone />,
+//     },
+//     {
+//         label: 'Account Setting',
+//         path: '/concepts/account/settings',
+//         icon: <PiGearDuotone />,
+//     },
+//     {
+//         label: 'Activity Log',
+//         path: '/concepts/account/activity-log',
+//         icon: <PiPulseDuotone />,
+//     },
+// ]
 
 const _UserDropdown = () => {
     const { session } = useCurrentSession()
@@ -75,8 +75,8 @@ const _UserDropdown = () => {
                     </div>
                 </div>
             </Dropdown.Item>
-            <Dropdown.Item variant="divider" />
-            {dropdownItemList.map((item) => (
+            {/* <Dropdown.Item variant="divider" /> */}
+            {/* {dropdownItemList.map((item) => (
                 <Dropdown.Item
                     key={item.label}
                     eventKey={item.label}
@@ -89,7 +89,7 @@ const _UserDropdown = () => {
                         </span>
                     </Link>
                 </Dropdown.Item>
-            ))}
+            ))} */}
             <Dropdown.Item variant="divider" />
             <Dropdown.Item
                 eventKey="Sign Out"

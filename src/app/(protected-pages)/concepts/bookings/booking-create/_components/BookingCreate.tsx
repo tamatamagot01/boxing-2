@@ -24,7 +24,12 @@ const BookingCreate = () => {
             const payload = {
                 first_name: bookingData.firstName,
                 last_name: bookingData.lastName,
-                ...bookingData,
+                email: bookingData.email,
+                phone: bookingData.phone,
+                classType: bookingData.classType,
+                date: bookingData.date,
+                timeID: bookingData.timeID,
+                participant: bookingData.participant,
             }
             return createBooking(payload)
         },

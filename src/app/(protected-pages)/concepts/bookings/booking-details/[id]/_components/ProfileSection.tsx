@@ -54,15 +54,6 @@ const ProfileSection = ({
                 <Card className="w-full">
                     <div className="flex justify-between">
                         <h5 className="font-bold opacity-50">{profileType}</h5>
-                        <Tooltip title={`Edit ${profileType}`}>
-                            <button
-                                className="close-button button-press-feedback"
-                                type="button"
-                                onClick={handleEdit}
-                            >
-                                <HiPencil />
-                            </button>
-                        </Tooltip>
                     </div>
                     <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                         <div className="flex xl:flex-col items-center gap-4 mt-6">
@@ -76,7 +67,7 @@ const ProfileSection = ({
                                 {capitalizeString(data.last_name ?? '')}
                             </h4>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-10">
+                        <div className="grid grid-cols-1 gap-y-7 gap-x-4 mt-10">
                             <BookingInfoField
                                 title="Email"
                                 value={data.email}

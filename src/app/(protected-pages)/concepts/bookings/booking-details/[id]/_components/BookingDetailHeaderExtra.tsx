@@ -14,10 +14,9 @@ const BookingDetailHeaderExtra = () => {
 
     return (
         <div className="flex items-center gap-2 print:hidden">
-            <Button onClick={() => window.print()}>Print</Button>
-            <Button variant="solid" onClick={handleEditClick}>
+            {/* <Button variant="solid" onClick={handleEditClick}>
                 Edit
-            </Button>
+            </Button> */}
         </div>
     )
 }

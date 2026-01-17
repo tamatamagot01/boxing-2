@@ -18,6 +18,10 @@ export const publicRoutes: Routes = {
         key: 'landing',
         authority: [],
     },
+    '/concepts/users/user-create': {
+        key: 'landing',
+        authority: [],
+    },
 }
 
 export const authRoutes = authRoute
